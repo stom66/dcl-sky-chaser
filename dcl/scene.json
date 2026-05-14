@@ -1,0 +1,64 @@
+{
+  "ecs7": true,
+  "runtimeVersion": "7",
+  "display": {
+    "title": "Template: AuthServer",
+    "description": "Template scene with Decentraland SDK7+AuthServer",
+    "navmapThumbnail": "images/scene-thumbnail.png",
+    "favicon": "favicon_asset"
+  },
+  "owner": "",
+  "contact": {
+    "name": "stom",
+    "email": ""
+  },
+  "main": "bin/index.js",
+  "tags": [],
+  "scene": {
+    "parcels": [
+      "0,0"
+    ],
+    "base": "0,0"
+  },
+  "spawnPoints": [
+    {
+      "name": "spawn1",
+      "default": true,
+      "position": {
+        "x": [
+          0,
+          3
+        ],
+        "y": [
+          0,
+          0
+        ],
+        "z": [
+          0,
+          3
+        ]
+      },
+      "cameraTarget": {
+        "x": 8,
+        "y": 1,
+        "z": 8
+      }
+    }
+  ],
+  "requiredPermissions": [],
+  "featureToggles": {
+    "voiceChat": "enabled",
+    "portableExperiences": "enabled",
+    "nearbyVoiceChat": "enabled"
+  },
+  "authoritativeMultiplayer": true,
+  "logsPermissions": [
+    "0xCEC7e38e088A87D77F2B60Fcae6840D00E018155"
+  ],
+  "creator": "",
+  "skyboxConfig": {},
+  "source": {
+    "origin": "creator-hub",
+    "projectId": "e07770ee-e8a8-42b0-af0b-ec05d2b79494"
+  }
+}
