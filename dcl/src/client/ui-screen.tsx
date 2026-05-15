@@ -2,6 +2,8 @@ import ReactEcs, { ReactEcsRenderer, UiEntity } from '@dcl/sdk/react-ecs'
 
 import { DebugUI } from 'src/client/ui/layouts/ui.debug'
 import { VersionUI } from 'src/client/ui/layouts/ui.version'
+import { FuelUI } from './ui/layouts/ui.fuel'
+import { ScoreboardUI } from './ui/layouts/ui.scoreboard'
 
 
 // MARK: Vars
@@ -24,6 +26,9 @@ const uiComponent = () => (
 	>
 		{VersionUI()}
 		{SHOW_DEBUG ? DebugUI() : null}
+
+		{FuelUI()}
+		{ScoreboardUI()}
 	</UiEntity>
 )
 

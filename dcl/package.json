@@ -1,7 +1,7 @@
 {
-  "name": "dcl-scene-authserver-template",
+  "name": "dcl-canyon-dash",
   "version": "1.0.0",
-  "description": "Template: AuthServer",
+  "description": "Canyon Dash game prototype",
   "scripts": {
     "start": "sdk-commands start",
     "startClient": "sdk-commands start --explorer-alpha",

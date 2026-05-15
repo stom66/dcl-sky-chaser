@@ -1,5 +1,5 @@
 import { MessageType, room } from 'src/shared/room'
-import { RequestFooPayload } from 'src/shared/types/shared-types'
+import {  } from 'src/shared/types/shared-types'
 
 import { ClientStore } from 'src/client/clientStore'
 
@@ -9,12 +9,15 @@ export namespace ClientMessaging {
 	const clientStore = ClientStore.getInstance()
 
 	// MARK: Request Outfit Change
-	export function RequestFoo() {
-		console.log('ClientMessaging: RequestFoo')
+	export function RequestNewGame() {
+		console.log('ClientMessaging: RequestNewGame')
 
-		const payload: RequestFooPayload = {
-			foo: Date.now()
-		}
-		room.send(MessageType.REQUEST_FOO, payload)
+		room.send(MessageType.REQUEST_NEW_GAME, {})
 	}
+
+	export function RequestScoreUpdate() {
+		console.log('ClientMessaging: RequestScoreUpdate')
+		room.send(MessageType.REQUEST_SCORE_UPDATE, {})
+	}
+
 }

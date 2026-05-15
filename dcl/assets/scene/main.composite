@@ -34,6 +34,124 @@
       "data": {}
     },
     {
+      "name": "core::Transform",
+      "jsonSchema": {
+        "type": "object",
+        "properties": {
+          "position": {
+            "type": "object",
+            "properties": {
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              },
+              "z": {
+                "type": "number"
+              }
+            }
+          },
+          "scale": {
+            "type": "object",
+            "properties": {
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              },
+              "z": {
+                "type": "number"
+              }
+            }
+          },
+          "rotation": {
+            "type": "object",
+            "properties": {
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              },
+              "z": {
+                "type": "number"
+              },
+              "w": {
+                "type": "number"
+              }
+            }
+          },
+          "parent": {
+            "type": "integer"
+          }
+        },
+        "serializationType": "transform"
+      },
+      "data": {
+        "512": {
+          "json": {
+            "position": {
+              "x": 0,
+              "y": 0,
+              "z": -16
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            },
+            "rotation": {
+              "x": 0,
+              "y": 1,
+              "z": 0,
+              "w": 0
+            },
+            "parent": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "core::GltfContainer",
+      "jsonSchema": {
+        "type": "object",
+        "properties": {},
+        "serializationType": "protocol-buffer",
+        "protocolBuffer": "PBGltfContainer"
+      },
+      "data": {
+        "512": {
+          "json": {
+            "src": "assets/models/world.gltf",
+            "visibleMeshesCollisionMask": 0,
+            "invisibleMeshesCollisionMask": 3
+          }
+        }
+      }
+    },
+    {
+      "name": "core-schema::Name",
+      "jsonSchema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "serializationType": "utf8-string"
+          }
+        },
+        "serializationType": "map"
+      },
+      "data": {
+        "512": {
+          "json": {
+            "value": "world.gltf"
+          }
+        }
+      }
+    },
+    {
       "name": "core-schema::Tags",
       "jsonSchema": {
         "type": "object",
@@ -126,8 +244,10 @@
             "value": [
               {
                 "entity": 0,
-                "children": [],
-                "open": true
+                "open": true,
+                "children": [
+                  512
+                ]
               },
               {
                 "entity": 1,
@@ -136,9 +256,35 @@
               {
                 "entity": 2,
                 "children": []
+              },
+              {
+                "entity": 512,
+                "children": []
               }
             ]
           }
+        }
+      }
+    },
+    {
+      "name": "inspector::TransformConfig",
+      "jsonSchema": {
+        "type": "object",
+        "properties": {
+          "porportionalScaling": {
+            "type": "boolean",
+            "serializationType": "optional",
+            "optionalJsonSchema": {
+              "type": "boolean",
+              "serializationType": "boolean"
+            }
+          }
+        },
+        "serializationType": "map"
+      },
+      "data": {
+        "512": {
+          "json": {}
         }
       }
     },
@@ -476,8 +622,8 @@
       "data": {
         "0": {
           "json": {
-            "name": "Template: AuthServer",
-            "description": "Template scene with Decentraland SDK7+AuthServer",
+            "name": "Canyon Dash",
+            "description": "Canyon Dash game prototype",
             "thumbnail": "images/scene-thumbnail.png",
             "categories": [],
             "author": "stom",
@@ -487,7 +633,579 @@
               "parcels": [
                 {
                   "x": 0,
+                  "y": -1
+                },
+                {
+                  "x": 1,
+                  "y": -1
+                },
+                {
+                  "x": 2,
+                  "y": -1
+                },
+                {
+                  "x": 3,
+                  "y": -1
+                },
+                {
+                  "x": 4,
+                  "y": -1
+                },
+                {
+                  "x": 5,
+                  "y": -1
+                },
+                {
+                  "x": 6,
+                  "y": -1
+                },
+                {
+                  "x": 7,
+                  "y": -1
+                },
+                {
+                  "x": 8,
+                  "y": -1
+                },
+                {
+                  "x": 9,
+                  "y": -1
+                },
+                {
+                  "x": 10,
+                  "y": -1
+                },
+                {
+                  "x": 11,
+                  "y": -1
+                },
+                {
+                  "x": 12,
+                  "y": -1
+                },
+                {
+                  "x": 13,
+                  "y": -1
+                },
+                {
+                  "x": 14,
+                  "y": -1
+                },
+                {
+                  "x": 15,
+                  "y": -1
+                },
+                {
+                  "x": 16,
+                  "y": -1
+                },
+                {
+                  "x": 17,
+                  "y": -1
+                },
+                {
+                  "x": 18,
+                  "y": -1
+                },
+                {
+                  "x": 19,
+                  "y": -1
+                },
+                {
+                  "x": 20,
+                  "y": -1
+                },
+                {
+                  "x": 21,
+                  "y": -1
+                },
+                {
+                  "x": 22,
+                  "y": -1
+                },
+                {
+                  "x": 23,
+                  "y": -1
+                },
+                {
+                  "x": 0,
                   "y": 0
+                },
+                {
+                  "x": 1,
+                  "y": 0
+                },
+                {
+                  "x": 2,
+                  "y": 0
+                },
+                {
+                  "x": 3,
+                  "y": 0
+                },
+                {
+                  "x": 4,
+                  "y": 0
+                },
+                {
+                  "x": 5,
+                  "y": 0
+                },
+                {
+                  "x": 6,
+                  "y": 0
+                },
+                {
+                  "x": 7,
+                  "y": 0
+                },
+                {
+                  "x": 8,
+                  "y": 0
+                },
+                {
+                  "x": 9,
+                  "y": 0
+                },
+                {
+                  "x": 10,
+                  "y": 0
+                },
+                {
+                  "x": 11,
+                  "y": 0
+                },
+                {
+                  "x": 12,
+                  "y": 0
+                },
+                {
+                  "x": 13,
+                  "y": 0
+                },
+                {
+                  "x": 14,
+                  "y": 0
+                },
+                {
+                  "x": 15,
+                  "y": 0
+                },
+                {
+                  "x": 16,
+                  "y": 0
+                },
+                {
+                  "x": 17,
+                  "y": 0
+                },
+                {
+                  "x": 18,
+                  "y": 0
+                },
+                {
+                  "x": 19,
+                  "y": 0
+                },
+                {
+                  "x": 20,
+                  "y": 0
+                },
+                {
+                  "x": 21,
+                  "y": 0
+                },
+                {
+                  "x": 22,
+                  "y": 0
+                },
+                {
+                  "x": 23,
+                  "y": 0
+                },
+                {
+                  "x": 0,
+                  "y": 1
+                },
+                {
+                  "x": 1,
+                  "y": 1
+                },
+                {
+                  "x": 2,
+                  "y": 1
+                },
+                {
+                  "x": 3,
+                  "y": 1
+                },
+                {
+                  "x": 4,
+                  "y": 1
+                },
+                {
+                  "x": 5,
+                  "y": 1
+                },
+                {
+                  "x": 6,
+                  "y": 1
+                },
+                {
+                  "x": 7,
+                  "y": 1
+                },
+                {
+                  "x": 8,
+                  "y": 1
+                },
+                {
+                  "x": 9,
+                  "y": 1
+                },
+                {
+                  "x": 10,
+                  "y": 1
+                },
+                {
+                  "x": 11,
+                  "y": 1
+                },
+                {
+                  "x": 12,
+                  "y": 1
+                },
+                {
+                  "x": 13,
+                  "y": 1
+                },
+                {
+                  "x": 14,
+                  "y": 1
+                },
+                {
+                  "x": 15,
+                  "y": 1
+                },
+                {
+                  "x": 16,
+                  "y": 1
+                },
+                {
+                  "x": 17,
+                  "y": 1
+                },
+                {
+                  "x": 18,
+                  "y": 1
+                },
+                {
+                  "x": 19,
+                  "y": 1
+                },
+                {
+                  "x": 20,
+                  "y": 1
+                },
+                {
+                  "x": 21,
+                  "y": 1
+                },
+                {
+                  "x": 22,
+                  "y": 1
+                },
+                {
+                  "x": 23,
+                  "y": 1
+                },
+                {
+                  "x": 0,
+                  "y": 2
+                },
+                {
+                  "x": 1,
+                  "y": 2
+                },
+                {
+                  "x": 2,
+                  "y": 2
+                },
+                {
+                  "x": 3,
+                  "y": 2
+                },
+                {
+                  "x": 4,
+                  "y": 2
+                },
+                {
+                  "x": 5,
+                  "y": 2
+                },
+                {
+                  "x": 6,
+                  "y": 2
+                },
+                {
+                  "x": 7,
+                  "y": 2
+                },
+                {
+                  "x": 8,
+                  "y": 2
+                },
+                {
+                  "x": 9,
+                  "y": 2
+                },
+                {
+                  "x": 10,
+                  "y": 2
+                },
+                {
+                  "x": 11,
+                  "y": 2
+                },
+                {
+                  "x": 12,
+                  "y": 2
+                },
+                {
+                  "x": 13,
+                  "y": 2
+                },
+                {
+                  "x": 14,
+                  "y": 2
+                },
+                {
+                  "x": 15,
+                  "y": 2
+                },
+                {
+                  "x": 16,
+                  "y": 2
+                },
+                {
+                  "x": 17,
+                  "y": 2
+                },
+                {
+                  "x": 18,
+                  "y": 2
+                },
+                {
+                  "x": 19,
+                  "y": 2
+                },
+                {
+                  "x": 20,
+                  "y": 2
+                },
+                {
+                  "x": 21,
+                  "y": 2
+                },
+                {
+                  "x": 22,
+                  "y": 2
+                },
+                {
+                  "x": 23,
+                  "y": 2
+                },
+                {
+                  "x": 0,
+                  "y": 3
+                },
+                {
+                  "x": 1,
+                  "y": 3
+                },
+                {
+                  "x": 2,
+                  "y": 3
+                },
+                {
+                  "x": 3,
+                  "y": 3
+                },
+                {
+                  "x": 4,
+                  "y": 3
+                },
+                {
+                  "x": 5,
+                  "y": 3
+                },
+                {
+                  "x": 6,
+                  "y": 3
+                },
+                {
+                  "x": 7,
+                  "y": 3
+                },
+                {
+                  "x": 8,
+                  "y": 3
+                },
+                {
+                  "x": 9,
+                  "y": 3
+                },
+                {
+                  "x": 10,
+                  "y": 3
+                },
+                {
+                  "x": 11,
+                  "y": 3
+                },
+                {
+                  "x": 12,
+                  "y": 3
+                },
+                {
+                  "x": 13,
+                  "y": 3
+                },
+                {
+                  "x": 14,
+                  "y": 3
+                },
+                {
+                  "x": 15,
+                  "y": 3
+                },
+                {
+                  "x": 16,
+                  "y": 3
+                },
+                {
+                  "x": 17,
+                  "y": 3
+                },
+                {
+                  "x": 18,
+                  "y": 3
+                },
+                {
+                  "x": 19,
+                  "y": 3
+                },
+                {
+                  "x": 20,
+                  "y": 3
+                },
+                {
+                  "x": 21,
+                  "y": 3
+                },
+                {
+                  "x": 22,
+                  "y": 3
+                },
+                {
+                  "x": 23,
+                  "y": 3
+                },
+                {
+                  "x": 0,
+                  "y": 4
+                },
+                {
+                  "x": 1,
+                  "y": 4
+                },
+                {
+                  "x": 2,
+                  "y": 4
+                },
+                {
+                  "x": 3,
+                  "y": 4
+                },
+                {
+                  "x": 4,
+                  "y": 4
+                },
+                {
+                  "x": 5,
+                  "y": 4
+                },
+                {
+                  "x": 6,
+                  "y": 4
+                },
+                {
+                  "x": 7,
+                  "y": 4
+                },
+                {
+                  "x": 8,
+                  "y": 4
+                },
+                {
+                  "x": 9,
+                  "y": 4
+                },
+                {
+                  "x": 10,
+                  "y": 4
+                },
+                {
+                  "x": 11,
+                  "y": 4
+                },
+                {
+                  "x": 12,
+                  "y": 4
+                },
+                {
+                  "x": 13,
+                  "y": 4
+                },
+                {
+                  "x": 14,
+                  "y": 4
+                },
+                {
+                  "x": 15,
+                  "y": 4
+                },
+                {
+                  "x": 16,
+                  "y": 4
+                },
+                {
+                  "x": 17,
+                  "y": 4
+                },
+                {
+                  "x": 18,
+                  "y": 4
+                },
+                {
+                  "x": 19,
+                  "y": 4
+                },
+                {
+                  "x": 20,
+                  "y": 4
+                },
+                {
+                  "x": 21,
+                  "y": 4
+                },
+                {
+                  "x": 22,
+                  "y": 4
+                },
+                {
+                  "x": 23,
+                  "y": 4
                 }
               ],
               "base": {

@@ -6,9 +6,11 @@ import { GameStatus } from "src/shared/enums"
 import { GameSettings } from "src/shared/settings"
 
 import * as C_GameData from "src/shared/components/gameData"
-import * as C_FooBar from "src/shared/components/fooBar"
 export * as C_GameData from "src/shared/components/gameData"
-export * as C_FooBar from "src/shared/components/fooBar"
+
+import * as C_PlayerFuel from "src/shared/components/playerFuel"
+export * as C_PlayerFuel from "src/shared/components/playerFuel"
+
 
 
 /**
@@ -17,7 +19,7 @@ export * as C_FooBar from "src/shared/components/fooBar"
  * helpers. Does not read or write component fields directly — that's
  * `ComponentStore`'s job. Keeping the two split makes the dependency direction
  * one-way (`ComponentStore` -> `ComponentManager`) and means the manager has no
- * domain knowledge of the data shape beyond what `gameData.ts` / `fooBar.ts` declare.
+ * domain knowledge of the data shape beyond what `gameData.ts` declare.
  */
 export namespace ComponentManager {
 
@@ -33,13 +35,16 @@ export namespace ComponentManager {
 	// MARK: Vars
 	const LANE_ENTITY_SYNC_ENUM_BASE = 1000
 	const clientReadyResolvers       : Array<() => void>    = [] // Promise resolvers awaiting client-side discovery of all lane entities.
-	let componentEntity              : (Entity | undefined) = undefined
+	let componentEntity        : (Entity | undefined) = undefined
 	let isInitialised                : boolean              = false
+
+	const clientComponents = [
+		C_PlayerFuel.PlayerFuel,
+	]
 
 	const syncedComponents = [
 		C_GameData.GameData,
 		C_GameData.ScoreBoard,
-		C_FooBar.FooBar,
 	]
 
 	const syncedComponentIds = Array.from(syncedComponents, (component) => component.componentId)
@@ -71,24 +76,34 @@ export namespace ComponentManager {
 	}
 
 
-	// MARK: seedLaneDefaults
+	// MARK: seedComponentDefaults
 	export function seedComponentDefaults(): void {
-		if (!isServer()) return
-
 		const entity = getComponentEntity()
 
-		C_GameData.GameData.createOrReplace(entity, {
-			players  : [],
-			startTime: 0,
-			status   : GameStatus.LOBBY,
-		})
-		C_FooBar.FooBar.createOrReplace(entity, { foo: 'default', bar: 0 })
+		if (!isServer()) {
+			// Client
+			C_PlayerFuel.PlayerFuel.createOrReplace(entity, {	
+				value: 100,
+				maxValue: 100,
+			})
+		} else {	
+			// Server
+			C_GameData.GameData.createOrReplace(entity, {
+				players  : [],
+				startTime: Date.now(),
+				status   : GameStatus.LOBBY,
+			})
+			C_GameData.ScoreBoard.createOrReplace(entity, {
+				scores: [],
+			})
+		}
 	}
 
 
 	// MARK: initClient
 	// one-shot system that watches for the synced lane entities and stores them in `laneComponentEntities[]` 
 	function initClient(): void {
+		// MARK: create synced components
 		console.log('ComponentManager: initClient: starting discovery watcher')
 		const watcher = (): void => {
 			// Search for all entities with the GameData component
@@ -102,12 +117,19 @@ export namespace ComponentManager {
 			// If the component entity is found, remove the watcher and resolve the client ready promise
 			if (componentEntity !== undefined) {
 				engine.removeSystem(watcher)
+				
+				// Add the clientComponentes
+				seedComponentDefaults()
+
 				const resolvers = clientReadyResolvers.splice(0)
 				for (const resolve of resolvers) resolve()
 				return
 			}
 		}
 		engine.addSystem(watcher)
+
+		// MARK: create client components
+		console.log('ComponentManager: initClient: creating local components')
 	}
 
 

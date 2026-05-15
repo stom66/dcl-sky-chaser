@@ -9,6 +9,12 @@ import { GameSettings, SceneSettings } from "src/shared/settings"
 
 import { ClientHandler } from 'src/client/clientHandler'
 import { ClientStore } from 'src/client/clientStore'
+import { TriggerSpawner } from './spawners/triggerSpawner'
+import { RingSpawner } from './spawners/ringSpawner'
+import { LocomotionController } from './locomotionController'
+import { SoundManager } from './soundManager'
+import { FuelSpawner } from './spawners/fuelSpawner'
+import { BoosterInput } from './boosterInput'
 
 
 export function initClient() {
@@ -23,17 +29,19 @@ export function initClient() {
 	function waitForLoad() {
 		// Wait for userData to be available
 		let userData = getPlayer()
-		if(!userData)                                  {console.log("waitForLoad: userData");           return}
+		if(!userData)                                  {console.log("waitForLoad: userData");                   return}
 
 		// Wait for them to have entered the scene
-		if (!hasEnteredScene)                          {console.log("waitForLoad: onEnterScene");       return}
+		if (!hasEnteredScene)                          {console.log("waitForLoad: onEnterScene");               return}
 
 		// wait for components to sync
-		if (!isStateSyncronized())                     {console.log("waitForLoad: isStateSyncronized"); return}
+		if (!isStateSyncronized())                     {console.log("waitForLoad: isStateSyncronized");         return}
 
 		// Wait for the player entity and camera to be present
-		if (!Transform.getOrNull(engine.PlayerEntity)) {console.log("waitForLoad: PlayerEntity");       return}
-		if (!Transform.getOrNull(engine.CameraEntity)) {console.log("waitForLoad: CameraEntity");       return}
+		if (!Transform.getOrNull(engine.PlayerEntity)) {console.log("waitForLoad: PlayerEntity");               return}
+		if (!Transform.getOrNull(engine.CameraEntity)) {console.log("waitForLoad: CameraEntity");               return}
+
+		if (!ComponentManager.isReady())               {console.log("waitForLoad: ComponentManager not ready"); return}
 
 		engine.removeSystem(waitForLoad)
 
@@ -64,18 +72,13 @@ export function initClient() {
 	})
 
 
-	// MARK: Scene Parent
-	const _scene = engine.addEntity()
-	Transform.create(_scene, SceneSettings.SCENE_TRANSFORM_180)
-
-
-	// MARK: Scene Assets
-	let asset1 = engine.addEntity()
-	Transform.create(asset1, SceneSettings.SCENE_TRANSFORM)
-	Transform.getMutable(asset1).parent = _scene
-	GltfContainer.create(asset1, {
-		src: "models/example_model.gltf"
-	})
+	// Load game specific stuff
+	TriggerSpawner.spawnTriggers()
+	RingSpawner.spawnRings()
+	FuelSpawner.spawnFuelPickups()
+	LocomotionController.applyLocomotionSettings()
+	SoundManager.init()
+	BoosterInput.init()
 
 
 	engine.addSystem(waitForLoad)

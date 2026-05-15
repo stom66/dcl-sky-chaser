@@ -4,10 +4,10 @@ import { Schemas } from '@dcl/sdk/ecs'
 
 // MARK: MessageTypes
 export enum MessageType {
-	REQUEST_FOO = 'requestFoo',
+	REQUEST_NEW_GAME     = 'requestNewGame',
+	REQUEST_SCORE_UPDATE = 'requestScoreUpdate',
 
-	NOTIFY_FOO_RESULT = "notifyFooResult",
-	NOTIFY_SERVER_TIME = "notifyServerTime",
+	NOTIFY_SERVER_TIME   = "notifyServerTime",
 }
 
 // MARK: Schema constant
@@ -19,16 +19,11 @@ const SchemaSentAt = {
 // MARK: Message schemas
 const Messages = {
 	// Sent by client
-	[MessageType.REQUEST_FOO]: Schemas.Map({
-		foo: Schemas.Int64,
-	}),
+	[MessageType.REQUEST_NEW_GAME]: Schemas.Map({}),
+	[MessageType.REQUEST_SCORE_UPDATE]: Schemas.Map({}),
 
+	
 	// Sent by server
-	[MessageType.NOTIFY_FOO_RESULT]: Schemas.Map({
-		foo: Schemas.String,
-		bar: Schemas.Int,
-	}),
-
 	[MessageType.NOTIFY_SERVER_TIME]: Schemas.Map({
 		...SchemaSentAt
 	})

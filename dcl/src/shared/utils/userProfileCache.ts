@@ -128,6 +128,19 @@ class UserProfileCache {
 
 	}
 
+
+	// MARK: getDisplayName
+	getDisplayName(userId?: string | null): string {
+		const id = userId ?? this.localUserId
+		if (!id) {
+			console.error('UserProfileCache: getDisplayName: no userId')
+			return ''
+		}
+
+		const profile = this.cache.get(id)
+		return profile?.avatars[0]?.name ?? ''
+	}
+
 	// MARK: getCachedAvatarUrl
 	/** Synchronous face256 URL from an already-cached profile; no network. */
 	getCachedAvatarUrl(userId?: string | null): string {

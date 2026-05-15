@@ -3,7 +3,6 @@ import { MessageType, room } from 'src/shared/room'
 
 import { ServerMessaging } from 'src/server/serverMessaging'
 import { ServerStore } from 'src/server/serverStore'
-import { NotifyFooBarPayload, RequestFooPayload } from 'src/shared/types/shared-types'
 
 
 export namespace serverHandler {
@@ -20,16 +19,23 @@ export namespace serverHandler {
 
 	// MARK: Init
 	export function init() {
-		room.onMessage(MessageType.REQUEST_FOO, (data, context) => handleRequestFoo(data, context))
+		room.onMessage(MessageType.REQUEST_NEW_GAME, (data, context) => handleRequestNewGame(data, context))
+		room.onMessage(MessageType.REQUEST_SCORE_UPDATE, (data, context) => handleRequestScoreUpdate(data, context))
 	}
 
-	// MARK: Request Foo
-	export async function handleRequestFoo(data: RequestFooPayload, context: any) {
+	// MARK: Request NewGame
+	export async function handleRequestNewGame(data: any, context: any) {
 		const userId = getUserId(context)
-		console.log('handleRequestFoo: userId', userId, 'bar', data.foo)
+		console.log('handleRequestNewGame: userId', userId)
 
-		ComponentStore.setFooBar(userId, data.foo)
-		//ComponentStore.scoreBoard.addScore(userId, 1)
-		room.send(MessageType.NOTIFY_FOO_RESULT, ComponentStore.getFooBar())
+		ComponentStore.setGameStartTime(Date.now())
+	}
+
+	// MARK: Request Score Update
+	export async function handleRequestScoreUpdate(data: any, context: any) {
+		const userId = getUserId(context)
+		console.log('handleRequestScoreUpdate: userId', userId)
+
+		ComponentStore.incrementPlayerScore(userId)
 	}
 }

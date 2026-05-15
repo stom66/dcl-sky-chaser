@@ -4,11 +4,11 @@ import { ComponentData, Entity } from "@dcl/sdk/ecs"
 import { GameStatus } from "src/shared/enums"
 import { GameDataSnapshot } from "src/shared/types/shared-types"
 
-import { ComponentManager, C_GameData, C_FooBar } from "src/shared/components/componentManager"
+import { ComponentManager, C_GameData, C_PlayerFuel } from "src/shared/components/componentManager"
 
 // Re-export Components for easy importing elsewhere
-export * as C_FooBar from "src/shared/components/fooBar"
 export * as C_GameData from "src/shared/components/gameData"
+export * as C_PlayerFuel from "src/shared/components/playerFuel"
 
 
 /**
@@ -38,7 +38,7 @@ export namespace ComponentStore {
 	const components = [
 		C_GameData.GameData,
 		C_GameData.ScoreBoard,
-		C_FooBar.FooBar,
+		C_PlayerFuel.PlayerFuel,
 	] as const
 
 	const watchers = new Map<
@@ -95,7 +95,7 @@ export namespace ComponentStore {
 	}
 
 	// MARK: getGameSnapshot
-	export function getGameSnapshot(laneIndex: number): GameDataSnapshot {
+	export function getGameSnapshot(): GameDataSnapshot {
 		const entity = ComponentManager.tryGetComponentEntity()
 		if (entity === undefined) {
 			return {
@@ -115,15 +115,15 @@ export namespace ComponentStore {
 	}
 
 
-	// MARK: resetLane
-	export function resetAllComponents(laneIndex: number): void {
+	// MARK: resetAllComponents
+	export function resetAllComponents(): void {
 		if (!isServer()) return
 
 		ComponentManager.seedComponentDefaults()
 	}
 
 	// MARK: GameStartTime
-	export function getGameStartTime(laneIndex: number): number {
+	export function getGameStartTime(): number {
 		const entity = ComponentManager.tryGetComponentEntity()
 		if (entity === undefined) return 0
 
@@ -190,37 +190,63 @@ export namespace ComponentStore {
 	}
 
 
-	// MARK: FooBar
-	export function getFooBar(): {
-		foo: string,
-		bar: number
-	} {
-		const entity = ComponentManager.tryGetComponentEntity()
-		if (entity === undefined) {
-			console.log('getFooBar: entity is undefined')
-			return { foo: 'n/a', bar: 0 }
-		}
 
-		const c = C_FooBar.FooBar.get(entity)
-		const rawBar = c?.bar ?? 0
-		return {
-			foo: c?.foo ?? '',
-			bar: typeof rawBar === "number" && Number.isFinite(rawBar) ? rawBar : 0,
-		}
-	}
-
-	export function setFooBar(
-		foo: string,
-		bar: number
+	// MARK: Scoreboard
+	export function incrementPlayerScore(
+		userId: string,
+		amount: number = 1
 	): void {
 		if (!isServer()) return
 
 		const entity = ComponentManager.tryGetComponentEntity()
 		if (entity === undefined) return
 
-		const c = C_FooBar.FooBar.getMutable(entity)
-		c.foo = foo
-		c.bar = bar
+		const c = C_GameData.ScoreBoard.getMutable(entity)
+
+		// Ensure the player exists in the scoreboard
+		const player = c.scores?.find((s) => s.userId === userId)
+		if (player) {
+			console.log('incrementPlayerScore: player found, incrementing score', player.score, amount)
+			player.score += amount
+		} else {
+			console.log('incrementPlayerScore: player not found, adding to scoreboard', userId, amount)
+			c.scores = [...(c.scores ?? []), { userId, score: amount }]
+		}
+	}
+
+
+	// MARK: Fuel
+	export function getFuelValue(): {
+		value   : number,
+		maxValue: number
+	} {
+		const entity = ComponentManager.tryGetComponentEntity()
+		if (entity === undefined) {
+			console.log('getFuelValue: entity is undefined')
+			return { value: 0, maxValue: 0 }
+		}
+
+		const c = C_PlayerFuel.PlayerFuel.get(entity)
+		return {
+			value: c?.value ?? 0,
+			maxValue: c?.maxValue ?? 100,
+		}
+	}
+
+	export function decreaseFuelValue(amount: number): void {
+		const entity = ComponentManager.tryGetComponentEntity()
+		if (entity === undefined) return
+
+		const c = C_PlayerFuel.PlayerFuel.getMutable(entity)
+		c.value -= amount
+	}
+
+	export function increaseFuelValue(amount: number): void {
+		const entity = ComponentManager.tryGetComponentEntity()
+		if (entity === undefined) return
+
+		const c = C_PlayerFuel.PlayerFuel.getMutable(entity)
+		c.value += amount
 	}
 
 }

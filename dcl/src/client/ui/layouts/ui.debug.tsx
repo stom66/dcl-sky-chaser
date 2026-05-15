@@ -1,23 +1,17 @@
 import ReactEcs, { UiEntity} from '@dcl/sdk/react-ecs'
 
-import { ComponentStore, C_FooBar } from 'src/shared/components/componentStore'
+import { ComponentStore, C_GameData } from 'src/shared/components/componentStore'
 
 import { ClientMessaging } from 'src/client/clientMessaging'
 import { alpha, theme } from 'src/client/ui/index'
 import { ButtonAction, Divider, InfoRow, SectionHeader } from 'src/client/ui/components'
+import { PlayerMover } from 'src/client/playerMover'
 
 
 // MARK: Vars
-var foo = ComponentStore.getFooBar().foo ?? 'loading...'
-var bar = ComponentStore.getFooBar().bar ?? 0
 
 
 // MARK: OnChange Listener
-ComponentStore.onComponentChange(C_FooBar.FooBar, (data) => {
-	console.log('DebugUI: onComponentChange', data)
-	foo = data?.foo ?? 'loading...'
-	bar = data?.bar ?? 0
-})
 
 
 // MARK: Main
@@ -45,7 +39,9 @@ export function DebugUI() {
 			<UiEntity uiTransform={{ width: '100%', flexDirection: 'column' }}>
 				<SectionHeader title="Debug Menu" />
 
-				<ButtonAction textLabel="Foo" callback={() => ClientMessaging.RequestFoo() } />
+				<ButtonAction textLabel="toSpawn" callback={() => PlayerMover.movePlayerToSpawn() } />
+				<ButtonAction textLabel="newGame" callback={() => ClientMessaging.RequestNewGame() } />
+				<ButtonAction textLabel="scoreUpdate" callback={() => ClientMessaging.RequestScoreUpdate() } />
 			</UiEntity>
 
 			<Divider />
@@ -53,8 +49,11 @@ export function DebugUI() {
 			<UiEntity uiTransform={{ width: '100%', flexDirection: 'column' }}>
 				<SectionHeader title="Vars" />
 
-				<InfoRow label = "foo" firstColumnWidth={25} value = {foo.toString()} />
-				<InfoRow label = "bar" firstColumnWidth={25} value = {bar.toString()} />
+				<InfoRow
+					label="StartTime"
+					value={ComponentStore.getGameStartTime().toString()}
+				/>
+
 			</UiEntity>
 
 		</UiEntity>
