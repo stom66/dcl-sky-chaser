@@ -15,9 +15,9 @@ export namespace ClientMessaging {
 		room.send(MessageType.REQUEST_NEW_GAME, {})
 	}
 
-	export function RequestScoreUpdate() {
+	export function RequestScoreUpdate(amount: number = 1) {
 		console.log('ClientMessaging: RequestScoreUpdate')
-		room.send(MessageType.REQUEST_SCORE_UPDATE, {})
+		room.send(MessageType.REQUEST_SCORE_UPDATE, amount)
 	}
 
 }

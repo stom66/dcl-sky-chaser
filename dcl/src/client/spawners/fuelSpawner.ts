@@ -14,21 +14,13 @@ ComponentStore.onComponentChange(C_GameData.GameData, (data) => {
 
 export namespace FuelSpawner {
 
-	var maxFuelPickups = 64
-	const bounds = {
-		x: {
-			min: 18,
-			max: 360
-		},
-		y: {
-			min: 6,
-			max: 64
-		},
-		z: {
-			min: 6,
-			max: 58
-		}
-	}
+	const origin     = Vector3.create(256, 1, 256)
+	const maxSpawns  = 128
+	const minRadius  = 32
+	const maxRadius  = 256
+	const minHeight  = 20
+	const maxHeight  = 180
+
 	var rng: () => number
 	var gameStartTime: number = 0
 
@@ -36,15 +28,15 @@ export namespace FuelSpawner {
 	export function updateGameStartTime(startTime: number) {
 		if (startTime === gameStartTime) return
 		gameStartTime = startTime
-		removeFuelPickups()
-		spawnFuelPickups()
+		removePickups()
+		spawnPickups()
 	}
 
-	export function spawnFuelPickups() {
+	export function spawnPickups() {
 		rng = createRng(ComponentStore.getGameStartTime())
 
-		for (let i = 0; i < maxFuelPickups; i++) {
-			spawnRandomFuelPickup()
+		for (let i = 0; i < maxSpawns; i++) {
+			spawnRandomPickup()
 		}
 
 		if (!spawnerSystem) {
@@ -52,15 +44,18 @@ export namespace FuelSpawner {
 		}
 	}
 
-	function spawnRandomFuelPickup() {
-		const x = Math.random() * (bounds.x.max - bounds.x.min) + bounds.x.min
-		const y = Math.random() * (bounds.y.max - bounds.y.min) + bounds.y.min
-		const z = Math.random() * (bounds.z.max - bounds.z.min) + bounds.z.min
+	function spawnRandomPickup() {
+		const angle    = rng() * 2 * Math.PI
+		const distance = rng() * (maxRadius - minRadius) + minRadius
+		const height   = rng() * (maxHeight - minHeight) + minHeight
+		const x        = origin.x + distance * Math.cos(angle)
+		const y        = origin.y + height
+		const z        = origin.z + distance * Math.sin(angle)
 		const value = Math.ceil(Math.random()*3) * 10
-		const fuelPickup = new FuelPickup(Vector3.create(x, y, z), value)
+		const pickup   = new FuelPickup(Vector3.create(x, y, z), value)
 	}
 
-	export function removeFuelPickups() {
+	export function removePickups() {
 		for (const [entity] of engine.getEntitiesWith(FuelPickupComponent)) {
 			engine.removeEntity(entity)
 		}
@@ -72,9 +67,9 @@ export namespace FuelSpawner {
 		for (const [entity] of engine.getEntitiesWith(FuelPickupComponent)) {
 			count++
 		}
-		if (count < maxFuelPickups) {
-			for (let i = count; i < maxFuelPickups; i++) {
-				spawnRandomFuelPickup()
+		if (count < maxSpawns) {
+			for (let i = count; i < maxSpawns; i++) {
+				spawnRandomPickup()
 			}
 		}
 	}

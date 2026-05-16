@@ -28,7 +28,7 @@ export class DeathTrigger {
 		if (IS_DEV) {
 			MeshRenderer.setBox(this.entity)
 			Material.setBasicMaterial(this.entity, {
-				diffuseColor: alpha(theme.colors.danger, 1)
+				diffuseColor: alpha(theme.colors.danger, 0.25)
 			})
 		}
 	}

@@ -28,7 +28,7 @@ export namespace serverHandler {
 		const userId = getUserId(context)
 		console.log('handleRequestNewGame: userId', userId)
 
-		ComponentStore.setGameStartTime(Date.now())
+		ComponentStore.resetAllComponents()
 	}
 
 	// MARK: Request Score Update
@@ -36,6 +36,6 @@ export namespace serverHandler {
 		const userId = getUserId(context)
 		console.log('handleRequestScoreUpdate: userId', userId)
 
-		ComponentStore.incrementPlayerScore(userId)
+		ComponentStore.incrementPlayerScore(userId, data)
 	}
 }

@@ -15,6 +15,8 @@ import { LocomotionController } from './locomotionController'
 import { SoundManager } from './soundManager'
 import { FuelSpawner } from './spawners/fuelSpawner'
 import { BoosterInput } from './boosterInput'
+import { BalloonSpawner } from './spawners/balloonSpawner'
+import { ComboManager } from './comboManager'
 
 
 export function initClient() {
@@ -75,10 +77,13 @@ export function initClient() {
 	// Load game specific stuff
 	TriggerSpawner.spawnTriggers()
 	RingSpawner.spawnRings()
-	FuelSpawner.spawnFuelPickups()
+	FuelSpawner.spawnPickups()
+	BalloonSpawner.spawnPickups()
+
 	LocomotionController.applyLocomotionSettings()
 	SoundManager.init()
 	BoosterInput.init()
+	ComboManager.init()
 
 
 	engine.addSystem(waitForLoad)

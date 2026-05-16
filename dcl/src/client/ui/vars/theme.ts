@@ -9,7 +9,7 @@ export const theme = {
 		primary  : Color4.fromHexString('#0d6efdff'),
 		success  : Color4.fromHexString('#198754ff'),
 		danger   : Color4.fromHexString('#dc3545ff'),
-		warning  : Color4.fromHexString('#ffc107ff'),
+		warning  : Color4.fromHexString('#c5329cff'),
 		info     : Color4.fromHexString('#0dcaf0ff'),
 
 		light    : Color4.fromHexString('#f8f9faff'),

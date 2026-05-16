@@ -19,6 +19,8 @@ export const SceneSettings = {
 export const GameSettings = {
 	LOADING_SCREEN_DELAY       : 1000 * 2,
 	FUEL_DRAIN_RATE            : 15, // units per second
+	COMBO_COOLDOWN_TIME        : 1000 * 10, // 10 seconds
+	COMBO_MAX_VALUE            : 12,
 
 } as const
 
@@ -34,3 +36,4 @@ declare var process: {
 
 const env = process.env.NODE_ENV
 export const IS_DEV = env == "development"
+export const FORCE_DEBUG = true

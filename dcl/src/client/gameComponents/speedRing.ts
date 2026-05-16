@@ -5,17 +5,19 @@ import * as utils from '@dcl-sdk/utils'
 import { alpha, theme } from "src/client/ui"
 import { IS_DEV } from "src/shared/settings"
 import { sfx, SoundManager } from "../soundManager"
+import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
 
 export class SpeedRing {
 	entity: Entity
 
 	constructor(
-		pos: Vector3
+		pos: Vector3,
+		rotY: number
 	) {
 		this.entity = engine.addEntity()
 		Transform.create(this.entity, { 
 			position: pos, 
-			rotation: Quaternion.fromEulerDegrees(0, 90, 0),
+			rotation: Quaternion.fromEulerDegrees(0, 90+rotY, 0),
 			scale: Vector3.Zero()
 		})
 
@@ -28,20 +30,21 @@ export class SpeedRing {
 
 		
 		const triggerEntity = engine.addEntity()
-		Transform.create(triggerEntity, { parent: this.entity, scale: Vector3.create(4, 4, 4) })
+		Transform.create(triggerEntity, { parent: this.entity, scale: Vector3.create(5, 5, 5) })
 
 		TriggerArea.setSphere(triggerEntity)
 		triggerAreaEventsSystem.onTriggerEnter(triggerEntity, (e) => {
 			if (e.trigger?.entity === engine.PlayerEntity) {
 				this.onTriggerEnter()
 			}
+			this.Destroy()
 		})
-		if (IS_DEV) {
-			MeshRenderer.setSphere(triggerEntity)
-			Material.setPbrMaterial(triggerEntity, {
-				albedoColor: alpha(theme.colors.info, 0.25),
-			})
-		}
+		//if (IS_DEV) {
+		//	MeshRenderer.setSphere(triggerEntity)
+		//	Material.setPbrMaterial(triggerEntity, {
+		//		albedoColor: alpha(theme.colors.info, 0.25),
+		//	})
+		//}
 	}
 	
 	onTriggerEnter() {
@@ -53,6 +56,8 @@ export class SpeedRing {
 		
 		Physics.applyImpulseToPlayer(playerForward, 64)
 		SoundManager.playSound(sfx.swish)
+
+		eventBus.emit(ClientEvents.TRIGGER_RING, undefined)
 	}
 
 	Destroy() {

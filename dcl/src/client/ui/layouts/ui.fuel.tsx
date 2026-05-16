@@ -11,6 +11,7 @@ ComponentStore.onComponentChange(C_PlayerFuel.PlayerFuel, (data) => {
 	fuelValue    = data?.value ?? 0
 	maxFuelValue = data?.maxValue ?? 100
 	ratio        = Math.ceil((fuelValue / maxFuelValue) * 100)
+	console.log("FuelUI: fuel value changed to", fuelValue)
 })
 
 // MARK: FuelUI
@@ -52,7 +53,7 @@ export function FuelUI() {
 						color: alpha(theme.colors.success, 1),
 					}}
 					uiText={{
-						value    : `${ratio}%`,
+						value    : `Fuel: ${ratio}%`,
 						textAlign: 'middle-center',
 					}}
 				/>

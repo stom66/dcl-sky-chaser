@@ -1,9 +1,13 @@
 import ReactEcs, { ReactEcsRenderer, UiEntity } from '@dcl/sdk/react-ecs'
 
+import { FORCE_DEBUG } from 'src/shared/settings'
 import { DebugUI } from 'src/client/ui/layouts/ui.debug'
+
 import { VersionUI } from 'src/client/ui/layouts/ui.version'
 import { FuelUI } from './ui/layouts/ui.fuel'
 import { ScoreboardUI } from './ui/layouts/ui.scoreboard'
+import { ComboUI } from './ui/layouts/ui.combo'
+import { HowToPlayUI } from './ui/layouts/ui.howToPlay'
 
 
 // MARK: Vars
@@ -25,10 +29,12 @@ const uiComponent = () => (
 		}}
 	>
 		{VersionUI()}
-		{SHOW_DEBUG ? DebugUI() : null}
+		{SHOW_DEBUG || FORCE_DEBUG ? DebugUI() : null}
 
 		{FuelUI()}
 		{ScoreboardUI()}
+		{ComboUI()}
+		{HowToPlayUI()}
 	</UiEntity>
 )
 

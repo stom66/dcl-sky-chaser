@@ -1,7 +1,7 @@
 {
-  "name": "dcl-canyon-dash",
+  "name": "dcl-sky-chaser",
   "version": "1.0.0",
-  "description": "Canyon Dash game prototype",
+  "description": "Sky Chaser game prototype",
   "scripts": {
     "start": "sdk-commands start",
     "startClient": "sdk-commands start --explorer-alpha",

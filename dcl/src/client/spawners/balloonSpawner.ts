@@ -1,0 +1,95 @@
+import { engine, Transform } from "@dcl/sdk/ecs"
+import { Vector3 } from "@dcl/sdk/math"
+
+import { BalloonPickup as BalloonPickupComponent } from "src/shared/components/balloonPickup"
+
+import { FuelPickup } from "src/client/gameComponents/fuelPickup"
+import { BalloonPickup } from "src/client/gameComponents/balloonPickup"
+
+import { createRng } from "src/shared/utils/mulberry"
+import { C_GameData, ComponentStore } from "src/shared/components/componentStore"
+
+ComponentStore.onComponentChange(C_GameData.GameData, (data) => {
+	console.log("FuelSpawner: PlayerFuel changed", data)
+	BalloonSpawner.updateGameStartTime(data?.startTime ?? 0)
+})
+
+export namespace BalloonSpawner {
+
+	const origin     = Vector3.create(256, 1, 256)
+	const maxSpawns  = 128
+	const minRadius  = 32
+	const maxRadius  = 200
+	const minHeight  = 16
+	const maxHeight  = 48
+	const despawnHeight = 200
+
+	var rng: () => number
+	var gameStartTime: number = 0
+
+	var systemsAdded = false
+
+	export function updateGameStartTime(startTime: number) {
+		if (startTime === gameStartTime) return
+		gameStartTime = startTime
+		removePickups()
+		spawnPickups()
+	}
+
+	export function spawnPickups() {
+		rng = createRng(ComponentStore.getGameStartTime())
+
+		for (let i = 0; i < maxSpawns; i++) {
+			spawnRandomPickup()
+		}
+
+		if (!systemsAdded) {
+			systemsAdded = true
+			engine.addSystem(spawnerSystem)
+			engine.addSystem(moverSystem)
+		}
+	}
+
+	function spawnRandomPickup() {
+		const angle    = rng() * 2 * Math.PI
+		const distance = rng() * (maxRadius - minRadius) + minRadius
+		const height   = rng() * (maxHeight - minHeight) + minHeight
+		const x        = origin.x + distance * Math.cos(angle)
+		const y        = origin.y + height
+		const z        = origin.z + distance * Math.sin(angle)
+		const value    = Math.ceil(Math.random()*3) * 10
+		const pickup   = new BalloonPickup(Vector3.create(x, y, z))
+	}
+
+	export function removePickups() {
+		for (const [entity] of engine.getEntitiesWith(BalloonPickupComponent)) {
+			engine.removeEntity(entity)
+		}
+		engine.removeSystem(spawnerSystem)
+	}
+
+
+	function spawnerSystem(dt: number) {
+		var count = 0
+		for (const [entity] of engine.getEntitiesWith(BalloonPickupComponent)) {
+			count++
+		}
+		if (count < maxSpawns) {
+			for (let i = count; i < maxSpawns; i++) {
+				//console.log("BalloonSpawner: spawning replacement pickup", i)
+				spawnRandomPickup()
+			}
+		}
+	}
+
+	function moverSystem(dt: number) {
+		for (const [entity] of engine.getEntitiesWith(BalloonPickupComponent)) {
+			const riseSpeed = BalloonPickupComponent.get(entity)?.riseSpeed ?? 0
+			const transform = Transform.getMutable(entity)
+			transform.position.y += dt * riseSpeed
+			if (transform.position.y > despawnHeight) {
+				engine.removeEntity(entity)
+			}
+		}
+	}
+}
