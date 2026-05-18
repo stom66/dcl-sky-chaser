@@ -8,7 +8,7 @@ import { createRng } from "src/shared/utils/mulberry"
 import { C_GameData, ComponentStore } from "src/shared/components/componentStore"
 
 ComponentStore.onComponentChange(C_GameData.GameData, (data) => {
-	console.log("FuelSpawner: PlayerFuel changed", data)
+	console.log("FuelSpawner: GameData changed", data)
 	FuelSpawner.updateGameStartTime(data?.startTime ?? 0)
 })
 

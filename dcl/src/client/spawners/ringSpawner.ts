@@ -6,7 +6,7 @@ import { C_GameData, ComponentStore } from "src/shared/components/componentStore
 
 
 ComponentStore.onComponentChange(C_GameData.GameData, (data) => {
-	console.log("FuelSpawner: PlayerFuel changed", data)
+	//console.log("RingSpawner: GameData changed", data)
 	RingSpawner.updateGameStartTime(data?.startTime ?? 0)
 })
 
