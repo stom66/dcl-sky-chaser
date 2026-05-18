@@ -17,7 +17,7 @@ export namespace FuelSpawner {
 	const origin     = Vector3.create(256, 1, 256)
 	const maxSpawns  = 128
 	const minRadius  = 32
-	const maxRadius  = 256
+	const maxRadius  = 120
 	const minHeight  = 20
 	const maxHeight  = 180
 

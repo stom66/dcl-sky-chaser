@@ -2,7 +2,7 @@ import ReactEcs, { Label, UiEntity } from '@dcl/sdk/react-ecs'
 
 import { alpha, darken, theme } from 'src/client/ui/index'
 import { C_GameData, ComponentStore } from 'src/shared/components/componentStore'
-import { vwAsPixels } from '../utils/sizing'
+import { vhAsPixels, vwAsPixels } from '../utils/sizing'
 import { userProfileCache } from 'src/shared/utils/userProfileCache'
 import { UiText } from '@dcl/sdk/ecs'
 
@@ -34,15 +34,23 @@ function getScoreboardRows() {
 					width: '100%',
 					flexDirection: 'row',
 					justifyContent: 'space-between',
+					padding: { left: 10, right: 10, top: 5, bottom: 5 },
+				}}
+				uiBackground={{
+					color: alpha(darken(theme.colors.primary, 0.2), 0.5),
 				}}
 			>
 				<Label
 					value={displayName}
 					textAlign='middle-left'
+					fontSize={22}
+					color={theme.colors.light}
 				/>
 				<Label
 					value={score.toString()}
 					textAlign='middle-right'
+					fontSize={22}
+					color={theme.colors.light}
 				/>
 			</UiEntity>
 		)
@@ -56,12 +64,13 @@ export function ScoreboardUI() {
 		<UiEntity
 			key={`ui_Scoreboard_root`}
 			uiTransform={{
-				width         : '128',
+				width         : '256',
 				height        : '100%',
 				flexDirection : 'column',
-				position      : { right: vwAsPixels(5) + 20 },
+				position      : { right: 160 },
 				positionType  : 'absolute',
-				justifyContent: 'center',
+				justifyContent: 'flex-start',
+				padding       : { top: 8 },
 			}}
 		>
 			<UiEntity
@@ -72,23 +81,33 @@ export function ScoreboardUI() {
 					borderRadius  : 32,
 					overflow      : 'hidden',
 					flexDirection : 'column',
-					borderColor   : darken(theme.colors.success, 0.05),
+					borderColor   : darken(theme.colors.info, 0.05),
 					borderWidth   : 5,
 					justifyContent: 'flex-start',
-					padding       : { top: 10, bottom: 10 },
+					padding       : { bottom: 10 },
 					
+				}}
+				uiBackground={{
+					color: alpha(theme.colors.info, 0.4),
 				}}
 			>
 				<UiEntity
 					key={`ui_Scoreboard_rows`}
 					uiTransform={{
 						width: '100%',
-						height: "auto"
+						height: "auto",
+						alignContent: 'center',
+						justifyContent: 'center',
+						padding       : { top: 10, bottom: 4 },
 					}}
 					uiText={{
 						value: 'Scoreboard',
 						textAlign: 'middle-center',
-						fontSize: 18
+						fontSize: 26,
+						color: theme.colors.light,
+					}}
+					uiBackground={{
+						color: alpha(theme.colors.info, 0.7),
 					}}
 				/>
 				{getScoreboardRows()}

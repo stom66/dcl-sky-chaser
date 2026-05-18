@@ -22,6 +22,8 @@ export const GameSettings = {
 	COMBO_COOLDOWN_TIME        : 1000 * 10, // 10 seconds
 	COMBO_MAX_VALUE            : 12,
 
+	FUEL_REFUEL_RATE            : 1, // units per second
+
 } as const
 
 export const ServerSettings = {

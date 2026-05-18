@@ -90,7 +90,7 @@
         "serializationType": "transform"
       },
       "data": {
-        "513": {
+        "512": {
           "json": {
             "position": {
               "x": 0,
@@ -110,6 +110,60 @@
             },
             "parent": 0
           }
+        },
+        "513": {
+          "json": {
+            "position": {
+              "x": 0,
+              "y": -5,
+              "z": 0
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            },
+            "rotation": {
+              "x": 0,
+              "y": 1,
+              "z": 0,
+              "w": 0
+            },
+            "parent": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "core::Animator",
+      "jsonSchema": {
+        "type": "object",
+        "properties": {},
+        "serializationType": "protocol-buffer",
+        "protocolBuffer": "PBAnimator"
+      },
+      "data": {
+        "513": {
+          "json": {
+            "states": [
+              {
+                "clip": "ArmatureAction",
+                "playing": true,
+                "weight": 1,
+                "speed": 0.05000000074505806,
+                "loop": true,
+                "shouldReset": false
+              },
+              {
+                "clip": "clouds",
+                "playing": false,
+                "weight": 1,
+                "speed": 0.14000000059604645,
+                "loop": true,
+                "shouldReset": false
+              }
+            ]
+          }
         }
       }
     },
@@ -122,9 +176,16 @@
         "protocolBuffer": "PBGltfContainer"
       },
       "data": {
+        "512": {
+          "json": {
+            "src": "assets/models/world_32_half.gltf",
+            "visibleMeshesCollisionMask": 0,
+            "invisibleMeshesCollisionMask": 3
+          }
+        },
         "513": {
           "json": {
-            "src": "assets/models/world_32.gltf",
+            "src": "assets/models/clouds.gltf",
             "visibleMeshesCollisionMask": 0,
             "invisibleMeshesCollisionMask": 3
           }
@@ -144,9 +205,14 @@
         "serializationType": "map"
       },
       "data": {
+        "512": {
+          "json": {
+            "value": "world_32_half.gltf"
+          }
+        },
         "513": {
           "json": {
-            "value": "world_32.gltf"
+            "value": "clouds.gltf"
           }
         }
       }
@@ -246,6 +312,7 @@
                 "entity": 0,
                 "open": true,
                 "children": [
+                  512,
                   513
                 ]
               },
@@ -255,6 +322,10 @@
               },
               {
                 "entity": 2,
+                "children": []
+              },
+              {
+                "entity": 512,
                 "children": []
               },
               {
@@ -283,6 +354,9 @@
         "serializationType": "map"
       },
       "data": {
+        "512": {
+          "json": {}
+        },
         "513": {
           "json": {}
         }

@@ -20,7 +20,7 @@ export function FuelUI() {
 		<UiEntity
 			key={`ui_Fuel_root`}
 			uiTransform={{
-				width         : '5%',
+				width         : '128',
 				height        : '100%',
 				flexDirection : 'column',
 				position      : { right: 10 },
@@ -31,9 +31,9 @@ export function FuelUI() {
 			<UiEntity
 				key={`ui_Fuel_outer`}
 				uiTransform={{
-					width         : 64,
-					height        : 256,
-					borderRadius  : 32,
+					width         : 128,
+					height        : 512,
+					borderRadius  : 64,
 					overflow      : 'hidden',
 					flexDirection : 'column',
 					justifyContent: 'flex-end',
@@ -53,6 +53,7 @@ export function FuelUI() {
 						color: alpha(theme.colors.success, 1),
 					}}
 					uiText={{
+						fontSize : 32,
 						value    : `Fuel: ${ratio}%`,
 						textAlign: 'middle-center',
 					}}

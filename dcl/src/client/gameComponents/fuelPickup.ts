@@ -16,6 +16,11 @@ export class FuelPickup {
 	private meshScale    : number = 1.75
 	private triggerScale : number = 2
 
+	private pickupTriggered: boolean = false
+
+	private meshScaleVector3   : Vector3 = Vector3.create(this.meshScale, this.meshScale, this.meshScale)
+	private triggerScaleVector3: Vector3 = Vector3.create(this.triggerScale, this.triggerScale, this.triggerScale)
+
     constructor(
 		public position: Vector3, 
 		public amount  : number
@@ -25,11 +30,15 @@ export class FuelPickup {
 		FuelPickupComponent.create(this.entity, { amount: this.amount })
 		Transform.create(this.entity, { 
 			position: this.position,
-			scale: Vector3.create(this.meshScale, this.meshScale, this.meshScale)
+			scale   : Vector3.Zero()
 		})
+		Tween.setScale(this.entity, Vector3.Zero(), this.meshScaleVector3, 200, EasingFunction.EF_EASEOUTBACK)
 
 		this.triggerEntity = engine.addEntity()
-		Transform.create(this.triggerEntity, { parent: this.entity, scale: Vector3.create(this.triggerScale, this.triggerScale, this.triggerScale) })
+		Transform.create(this.triggerEntity, { 
+			parent: this.entity, 
+			scale : this.triggerScaleVector3
+		})
 		TriggerArea.setSphere(this.triggerEntity)
 		triggerAreaEventsSystem.onTriggerEnter(this.triggerEntity, (e) => {
 			if (e.trigger?.entity === engine.PlayerEntity) {
@@ -38,8 +47,9 @@ export class FuelPickup {
 			this.Destroy()
 		})
 
+
 		
-		GltfContainer.create(this.entity, {
+/* 		GltfContainer.create(this.entity, {
 			src: "assets/models/fuel.gltf"
 		})
 		GltfNodeModifiers.create(this.entity, {
@@ -58,16 +68,20 @@ export class FuelPickup {
 					}
 				}
 			]
+		}) */
+
+		MeshRenderer.setSphere(this.triggerEntity)
+		Material.setPbrMaterial(this.triggerEntity, { 
+			albedoColor      : theme.colors.success,
+			emissiveColor    : theme.colors.success,
+			emissiveIntensity: 0.2
 		})
-		//MeshRenderer.setSphere(this.triggerEntity)
-		//Material.setPbrMaterial(this.triggerEntity, { 
-		//	albedoColor      : theme.colors.success,
-		//	emissiveColor    : theme.colors.success,
-		//	emissiveIntensity: 0.2
-		//})
     }
 
 	onTriggerEnter() {
+		if (this.pickupTriggered) return
+		this.pickupTriggered = true
+
 		console.log("FuelPickup: Player entered")
 		ComponentStore.increaseFuelValue(this.amount)
 		SoundManager.playSound(sfx.fuelPickup)
@@ -77,10 +91,10 @@ export class FuelPickup {
 	}
 
 	Destroy() {
-		Tween.setScale(this.entity, Vector3.One(), Vector3.Zero(), 200, EasingFunction.EF_LINEAR)
+		Tween.setScale(this.entity, this.meshScaleVector3, Vector3.Zero(), 200, EasingFunction.EF_LINEAR)
 
 		utils.timers.setTimeout(() => {	
 			engine.removeEntity(this.entity)
-		}, 300)
+		}, 1000)
 	}
 }

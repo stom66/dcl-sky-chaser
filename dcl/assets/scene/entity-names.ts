@@ -5,5 +5,6 @@
  * Object containing all entity names in the scene for autocomplete support.
  */
 export enum EntityNames {
-  world_32_gltf = "world_32.gltf",
+  clouds_gltf = "clouds.gltf",
+  world_32_half_gltf = "world_32_half.gltf",
 } 

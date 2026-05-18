@@ -275,11 +275,13 @@ export namespace ComponentStore {
 
 		const c = C_Combo.Combo.get(entity)
 		if (c === undefined) return
-		if (c.value >= GameSettings.COMBO_MAX_VALUE) return
-
+		
 		const cm = C_Combo.Combo.getMutable(entity)
-		cm.value += 1
 		cm.lastUpdatedTime = Date.now()
+
+		if (c.value >= GameSettings.COMBO_MAX_VALUE) return
+		cm.value += 1
+		
 		console.log("incrementComboValue: combo value incremented to", cm.value)
 	}
 

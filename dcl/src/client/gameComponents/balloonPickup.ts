@@ -10,7 +10,7 @@ import { sfx, SoundManager } from "../soundManager"
 import { ClientMessaging } from "../clientMessaging"
 
 export class BalloonPickup {
-	private entity: Entity
+	public entity: Entity
 	private triggerEntity: Entity
 	private startPosition: Vector3
 
@@ -18,6 +18,8 @@ export class BalloonPickup {
 	private triggerScale: number = 3.5
 
 	private SHOW_TRIGGER: boolean = false
+
+	private pickupTriggered: boolean = false
 
     constructor(
 		public position : Vector3, 
@@ -91,17 +93,20 @@ export class BalloonPickup {
 	}
 
 	onTriggerEnter() {
+		if (this.pickupTriggered) return
+		this.pickupTriggered = true
+
 		console.log("BalloonPickup: Player entered")
 		const combo = ComponentStore.getComboValue()
 		ClientMessaging.RequestScoreUpdate(this.getValue() * combo)
 	}
 
-	Destroy() {
+	Destroy(muteSound: boolean = false) {
 		Tween.setScale(this.entity, Vector3.One(), Vector3.Zero(), 200, EasingFunction.EF_LINEAR)
-		SoundManager.playSound(sfx.balloonPickup)
+		SoundManager.playSound(sfx.balloonPickup, this.entity, 64)
 
 		utils.timers.setTimeout(() => {	
 			engine.removeEntity(this.entity)
-		}, 300)
+		}, 1000)
 	}
 }

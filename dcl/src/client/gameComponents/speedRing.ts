@@ -9,6 +9,7 @@ import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
 
 export class SpeedRing {
 	entity: Entity
+	private pickupTriggered: boolean = false
 
 	constructor(
 		pos: Vector3,
@@ -48,9 +49,14 @@ export class SpeedRing {
 	}
 	
 	onTriggerEnter() {
+		if (this.pickupTriggered) return
+		this.pickupTriggered = true
+
 		console.log("SpeedRing: Player entered")
 		// Boost the player forwards and up
-		const playerTransform = Transform.get(engine.PlayerEntity)
+		const playerTransform = Transform.getOrNull(engine.PlayerEntity)
+		if (!playerTransform) return
+		
 		const tiltUp = Vector3.rotate(Vector3.Forward(), Quaternion.fromEulerDegrees(-45, 0, 0))
 		const playerForward = Vector3.rotate(tiltUp, playerTransform.rotation)
 		

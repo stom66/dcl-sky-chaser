@@ -5,7 +5,7 @@ import * as utils from "@dcl-sdk/utils"
 
 import { ComponentManager } from 'src/shared/components/componentManager'
 import { ComponentStore } from 'src/shared/components/componentStore'
-import { GameSettings, SceneSettings } from "src/shared/settings"
+import { GameSettings, IS_DEV, SceneSettings } from "src/shared/settings"
 
 import { ClientHandler } from 'src/client/clientHandler'
 import { ClientStore } from 'src/client/clientStore'
@@ -17,6 +17,8 @@ import { FuelSpawner } from './spawners/fuelSpawner'
 import { BoosterInput } from './boosterInput'
 import { BalloonSpawner } from './spawners/balloonSpawner'
 import { ComboManager } from './comboManager'
+import { ParticleSpawner } from './particleSpawner'
+import { DiscordNotifyNewPlayer } from 'src/shared/utils/discord-webhooks'
 
 
 export function initClient() {
@@ -25,6 +27,8 @@ export function initClient() {
 	var hasEnteredScene = false
 	onEnterScene((player) => {
 		hasEnteredScene = true
+		
+		if (!IS_DEV) DiscordNotifyNewPlayer(player.name, player.userId)
 	})
 
 	// MARK: Wait for Load
@@ -84,7 +88,7 @@ export function initClient() {
 	SoundManager.init()
 	BoosterInput.init()
 	ComboManager.init()
-
+	ParticleSpawner.init()
 
 	engine.addSystem(waitForLoad)
 }

@@ -41,28 +41,27 @@ export function ComboUI() {
 		<UiEntity
 			key={`ui_Combo_root`}
 			uiTransform={{
-				width         : 192,
-				height        : '100%',
-				flexDirection : 'column',
-				position      : { right: 32 },
+				width         : "100%",
+				height        : 128,
+				flexDirection : 'row',
 				positionType  : 'absolute',
 				justifyContent: 'center',
+				alignContent: 'center',
+				alignItems: 'center',
 			}}
 		>
 			<UiEntity
 				key={`ui_Combo_outer`}
 				uiTransform={{
-					width         : 192,
-					height        : 48,
-					borderRadius  : 32,
+					width         : 420,
+					height        : 90,
+					borderRadius  : 45,
 					overflow      : 'hidden',
 					flexDirection : 'row',
 					justifyContent: 'flex-start',
-					borderColor   : darken(theme.colors.success, 0.05),
+					borderColor   : darken(theme.colors.primary, 0.05),
 					borderWidth   : 5,
-					positionType  : 'relative',
 					alignItems    : 'center',
-					position      : { top: -192 },
 				}}
 
 			>
@@ -74,7 +73,7 @@ export function ComboUI() {
 						alignContent: 'center',
 					}}
 					uiBackground={{
-						color: alpha(theme.colors.success, 1),
+						color: alpha(theme.colors.primary, 1),
 					}}
 				/>
 				<UiEntity
@@ -86,9 +85,9 @@ export function ComboUI() {
 						positionType: 'absolute',
 					}}
 					uiText={{
-						value    : `Combo: ${comboValue}`,
+						value    : `Boost-Ring Combo: ${comboValue}`,
 						textAlign: 'middle-center',
-						fontSize : 24
+						fontSize : 28
 						
 					}}
 				/>

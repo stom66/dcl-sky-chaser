@@ -24,5 +24,10 @@ export namespace BoosterInput {
 			ComponentStore.decreaseFuelValue(GameSettings.FUEL_DRAIN_RATE * dt)
 			LocomotionController.applyBoostForwardUp(64 * dt, -15)
 		}
+
+		// Slowly refill fuel up to max
+		if (fuelLevel < ComponentStore.getFuelValue().maxValue) {
+			ComponentStore.increaseFuelValue(GameSettings.FUEL_REFUEL_RATE * dt)
+		}
 	}
 }
