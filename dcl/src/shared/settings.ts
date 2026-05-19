@@ -20,7 +20,7 @@ export const GameSettings = {
 	LOADING_SCREEN_DELAY       : 1000 * 2,
 
 	COUNTDOWN_DURATION         : 1000 * 5,
-	GAME_DURATION              : 1000 * 60, 
+	GAME_DURATION              : 1000 * 90, 
 	END_GAME_DURATION          : 1000 * 3,
 
 	COMBO_COOLDOWN_TIME        : 1000 * 10,
