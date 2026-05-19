@@ -131,6 +131,27 @@
             },
             "parent": 0
           }
+        },
+        "514": {
+          "json": {
+            "position": {
+              "x": 3.6600000858306885,
+              "y": 1.5898768901824951,
+              "z": 5.5
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            },
+            "rotation": {
+              "x": 0,
+              "y": 0.2572920024394989,
+              "z": 0,
+              "w": 0.9663336873054504
+            },
+            "parent": 0
+          }
         }
       }
     },
@@ -189,6 +210,13 @@
             "visibleMeshesCollisionMask": 0,
             "invisibleMeshesCollisionMask": 3
           }
+        },
+        "514": {
+          "json": {
+            "src": "assets/models/errorSign.gltf",
+            "visibleMeshesCollisionMask": 0,
+            "invisibleMeshesCollisionMask": 3
+          }
         }
       }
     },
@@ -213,6 +241,11 @@
         "513": {
           "json": {
             "value": "clouds.gltf"
+          }
+        },
+        "514": {
+          "json": {
+            "value": "errorSign.gltf"
           }
         }
       }
@@ -313,7 +346,8 @@
                 "open": true,
                 "children": [
                   512,
-                  513
+                  513,
+                  514
                 ]
               },
               {
@@ -330,6 +364,10 @@
               },
               {
                 "entity": 513,
+                "children": []
+              },
+              {
+                "entity": 514,
                 "children": []
               }
             ]
@@ -358,6 +396,9 @@
           "json": {}
         },
         "513": {
+          "json": {}
+        },
+        "514": {
           "json": {}
         }
       }
@@ -697,8 +738,8 @@
         "0": {
           "json": {
             "name": "Sky Chaser",
-            "description": "Sk game prototype",
-            "thumbnail": "images/scene-thumbnail.png",
+            "description": "Sky game prototype",
+            "thumbnail": "assets/scene/Images/scene-thumbnail.png",
             "ageRating": "T",
             "categories": [],
             "author": "stom",
@@ -4845,7 +4886,7 @@
               }
             ],
             "skyboxConfig": {},
-            "creator": "",
+            "creator": "0xCEC7e38e088A87D77F2B60Fcae6840D00E018155",
             "disableNearbyVoiceChat": false
           }
         }

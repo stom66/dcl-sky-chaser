@@ -3,12 +3,8 @@ import { DeathTrigger } from "../gameComponents/deathTrigger"
 import { SpeedRing } from "../gameComponents/speedRing"
 import { createRng } from "src/shared/utils/mulberry"
 import { C_GameData, ComponentStore } from "src/shared/components/componentStore"
+import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
 
-
-ComponentStore.onComponentChange(C_GameData.GameData, (data) => {
-	//console.log("RingSpawner: GameData changed", data)
-	RingSpawner.updateGameStartTime(data?.startTime ?? 0)
-})
 
 export namespace RingSpawner {
 
@@ -25,10 +21,25 @@ export namespace RingSpawner {
 	var rng: () => number
 	var gameStartTime: number = 0
 
-	export function updateGameStartTime(startTime: number) {
+
+	export function init() {
+		eventBus.on(ClientEvents.GAME_ACTIVE, (data) => {
+			onGameStart(data?.startTime ?? 0)
+		})
+		
+		eventBus.on(ClientEvents.GAME_END, () => {
+			onGameEnd()
+		})
+	}
+
+	export function onGameStart(startTime: number) {
 		if (startTime === gameStartTime) return
 		gameStartTime = startTime
 		spawnRings()
+	}
+
+	export function onGameEnd() {
+		removeRings()
 	}
 
     export function spawnRings() {

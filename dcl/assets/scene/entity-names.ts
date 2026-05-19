@@ -6,5 +6,6 @@
  */
 export enum EntityNames {
   clouds_gltf = "clouds.gltf",
+  errorSign_gltf = "errorSign.gltf",
   world_32_half_gltf = "world_32_half.gltf",
 } 

@@ -6,11 +6,8 @@ import { FuelPickup as FuelPickupComponent } from "src/shared/components/fuelPic
 import { FuelPickup } from "src/client/gameComponents/fuelPickup"
 import { createRng } from "src/shared/utils/mulberry"
 import { C_GameData, ComponentStore } from "src/shared/components/componentStore"
+import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
 
-ComponentStore.onComponentChange(C_GameData.GameData, (data) => {
-	console.log("FuelSpawner: GameData changed", data)
-	FuelSpawner.updateGameStartTime(data?.startTime ?? 0)
-})
 
 export namespace FuelSpawner {
 
@@ -25,11 +22,25 @@ export namespace FuelSpawner {
 	var gameStartTime: number = 0
 
 
-	export function updateGameStartTime(startTime: number) {
+	export function init() {
+		eventBus.on(ClientEvents.GAME_ACTIVE, (data) => {
+			onGameStart(data?.startTime ?? 0)
+		})
+		
+		eventBus.on(ClientEvents.GAME_END, () => {
+			onGameEnd()
+		})
+	}
+
+	export function onGameStart(startTime: number) {
 		if (startTime === gameStartTime) return
 		gameStartTime = startTime
 		removePickups()
 		spawnPickups()
+	}
+
+	export function onGameEnd() {
+		removePickups()
 	}
 
 	export function spawnPickups() {

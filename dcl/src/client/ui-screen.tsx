@@ -8,6 +8,7 @@ import { FuelUI } from './ui/layouts/ui.fuel'
 import { ScoreboardUI } from './ui/layouts/ui.scoreboard'
 import { ComboUI } from './ui/layouts/ui.combo'
 import { HowToPlayUI } from './ui/layouts/ui.howToPlay'
+import { CountdownUI } from './ui/layouts/ui.countdown'
 
 
 // MARK: Vars
@@ -35,6 +36,7 @@ const uiComponent = () => (
 		{ScoreboardUI()}
 		{ComboUI()}
 		{HowToPlayUI()}
+		{CountdownUI()}
 	</UiEntity>
 )
 

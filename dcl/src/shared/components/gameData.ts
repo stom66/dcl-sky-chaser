@@ -6,7 +6,7 @@ import { GameStatus } from "src/shared/enums"
 export const GameData = engine.defineComponent(
 	'GameData',
 	{
-		status   : Schemas.EnumString<GameStatus>(GameStatus, GameStatus.LOBBY),
+		status   : Schemas.EnumString<GameStatus>(GameStatus, GameStatus.IDLE),
 		startTime: Schemas.Int64,
 		players  : Schemas.Optional(
 			Schemas.Array(Schemas.String)

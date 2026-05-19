@@ -103,7 +103,7 @@ export namespace ComponentStore {
 			return {
 				players  : [],
 				startTime: 0,
-				status   : GameStatus.LOBBY,
+				status   : GameStatus.IDLE,
 			}
 		}
 
@@ -112,7 +112,7 @@ export namespace ComponentStore {
 		return {
 			players  : gameData?.players ?? [],
 			startTime: gameData?.startTime ?? 0,
-			status   : gameData?.status ?? GameStatus.LOBBY,
+			status   : gameData?.status ?? GameStatus.IDLE,
 		}
 	}
 
@@ -123,6 +123,26 @@ export namespace ComponentStore {
 
 		ComponentManager.seedComponentDefaults()
 	}
+
+
+	// MARK: GameStatus
+	export function getGameStatus(): GameStatus {
+		const entity = ComponentManager.tryGetComponentEntity()
+		if (entity === undefined) return GameStatus.IDLE
+
+		const c = C_GameData.GameData.get(entity)
+		return c?.status ?? GameStatus.IDLE
+	}
+	export function setGameStatus(status: GameStatus): void {
+		if (!isServer()) return
+
+		const entity = ComponentManager.tryGetComponentEntity()
+		if (entity === undefined) return
+
+		const c = C_GameData.GameData.getMutable(entity)
+		c.status = status
+	}
+	
 
 	// MARK: GameStartTime
 	export function getGameStartTime(): number {

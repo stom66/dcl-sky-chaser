@@ -19,6 +19,7 @@ import { BalloonSpawner } from './spawners/balloonSpawner'
 import { ComboManager } from './comboManager'
 import { ParticleSpawner } from './particleSpawner'
 import { DiscordNotifyNewPlayer } from 'src/shared/utils/discord-webhooks'
+import { GameStateManager } from './gameStateManager'
 
 
 export function initClient() {
@@ -27,7 +28,7 @@ export function initClient() {
 	var hasEnteredScene = false
 	onEnterScene((player) => {
 		hasEnteredScene = true
-		
+
 		if (!IS_DEV) DiscordNotifyNewPlayer(player.name, player.userId)
 	})
 
@@ -73,22 +74,25 @@ export function initClient() {
 	void ComponentManager.onClientReady().then(async () => {
 		// Delay loading anything which requires the component until here
 		ComponentStore.init()
+		GameStateManager.init()
+
+		LocomotionController.applyLocomotionSettings()
+		ComboManager.init()
+		SoundManager.init()
+		BoosterInput.init()
+		
+		BalloonSpawner.init()
+		FuelSpawner.init()
+		ParticleSpawner.init()
+		RingSpawner.init()
+		TriggerSpawner.spawnTriggers()
+		
 		const { SetupUI } = await import('src/client/ui-screen')
 		SetupUI()
 	})
 
 
 	// Load game specific stuff
-	TriggerSpawner.spawnTriggers()
-	RingSpawner.spawnRings()
-	FuelSpawner.spawnPickups()
-	BalloonSpawner.spawnPickups()
-
-	LocomotionController.applyLocomotionSettings()
-	SoundManager.init()
-	BoosterInput.init()
-	ComboManager.init()
-	ParticleSpawner.init()
 
 	engine.addSystem(waitForLoad)
 }

@@ -2,6 +2,9 @@ import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
 
 import { alpha, darken, theme } from 'src/client/ui/index'
 import { C_PlayerFuel, ComponentStore } from 'src/shared/components/componentStore'
+import { ClientEvents, eventBus } from 'src/shared/utils/eventBus'
+import { tweenValue } from '../utils/tweens'
+import { EasingFunction } from '@dcl/sdk/ecs'
 
 let fuelValue    = 100
 let maxFuelValue = 100
@@ -14,6 +17,18 @@ ComponentStore.onComponentChange(C_PlayerFuel.PlayerFuel, (data) => {
 	console.log("FuelUI: fuel value changed to", fuelValue)
 })
 
+eventBus.on(ClientEvents.GAME_ACTIVE, (data) => {
+	tweenValue(elementPosition, POS_VISIBLE, 0.2, (v) => elementPosition = v), EasingFunction.EF_EASEOUTBACK
+})
+eventBus.on(ClientEvents.GAME_END, (data) => {
+	tweenValue(elementPosition, POS_HIDDEN, 0.2, (v) => elementPosition = v), EasingFunction.EF_EASEOUTBACK
+})
+
+const POS_HIDDEN  = -150
+const POS_VISIBLE = 10
+var elementPosition     : number = POS_HIDDEN
+
+
 // MARK: FuelUI
 export function FuelUI() {
 	return (
@@ -23,7 +38,7 @@ export function FuelUI() {
 				width         : '128',
 				height        : '100%',
 				flexDirection : 'column',
-				position      : { right: 10 },
+				position      : { right: elementPosition },
 				positionType  : 'absolute',
 				justifyContent: 'center',
 			}}

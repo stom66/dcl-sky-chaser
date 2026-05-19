@@ -98,8 +98,8 @@ export namespace ComponentManager {
 			// Server
 			C_GameData.GameData.createOrReplace(entity, {
 				players  : [],
-				startTime: Date.now(),
-				status   : GameStatus.LOBBY,
+				startTime: 0,
+				status   : GameStatus.IDLE,
 			})
 			C_GameData.ScoreBoard.createOrReplace(entity, {
 				scores: [],

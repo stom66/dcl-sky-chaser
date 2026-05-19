@@ -8,11 +8,8 @@ import { BalloonPickup } from "src/client/gameComponents/balloonPickup"
 
 import { createRng } from "src/shared/utils/mulberry"
 import { C_GameData, ComponentStore } from "src/shared/components/componentStore"
+import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
 
-ComponentStore.onComponentChange(C_GameData.GameData, (data) => {
-	//console.log("BalloonSpawner: GameData changed", data)
-	BalloonSpawner.updateGameStartTime(data?.startTime ?? 0)
-})
 
 export namespace BalloonSpawner {
 
@@ -32,11 +29,26 @@ export namespace BalloonSpawner {
 
 	var systemsAdded = false
 
-	export function updateGameStartTime(startTime: number) {
+
+	export function init() {
+		eventBus.on(ClientEvents.GAME_ACTIVE, (data) => {
+			onGameStart(data?.startTime ?? 0)
+		})
+		
+		eventBus.on(ClientEvents.GAME_END, () => {
+			onGameEnd()
+		})
+	}
+
+	export function onGameStart(startTime: number) {
 		if (startTime === gameStartTime) return
 		gameStartTime = startTime
 		removePickups()
 		spawnPickups()
+	}
+
+	export function onGameEnd() {
+		removePickups()
 	}
 
 	export function spawnPickups() {
@@ -89,7 +101,8 @@ export namespace BalloonSpawner {
 		if (count < maxSpawns) {
 			for (let i = count; i < maxSpawns; i++) {
 				//console.log("BalloonSpawner: spawning replacement pickup", i)
-				spawnRandomPickup()
+				const balloonInstance = spawnRandomPickup()
+				ballonInstances.set(balloonInstance.entity, balloonInstance)
 			}
 		}
 	}

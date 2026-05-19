@@ -1,9 +1,11 @@
-import { engine } from '@dcl/sdk/ecs'
+import { EasingFunction, engine } from '@dcl/sdk/ecs'
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
 
 import { alpha, darken, theme } from 'src/client/ui/index'
 import { C_Combo, ComponentStore } from 'src/shared/components/componentStore'
 import { GameSettings } from 'src/shared/settings'
+import { ClientEvents, eventBus } from 'src/shared/utils/eventBus'
+import { tweenValue } from '../utils/tweens'
 
 let comboValue          = 0
 let lastUpdatedTime     = 0
@@ -11,6 +13,17 @@ let ratio               = comboValue / GameSettings.COMBO_COOLDOWN_TIME
 let cooldownTime        = GameSettings.COMBO_COOLDOWN_TIME - (Date.now() - lastUpdatedTime)
 
 let isInitialized = false
+
+eventBus.on(ClientEvents.GAME_ACTIVE, (data) => {
+	tweenValue(elementPosition, POS_VISIBLE, 0.2, (v) => elementPosition = v), EasingFunction.EF_EASEOUTBACK
+})
+eventBus.on(ClientEvents.GAME_END, (data) => {
+	tweenValue(elementPosition, POS_HIDDEN, 0.2, (v) => elementPosition = v), EasingFunction.EF_EASEOUTBACK
+})
+
+const POS_HIDDEN  = -256
+const POS_VISIBLE = 0
+var elementPosition: number = POS_HIDDEN
 
 ComponentStore.onComponentChange(C_Combo.Combo, (data) => {
 	comboValue      = data?.value ?? 0
@@ -62,6 +75,8 @@ export function ComboUI() {
 					borderColor   : darken(theme.colors.primary, 0.05),
 					borderWidth   : 5,
 					alignItems    : 'center',
+					positionType  : 'relative',
+					position      : { top: elementPosition },
 				}}
 
 			>

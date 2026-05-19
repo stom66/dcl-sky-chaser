@@ -3,8 +3,8 @@
   "runtimeVersion": "7",
   "display": {
     "title": "Sky Chaser",
-    "description": "Sk game prototype",
-    "navmapThumbnail": "images/scene-thumbnail.png",
+    "description": "Sky game prototype",
+    "navmapThumbnail": "assets/scene/Images/scene-thumbnail.png",
     "favicon": "favicon_asset"
   },
   "owner": "",
@@ -1080,7 +1080,7 @@
   "logsPermissions": [
     "0xCEC7e38e088A87D77F2B60Fcae6840D00E018155"
   ],
-  "creator": "",
+  "creator": "0xCEC7e38e088A87D77F2B60Fcae6840D00E018155",
   "skyboxConfig": {},
   "source": {
     "origin": "creator-hub",

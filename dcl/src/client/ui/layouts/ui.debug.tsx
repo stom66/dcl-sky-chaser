@@ -28,7 +28,7 @@ export function DebugUI() {
 				justifyContent: 'space-between',
 				margin        : { top : '-220px', right: '50px' },
 				padding       : '10px',
-				position      : { left: 65, top        : 350 },
+				position      : { left: 65, top: 350 },
 				positionType  : "absolute",
 				borderRadius  : 8,
 			}}
@@ -46,8 +46,6 @@ export function DebugUI() {
 				{/* 
 				<ButtonAction textLabel="incrementScore" callback={() => ClientMessaging.RequestScoreUpdate() } /> 
 				*/}
-					
-		
 			</UiEntity>
 
 			<Divider />
@@ -60,6 +58,10 @@ export function DebugUI() {
 					value={ComponentStore.getGameStartTime().toString()}
 				/>
 
+				<InfoRow
+					label="GameStatus"
+					value={ComponentStore.getGameStatus().toString()}
+				/>
 			</UiEntity>
 
 		</UiEntity>
