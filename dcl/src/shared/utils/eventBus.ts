@@ -29,9 +29,10 @@ const createEventBus = () => {
 		
 		emit<T = any>(event: string, data: T): void {
 			const arr = listeners.get(event)
+			console.log("eventBus: emit: event", event, "data", data)
 			if (!arr) return
-			const snapshot = arr.slice()
-			for (const fn of snapshot) fn(data)
+				const snapshot = arr.slice()
+				for (const fn of snapshot) fn(data)
 			},
 		
 		clear(event?: string): void {

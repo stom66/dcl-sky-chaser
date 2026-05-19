@@ -2,7 +2,7 @@ import { AvatarLocomotionSettings, engine, Physics, Transform } from "@dcl/sdk/e
 import { Quaternion, Vector3 } from "@dcl/sdk/math";
 
 export namespace LocomotionController {
-	
+
 	export function applyLocomotionSettings() {
 		AvatarLocomotionSettings.create(engine.PlayerEntity, {
 			runSpeed: 10,
@@ -12,7 +12,9 @@ export namespace LocomotionController {
 	}
 
 	export function applyBoostForwardUp(boost: number, tiltUp: number = -45) {
-		const t    = Transform.get(engine.PlayerEntity)
+		const t    = Transform.getOrNull(engine.PlayerEntity)
+		if (!t) return
+		
 		const tilt = Vector3.rotate(Vector3.Forward(), Quaternion.fromEulerDegrees(tiltUp, 0, 0))
 		const dir  = Vector3.rotate(tilt, t.rotation)
 		

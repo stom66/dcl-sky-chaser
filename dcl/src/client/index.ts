@@ -5,7 +5,7 @@ import * as utils from "@dcl-sdk/utils"
 
 import { ComponentManager } from 'src/shared/components/componentManager'
 import { ComponentStore } from 'src/shared/components/componentStore'
-import { GameSettings, SceneSettings } from "src/shared/settings"
+import { GameSettings, IS_DEV, SceneSettings } from "src/shared/settings"
 
 import { ClientHandler } from 'src/client/clientHandler'
 import { ClientStore } from 'src/client/clientStore'
@@ -15,6 +15,11 @@ import { LocomotionController } from './locomotionController'
 import { SoundManager } from './soundManager'
 import { FuelSpawner } from './spawners/fuelSpawner'
 import { BoosterInput } from './boosterInput'
+import { BalloonSpawner } from './spawners/balloonSpawner'
+import { ComboManager } from './comboManager'
+import { ParticleSpawner } from './particleSpawner'
+import { DiscordNotifyNewPlayer } from 'src/shared/utils/discord-webhooks'
+import { GameStateManager } from './gameStateManager'
 
 
 export function initClient() {
@@ -23,6 +28,8 @@ export function initClient() {
 	var hasEnteredScene = false
 	onEnterScene((player) => {
 		hasEnteredScene = true
+
+		if (!IS_DEV) DiscordNotifyNewPlayer(player.name, player.userId)
 	})
 
 	// MARK: Wait for Load
@@ -67,19 +74,25 @@ export function initClient() {
 	void ComponentManager.onClientReady().then(async () => {
 		// Delay loading anything which requires the component until here
 		ComponentStore.init()
+		GameStateManager.init()
+
+		LocomotionController.applyLocomotionSettings()
+		ComboManager.init()
+		SoundManager.init()
+		BoosterInput.init()
+		
+		BalloonSpawner.init()
+		FuelSpawner.init()
+		ParticleSpawner.init()
+		RingSpawner.init()
+		TriggerSpawner.spawnTriggers()
+		
 		const { SetupUI } = await import('src/client/ui-screen')
 		SetupUI()
 	})
 
 
 	// Load game specific stuff
-	TriggerSpawner.spawnTriggers()
-	RingSpawner.spawnRings()
-	FuelSpawner.spawnFuelPickups()
-	LocomotionController.applyLocomotionSettings()
-	SoundManager.init()
-	BoosterInput.init()
-
 
 	engine.addSystem(waitForLoad)
 }

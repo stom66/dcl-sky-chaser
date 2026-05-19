@@ -6,6 +6,7 @@ import { ClientMessaging } from 'src/client/clientMessaging'
 import { alpha, theme } from 'src/client/ui/index'
 import { ButtonAction, Divider, InfoRow, SectionHeader } from 'src/client/ui/components'
 import { PlayerMover } from 'src/client/playerMover'
+import { ClientEvents, eventBus } from 'src/shared/utils/eventBus'
 
 
 // MARK: Vars
@@ -21,13 +22,13 @@ export function DebugUI() {
 			key         = "ui_debug_root"
 			uiTransform = {{
 				width         : 220,
-				height        : 240,
+				height        : 270,
 				flexDirection : 'column',
 				alignItems    : 'flex-start',
 				justifyContent: 'space-between',
 				margin        : { top : '-220px', right: '50px' },
 				padding       : '10px',
-				position      : { left: 65, top        : 350 },
+				position      : { left: 65, top: 350 },
 				positionType  : "absolute",
 				borderRadius  : 8,
 			}}
@@ -41,7 +42,10 @@ export function DebugUI() {
 
 				<ButtonAction textLabel="toSpawn" callback={() => PlayerMover.movePlayerToSpawn() } />
 				<ButtonAction textLabel="newGame" callback={() => ClientMessaging.RequestNewGame() } />
-				<ButtonAction textLabel="scoreUpdate" callback={() => ClientMessaging.RequestScoreUpdate() } />
+					
+				{/* 
+				<ButtonAction textLabel="incrementScore" callback={() => ClientMessaging.RequestScoreUpdate() } /> 
+				*/}
 			</UiEntity>
 
 			<Divider />
@@ -54,6 +58,10 @@ export function DebugUI() {
 					value={ComponentStore.getGameStartTime().toString()}
 				/>
 
+				<InfoRow
+					label="GameStatus"
+					value={ComponentStore.getGameStatus().toString()}
+				/>
 			</UiEntity>
 
 		</UiEntity>

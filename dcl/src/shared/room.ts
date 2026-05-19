@@ -20,9 +20,9 @@ const SchemaSentAt = {
 const Messages = {
 	// Sent by client
 	[MessageType.REQUEST_NEW_GAME]: Schemas.Map({}),
-	[MessageType.REQUEST_SCORE_UPDATE]: Schemas.Map({}),
+	[MessageType.REQUEST_SCORE_UPDATE]: Schemas.Int,
 
-	
+
 	// Sent by server
 	[MessageType.NOTIFY_SERVER_TIME]: Schemas.Map({
 		...SchemaSentAt

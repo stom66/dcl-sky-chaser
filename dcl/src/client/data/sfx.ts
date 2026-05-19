@@ -21,4 +21,10 @@ export const sfx = {
 		"assets/sfx/Games, Video, Event, Collect Item, Various Positive 01 SND5544 1.wav",
 	],
 
+	balloonPickup: [
+		"assets/sfx/pop_1.wav",
+		"assets/sfx/pop_2.wav",
+		"assets/sfx/pop_3.wav",
+	],
+
 }

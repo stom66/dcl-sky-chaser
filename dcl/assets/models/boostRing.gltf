@@ -63,7 +63,7 @@
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":256,
+			"count":304,
 			"max":[
 				2,
 				2,
@@ -79,45 +79,45 @@
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":256,
+			"count":304,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":256,
+			"count":304,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":3,
 			"componentType":5123,
-			"count":768,
+			"count":840,
 			"type":"SCALAR"
 		}
 	],
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":3072,
+			"byteLength":3648,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":3072,
-			"byteOffset":3072,
+			"byteLength":3648,
+			"byteOffset":3648,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":2048,
-			"byteOffset":6144,
+			"byteLength":2432,
+			"byteOffset":7296,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":1536,
-			"byteOffset":8192,
+			"byteLength":1680,
+			"byteOffset":9728,
 			"target":34963
 		}
 	],
@@ -129,7 +129,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":9728,
+			"byteLength":11408,
 			"uri":"boostRing.bin"
 		}
 	]

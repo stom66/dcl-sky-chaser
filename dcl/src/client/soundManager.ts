@@ -76,6 +76,36 @@ export namespace SoundManager {
 	}
 
 
+
+	// MARK: getOrCreatePreloadedClipEntity
+	/**
+	 * Returns the global preload entity for a clip URL, creating and caching one if missing.
+	 * Used during {@link preloadSfx}; also supports {@link playSound} fallback when a clip URL
+	 * was introduced after preload or preload missed it.
+	 *
+	 * @param soundPath - Resolved asset URL (matches {@link sfx} entry strings).
+	 */
+	function getOrCreatePreloadedClipEntity(soundPath: string): Entity {
+		let cached = sfxCache[soundPath]
+		if (cached) return cached
+
+		console.log(
+			'SoundManager: getOrCreatePreloadedClipEntity: lazily creating missing preload entity for clip:',
+			soundPath
+		)
+		cached = engine.addEntity()
+		Transform.create(cached, {})
+		AudioSource.create(cached, {
+			audioClipUrl: soundPath,
+			global      : true,
+			playing     : false,
+			volume      : SFX_ENTITY_VOLUME,
+		})
+		sfxCache[soundPath] = cached
+		return cached
+	}
+
+
 	// MARK: preloadSfx
 	/**
 	 * Creates one global {@link AudioSource} per known clip in {@link sfx} so
@@ -84,15 +114,7 @@ export namespace SoundManager {
 	function preloadSfx(): void {
 		for (const paths of Object.values(sfx)) {
 			for (const soundPath of paths) {
-				const soundEntity = engine.addEntity()
-				Transform.create(soundEntity, {})
-				AudioSource.create(soundEntity, {
-					audioClipUrl: soundPath,
-					global      : true,
-					playing     : false,
-					volume      : SFX_ENTITY_VOLUME,
-				})
-				sfxCache[soundPath] = soundEntity
+				getOrCreatePreloadedClipEntity(soundPath)
 			}
 		}
 	}
@@ -196,11 +218,11 @@ export namespace SoundManager {
 
 	// MARK: playSound
 	/**
-	 * Plays a one-shot SFX from the preload cache. Like {@link startBgm}, this expects
-	 * {@link init} to have run already so entities exist; otherwise the clip lookup fails.
+	 * Plays a one-shot SFX. Global clips use {@link preloadSfx} entities (lazy-created if missing).
+	 * Spatial clips ({@link parentEntity} set) attach a dedicated {@link AudioSource} every play.
 	 * Pass a single URL or an array; arrays pick a random clip and avoid repeating the same
-	 * pick as the previous call when multiple options exist. Retriggers from the start if
-	 * the same clip plays again.
+	 * pick as the previous call when multiple options exist. Retriggers from the start if the
+	 * same clip plays again.
 	 *
 	 * @param sound - One asset path, or an array of paths (same shape as values in {@link sfx}).
 	 */
@@ -221,24 +243,26 @@ export namespace SoundManager {
 		}
 		lastPlayedSfx = randomSound
 
-		var soundEntity = sfxCache[randomSound]
-		if (!soundEntity) {
-			console.error('SoundManager: playSound: no preloaded entity for clip (check sfx paths and preload):', randomSound)
-			return
-		}
-
+		let soundEntity: Entity
 		if (parentEntity) {
+			const parentT = Transform.getOrNull(parentEntity)
+			if (!parentT) return
+			
 			soundEntity = engine.addEntity()
 			Transform.create(soundEntity, { parent: parentEntity })
 			AudioSource.create(soundEntity, {
 				audioClipUrl: randomSound,
-				global: false,
+				global      : false,
+				playing     : false,
+				volume      : SFX_ENTITY_VOLUME,
 			})
+		} else {
+			soundEntity = getOrCreatePreloadedClipEntity(randomSound)
 		}
 
 		const audioSrc = AudioSource.getMutableOrNull(soundEntity)
 		if (!audioSrc) {
-			console.error('SoundManager: playSound: AudioSource missing on preloaded entity for clip:', randomSound)
+			console.error('SoundManager: playSound: AudioSource missing for clip:', randomSound)
 			return
 		}
 
@@ -246,14 +270,16 @@ export namespace SoundManager {
 		audioSrc.currentTime = 0
 
 		if (maxDistance && parentEntity) {
-			const playerPos = Transform.get(engine.PlayerEntity).position
-			const parentPos = Transform.get(parentEntity).position
+			const playerPos = Transform.getOrNull(engine.PlayerEntity)?.position
+			const parentPos = Transform.getOrNull(parentEntity)?.position
+			if (!playerPos || !parentPos) return
+
 			const x = playerPos.x - parentPos.x
 			const z = playerPos.z - parentPos.z
 			const distance = Math.sqrt(x * x + z * z)
 			if (distance < maxDistance) {
 				const vol = (audioSrc.volume ?? SFX_ENTITY_VOLUME) * (1 - distance / maxDistance)
-				console.log('SoundManager: playSound: ${randomSound} at volume', vol)
+				console.log(`SoundManager: playSound: ${randomSound} at volume`, vol)
 				audioSrc.volume = vol
 			}
 		}

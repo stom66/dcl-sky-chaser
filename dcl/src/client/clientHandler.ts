@@ -13,7 +13,7 @@ export namespace ClientHandler {
 
 	// MARK: Server Time
 	function handleNotifyServerTime(data: NotifyServerTimePayload) {
-		console.log("ClientHandler: handleNotifyServerTime: data", data)
+		//console.log("ClientHandler: handleNotifyServerTime: data", data)
 		clockSync.updateOffset(data.sentAt)
 	}
 }

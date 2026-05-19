@@ -11,6 +11,9 @@ export * as C_GameData from "src/shared/components/gameData"
 import * as C_PlayerFuel from "src/shared/components/playerFuel"
 export * as C_PlayerFuel from "src/shared/components/playerFuel"
 
+import * as C_Combo from "src/shared/components/combo"
+export * as C_Combo from "src/shared/components/combo"
+
 
 
 /**
@@ -35,11 +38,12 @@ export namespace ComponentManager {
 	// MARK: Vars
 	const LANE_ENTITY_SYNC_ENUM_BASE = 1000
 	const clientReadyResolvers       : Array<() => void>    = [] // Promise resolvers awaiting client-side discovery of all lane entities.
-	let componentEntity        : (Entity | undefined) = undefined
+	let componentEntity              : (Entity | undefined) = undefined
 	let isInitialised                : boolean              = false
 
 	const clientComponents = [
 		C_PlayerFuel.PlayerFuel,
+		C_Combo.Combo,
 	]
 
 	const syncedComponents = [
@@ -86,12 +90,16 @@ export namespace ComponentManager {
 				value: 100,
 				maxValue: 100,
 			})
+			C_Combo.Combo.createOrReplace(entity, {
+				value: 1,
+				lastUpdatedTime: 0,
+			})
 		} else {	
 			// Server
 			C_GameData.GameData.createOrReplace(entity, {
 				players  : [],
-				startTime: Date.now(),
-				status   : GameStatus.LOBBY,
+				startTime: 0,
+				status   : GameStatus.IDLE,
 			})
 			C_GameData.ScoreBoard.createOrReplace(entity, {
 				scores: [],

@@ -4,12 +4,13 @@ import { ComponentData, Entity } from "@dcl/sdk/ecs"
 import { GameStatus } from "src/shared/enums"
 import { GameDataSnapshot } from "src/shared/types/shared-types"
 
-import { ComponentManager, C_GameData, C_PlayerFuel } from "src/shared/components/componentManager"
+import { ComponentManager, C_GameData, C_PlayerFuel, C_Combo } from "src/shared/components/componentManager"
+import { GameSettings } from "../settings"
 
 // Re-export Components for easy importing elsewhere
 export * as C_GameData from "src/shared/components/gameData"
 export * as C_PlayerFuel from "src/shared/components/playerFuel"
-
+export * as C_Combo from "src/shared/components/combo"
 
 /**
  * Data-access wrapper around the synced components. Reads work on both
@@ -36,6 +37,7 @@ type AnyComponent<T>      = {
 export namespace ComponentStore {
 
 	const components = [
+		C_Combo.Combo,
 		C_GameData.GameData,
 		C_GameData.ScoreBoard,
 		C_PlayerFuel.PlayerFuel,
@@ -101,7 +103,7 @@ export namespace ComponentStore {
 			return {
 				players  : [],
 				startTime: 0,
-				status   : GameStatus.LOBBY,
+				status   : GameStatus.IDLE,
 			}
 		}
 
@@ -110,7 +112,7 @@ export namespace ComponentStore {
 		return {
 			players  : gameData?.players ?? [],
 			startTime: gameData?.startTime ?? 0,
-			status   : gameData?.status ?? GameStatus.LOBBY,
+			status   : gameData?.status ?? GameStatus.IDLE,
 		}
 	}
 
@@ -121,6 +123,26 @@ export namespace ComponentStore {
 
 		ComponentManager.seedComponentDefaults()
 	}
+
+
+	// MARK: GameStatus
+	export function getGameStatus(): GameStatus {
+		const entity = ComponentManager.tryGetComponentEntity()
+		if (entity === undefined) return GameStatus.IDLE
+
+		const c = C_GameData.GameData.get(entity)
+		return c?.status ?? GameStatus.IDLE
+	}
+	export function setGameStatus(status: GameStatus): void {
+		if (!isServer()) return
+
+		const entity = ComponentManager.tryGetComponentEntity()
+		if (entity === undefined) return
+
+		const c = C_GameData.GameData.getMutable(entity)
+		c.status = status
+	}
+	
 
 	// MARK: GameStartTime
 	export function getGameStartTime(): number {
@@ -249,4 +271,59 @@ export namespace ComponentStore {
 		c.value += amount
 	}
 
+
+
+	// MARK: Combo
+	export function getComboValue(): number {
+		const entity = ComponentManager.tryGetComponentEntity()
+		if (entity === undefined) return 0
+
+		const c = C_Combo.Combo.get(entity)
+		return c?.value ?? 1
+	}
+	export function getComboLastUpdatedTime(): number {
+		const entity = ComponentManager.tryGetComponentEntity()
+		if (entity === undefined) return 0
+
+		const c = C_Combo.Combo.get(entity)
+		return c?.lastUpdatedTime ?? 0
+	}
+
+	export function incrementComboValue(): void {
+		const entity = ComponentManager.tryGetComponentEntity()
+		if (entity === undefined) return
+
+		const c = C_Combo.Combo.get(entity)
+		if (c === undefined) return
+		
+		const cm = C_Combo.Combo.getMutable(entity)
+		cm.lastUpdatedTime = Date.now()
+
+		if (c.value >= GameSettings.COMBO_MAX_VALUE) return
+		cm.value += 1
+		
+		console.log("incrementComboValue: combo value incremented to", cm.value)
+	}
+
+	export function decrementComboValue(): void {
+		const entity = ComponentManager.tryGetComponentEntity()
+		if (entity === undefined) return
+
+		const c = C_Combo.Combo.get(entity)
+		if (c === undefined) return
+		if (c.value <= 1) return
+
+		const cm = C_Combo.Combo.getMutable(entity)
+		cm.value -= 1
+		cm.lastUpdatedTime = Date.now()
+	}
+
+	export function resetComboValue(): void {
+		const entity = ComponentManager.tryGetComponentEntity()
+		if (entity === undefined) return
+
+		const c = C_Combo.Combo.getMutable(entity)
+		c.value = 1
+		c.lastUpdatedTime = 0
+	}
 }
