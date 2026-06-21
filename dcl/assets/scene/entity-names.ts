@@ -7,5 +7,7 @@
 export enum EntityNames {
   clouds_gltf = "clouds.gltf",
   errorSign_gltf = "errorSign.gltf",
-  world_32_half_gltf = "world_32_half.gltf",
+  tower_gltf = "tower.gltf",
+  windSock_gltf = "windSock.gltf",
+  world_gltf = "world.gltf",
 } 
