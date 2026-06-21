@@ -81,15 +81,15 @@ export namespace BalloonSpawner {
 
 	export function removePickups() {
 		for (const [entity] of ballonInstances.entries()) {
-			removePickup(entity)
+			removePickup(entity, true)
 		}
 		engine.removeSystem(spawnerSystem)
 	}
 
-	function removePickup(entity: Entity) {
+	function removePickup(entity: Entity, muteSound: boolean = false) {
 		const balloonInstance = ballonInstances.get(entity)
 		if (balloonInstance) {
-			balloonInstance.Destroy()
+			balloonInstance.Destroy(muteSound)
 			ballonInstances.delete(entity)
 		}
 	}

@@ -103,7 +103,8 @@ export class BalloonPickup {
 
 	Destroy(muteSound: boolean = false) {
 		Tween.setScale(this.entity, Vector3.One(), Vector3.Zero(), 200, EasingFunction.EF_LINEAR)
-		SoundManager.playSound(sfx.balloonPickup, this.entity, 64)
+		
+		if (!muteSound) SoundManager.playSound(sfx.balloonPickup, this.entity, 64)
 
 		utils.timers.setTimeout(() => {	
 			engine.removeEntity(this.entity)
