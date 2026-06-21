@@ -20,6 +20,7 @@ import { ComboManager } from './comboManager'
 import { ParticleSpawner } from './particleSpawner'
 import { DiscordNotifyNewPlayer } from 'src/shared/utils/discord-webhooks'
 import { GameStateManager } from './gameStateManager'
+import { Trampolines } from './trampolines'
 
 
 export function initClient() {
@@ -86,6 +87,7 @@ export function initClient() {
 		ParticleSpawner.init()
 		RingSpawner.init()
 		TriggerSpawner.spawnTriggers()
+		Trampolines.init()
 		
 		const { SetupUI } = await import('src/client/ui-screen')
 		SetupUI()
