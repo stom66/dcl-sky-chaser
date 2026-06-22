@@ -32,4 +32,9 @@ export const sfx = {
 		"assets/sfx/lever_2.mp3",
 	],
 
+	boing: [
+		"assets/sfx/boing_1.wav",
+		"assets/sfx/boing_2.wav",
+	],
+
 }
