@@ -52,18 +52,19 @@ export class Leaderboard {
 		userId: string,
 		score : number
 	): Promise<void> {
-		const entries  = await this.read()
-		const existing = entries.find((e) => e.userId === userId)
+		const entries     = await this.read()
+		const existing    = entries.find((e) => e.userId === userId)
+		const displayName = await userProfileCache.getUserDisplayName(userId)
 
 		if (existing) {
 			if (!this.shouldReplace(existing, score)) return
 			existing.score       = score
-			existing.displayName = userProfileCache.getDisplayName(userId)
+			existing.displayName = displayName
 			existing.lastUpdated = Date.now()
 		} else {
 			entries.push({
 				userId     : userId,
-				displayName: userProfileCache.getDisplayName(userId),
+				displayName: displayName,
 				score      : score,
 				lastUpdated: Date.now(),
 				rank       : 0
@@ -73,8 +74,8 @@ export class Leaderboard {
 		try {
 			const cleaned = this.cleanup(entries)
 			await Storage.set(this.storeName, JSON.stringify(cleaned))
-			console.log(`Leaderboard: submitScore: wrote "${this.storeName}"`, entries)
-			this.callback(entries)
+			console.log(`Leaderboard: submitScore: wrote "${this.storeName}"`, cleaned)
+			this.callback(cleaned)
 		} catch (error) {
 			console.error(`Leaderboard: submitScore: failed to write "${this.storeName}"`, error)
 		}

@@ -61,12 +61,13 @@ export namespace serverHandler {
 		ComponentStore.setGameStartTime(Date.now() + GameSettings.COUNTDOWN_DURATION)
 		ComponentStore.setGameStatus(GameStatus.STARTING)
 
-		// Start game after Countdown
+		// MARK: Start Game
 		utils.timers.setTimeout(() => {
 			ComponentStore.setGameStatus(GameStatus.ACTIVE)
 		}, GameSettings.COUNTDOWN_DURATION)
 
-		// End Game after duration + countdown
+
+		// MARK: End Game
 		utils.timers.setTimeout(() => {
 			// Submit scores to leaderboards
 			const scores = ComponentStore.getPlayerScores()
@@ -78,7 +79,8 @@ export namespace serverHandler {
 			ComponentStore.setGameStatus(GameStatus.ENDING)
 		}, GameSettings.COUNTDOWN_DURATION + GameSettings.GAME_DURATION)
 
-		// End Game after duration + countdown
+		
+		// MARK: Reset Game
 		utils.timers.setTimeout(() => {
 			ComponentStore.setGameStatus(GameStatus.IDLE)
 			ComponentStore.resetAfterRound()

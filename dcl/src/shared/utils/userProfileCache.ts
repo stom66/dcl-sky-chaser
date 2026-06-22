@@ -91,11 +91,16 @@ class UserProfileCache {
 
 	// MARK: getUserProfile
 	async getUserProfile(userId?: string | null): Promise<DecentralandProfile | null> {
-		if (!this.isInitialised) await this.init()
-
-		userId = userId ?? this.localUserId
+		// Only the local-player fallback needs init(). On the authoritative server
+		// init() never resolves (no local player), so awaiting it with an explicit
+		// userId would hang the caller forever.
 		if (!userId) {
-			console.error('UserDataCache: getUserProfile: no userId')
+			if (!this.isInitialised) await this.init()
+			userId = this.localUserId
+		}
+
+		if (!userId) {
+			console.error('UserProfileCache: getUserProfile: no userId')
 			return null
 		}
 
@@ -140,6 +145,21 @@ class UserProfileCache {
 		const profile = this.cache.get(id)
 		return profile?.avatars[0]?.name ?? ''
 	}
+
+
+	// MARK: getUserDisplayName
+	/** Awaits the profile fetch (or cache hit) then returns the display name, or `''` if unavailable. */
+	async getUserDisplayName(userId?: string | null): Promise<string> {
+		const id = userId ?? this.localUserId
+		if (!id) {
+			console.error('UserProfileCache: getUserDisplayName: no userId')
+			return ''
+		}
+
+		const profile = await this.getUserProfile(id)
+		return profile?.avatars[0]?.name ?? ''
+	}
+
 
 	// MARK: getCachedAvatarUrl
 	/** Synchronous face256 URL from an already-cached profile; no network. */

@@ -51,7 +51,7 @@ export class LeaderboardWeekly extends Leaderboard {
 	 * Callback to be overridden by subclasses to perform additional actions when a score is submitted.
 	 */
 	protected callback(entries: LeaderboardEntry[]): void {
-		console.log(`LeaderboardAllTime: submitScore: wrote "alltime"`, entries)
+		console.log(`LeaderboardWeekly: submitScore: wrote "weekly"`, entries)
 
 		// Tell the component store to update the weekly leaderboard, so that can 
 		// be synced to the clients
