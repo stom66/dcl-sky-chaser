@@ -16,7 +16,7 @@
     "server-logs": "sdk-commands sdk-server-logs"
   },
   "devDependencies": {
-    "@dcl/asset-packs": "^2.10.0",
+    "@dcl/asset-packs": "2.15.2",
     "@types/node-fetch": "^2.6.11",
     "node-fetch": "^2.7.0",
     "tsx": "^4.7.0"
