@@ -24,6 +24,7 @@ import { Trampolines } from './trampolines'
 import { UILeaderboard } from './ui-leaderboard'
 import { BeaconManager } from './beaconManager'
 import { BirdSpawner } from './birdSpawner'
+import { UmbrellaBouncer } from './umbrellaBouncer'
 
 
 export function initClient() {
@@ -94,6 +95,8 @@ export function initClient() {
 		
 		UILeaderboard.init()
 		BeaconManager.init()
+		UmbrellaBouncer.init()
+
 		BirdSpawner.init()
 
 		const { SetupUI } = await import('src/client/ui-screen')

@@ -1,5 +1,5 @@
 import { engine, Entity, Transform } from "@dcl/sdk/ecs"
-import { Vector3 } from "@dcl/sdk/math"
+import { Quaternion, Vector3 } from "@dcl/sdk/math"
 
 import { BalloonPickup as BalloonPickupComponent } from "src/shared/components/balloonPickup"
 
@@ -74,6 +74,7 @@ export namespace BalloonSpawner {
 		const y        = origin.y + height
 		const z        = origin.z + distance * Math.sin(angle)
 		const value    = Math.ceil(Math.random()*3) * 10
+
 		const pickup   = new BalloonPickup(Vector3.create(x, y, z))
 
 		return pickup
@@ -109,11 +110,16 @@ export namespace BalloonSpawner {
 
 	function moverSystem(dt: number) {
 		for (const [entity] of engine.getEntitiesWith(BalloonPickupComponent)) {
-			const riseSpeed = BalloonPickupComponent.get(entity)?.riseSpeed ?? 0
 			const transform = Transform.getMutable(entity)
+	
+			const spinSpeed = BalloonPickupComponent.get(entity)?.spinSpeed ?? 0
+			transform.rotation = Quaternion.add(transform.rotation, Quaternion.fromEulerDegrees(0, dt * spinSpeed, 0))
+			
+			const riseSpeed = BalloonPickupComponent.get(entity)?.riseSpeed ?? 0
 			transform.position.y += dt * riseSpeed
 			if (transform.position.y > despawnHeight) {
 				removePickup(entity)
+				continue
 			}
 		}
 	}

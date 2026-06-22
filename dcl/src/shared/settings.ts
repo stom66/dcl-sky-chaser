@@ -8,7 +8,7 @@ declare var process: {
 
 const env = process.env.NODE_ENV
 export const IS_DEV = env == "development"
-export const FORCE_DEBUG = true
+export const FORCE_DEBUG = false
 
 
 

@@ -17,8 +17,8 @@ export const sfx = {
 	],
 
 	fuelPickup: [
-		"assets/sfx/Games, Video, Event, Collect Item, Various Positive 01 SND5544.wav",
-		"assets/sfx/Games, Video, Event, Collect Item, Various Positive 01 SND5544 1.wav",
+		"assets/sfx/pickup_01.wav",
+		"assets/sfx/pickup_02.wav",
 	],
 
 	balloonPickup: [
@@ -42,6 +42,13 @@ export const sfx = {
 		"assets/sfx/coo_2.mp3",
 		"assets/sfx/coo_3.mp3",
 		"assets/sfx/coo_4.mp3",
+	],
+
+	fart: [
+		"assets/sfx/fart_01.wav",
+		"assets/sfx/fart_02.wav",
+		"assets/sfx/fart_03.wav",
+		"assets/sfx/fart_04.wav",
 	],
 
 }

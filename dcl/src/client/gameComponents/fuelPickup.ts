@@ -1,4 +1,4 @@
-import { EasingFunction, engine, Entity, GltfContainer, GltfNodeModifiers, Material, MeshRenderer, Transform, TriggerArea, triggerAreaEventsSystem, Tween } from "@dcl/sdk/ecs"
+import { ColliderLayer, EasingFunction, engine, Entity, GltfContainer, GltfNodeModifiers, Material, MeshRenderer, Transform, TriggerArea, triggerAreaEventsSystem, Tween } from "@dcl/sdk/ecs"
 import { Vector3 } from "@dcl/sdk/math"
 import * as utils from '@dcl-sdk/utils'
 
@@ -49,10 +49,11 @@ export class FuelPickup {
 
 
 		
-/* 		GltfContainer.create(this.entity, {
-			src: "assets/models/fuel.gltf"
+		GltfContainer.create(this.entity, {
+			src: "assets/models/fuel.gltf", 
+			visibleMeshesCollisionMask: ColliderLayer.CL_POINTER
 		})
-		GltfNodeModifiers.create(this.entity, {
+/* 		GltfNodeModifiers.create(this.entity, {
 			modifiers: [
 				{
 					path: "",
@@ -70,12 +71,12 @@ export class FuelPickup {
 			]
 		}) */
 
-		MeshRenderer.setSphere(this.triggerEntity)
-		Material.setPbrMaterial(this.triggerEntity, { 
+		//MeshRenderer.setSphere(this.triggerEntity)
+/* 		Material.setPbrMaterial(this.triggerEntity, { 
 			albedoColor      : theme.colors.success,
 			emissiveColor    : theme.colors.success,
 			emissiveIntensity: 0.2
-		})
+		}) */
     }
 
 	onTriggerEnter() {

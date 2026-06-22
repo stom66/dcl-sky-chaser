@@ -85,7 +85,7 @@ export namespace UILeaderboard {
 	function updateLeaderboard(title: string, entries: Omit<LeaderboardEntry, 'lastUpdated'>[]) {
 		removeAllEntities()
 
-		const origin = Vector3.create(243.3, 70, 269)
+		const origin = Vector3.create(243.3, 70.2, 269)
 		const rotation = Quaternion.fromEulerDegrees(0, -90, 0)
 
 		const rowSpacing = 0.5
@@ -93,13 +93,13 @@ export namespace UILeaderboard {
 
 		// Title - z+ moves text right, y+ moves up
 		const titlePos = Vector3.add(origin, Vector3.create(0, 0, 0))
-		addTextShape(title, titlePos, rotation, 8, TextAlignMode.TAM_BOTTOM_CENTER)
+		addTextShape(title, titlePos, rotation, 7, TextAlignMode.TAM_BOTTOM_CENTER)
 
 		let rowOffset = 0
 
 		if (entries.length === 0) {
-			const rowPosition = Vector3.add(origin, Vector3.create(0, -0.25, 0))
-			addTextShape("No entries", rowPosition, rotation, 4, TextAlignMode.TAM_TOP_CENTER)
+			const rowPosition = Vector3.add(origin, Vector3.create(0, -0.8, 0))
+			addTextShape("~ No entries ~", rowPosition, rotation, 4, TextAlignMode.TAM_TOP_CENTER)
 			return
 		}
 

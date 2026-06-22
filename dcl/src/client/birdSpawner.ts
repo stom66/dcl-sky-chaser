@@ -1,8 +1,12 @@
-import { Animator, engine, GltfContainer, InputAction, MeshCollider, pointerEventsSystem, PointerEventType, Transform } from "@dcl/sdk/ecs"
+import { Animator, engine, Entity, GltfContainer, InputAction, MeshCollider, pointerEventsSystem, PointerEventType, Transform } from "@dcl/sdk/ecs"
 import { Quaternion, Vector3 } from "@dcl/sdk/math"
-import { Button } from "@dcl/sdk/react-ecs"
+
+import { sfx, SoundManager } from "src/client/soundManager"
 
 export namespace BirdSpawner {
+
+	const BIRD_SCALE = 1.5
+	const MAX_INTERACTION_DISTANCE = 7
 
 	const transforms = [
 		// Pidgeon_02
@@ -57,47 +61,66 @@ export namespace BirdSpawner {
 		console.log("BirdSpawner: init")
 
 		for (const [index, transform] of transforms.entries()) {
+			createBird(index, transform)
+		}
+	}
 
-			const bird = engine.addEntity()
-			Transform.create(bird, {
-				position: transform.position,
-				rotation: transform.rotation,
-			})
+	function createBird(
+		index: number, 
+		transform: { position: Vector3, rotation: Quaternion }
+	) {
+		const num = (index % 3) + 1 // we only have 3 bird models
 
-			const num = (index % 3) + 1
-			const clip = num === 1 ? "Pigeon1" : num === 2 ? "Pigeon1.001" : "Pigeon1.002"
-			const src = `assets/models/bird0${num}.gltf`
-			GltfContainer.create(bird, {
-				src: src,
-			})
+		const bird = engine.addEntity()
+		Transform.create(bird, {
+			position: transform.position,
+			rotation: transform.rotation,
+			scale: Vector3.create(BIRD_SCALE, BIRD_SCALE, BIRD_SCALE),
+		})
 
-			Animator.create(bird, {
-				states: [
-					{
-						clip: clip,
-						playing: true,
-						loop: true,
-					}
-				]
-			})
-			Animator.playSingleAnimation(bird, clip)
-
-			MeshCollider.setSphere(bird)
-
-			pointerEventsSystem.onPointerDown({
-				entity: bird,
-				opts: { 
-					button     : InputAction.IA_POINTER, 
-					hoverText  : "Cooo!", 
-					maxDistance: 5 
+		const src = `assets/models/bird0${num}.gltf`
+		GltfContainer.create(bird, {
+			src: src,
+		})
+		
+		const clip = num === 1 ? "Pigeon1" : num === 2 ? "Pigeon1.001" : "Pigeon1.002"
+		Animator.create(bird, {
+			states: [
+				{
+					clip: clip,
+					playing: true,
+					loop: true,
 				}
-			}, () => {
-				console.log("Bird clicked")
-				// TODO: do something fun
-			})
+			]
+		})
+		// Animator.playSingleAnimation(bird, clip) // needed?
 
-			console.log("BirdSpawner: spawning bird", index, src)
+		MeshCollider.setSphere(bird)
 
+		const isFart = transform.position.y > 53.2 && transform.position.y < 53.4
+		const hovertext = isFart ? "Pooo!" : "Cooo!"
+		pointerEventsSystem.onPointerDown({
+			entity: bird,
+			opts: { 
+				button     : InputAction.IA_POINTER, 
+				hoverText  : hovertext, 
+				maxDistance: MAX_INTERACTION_DISTANCE
+			}
+		}, () => {
+			onBirdClicked(bird, isFart)
+		})
+
+		console.log("BirdSpawner: spawned bird", index, src)	
+		
+	}
+
+	function onBirdClicked(bird: Entity, isFart: boolean) {
+		console.log("BirdSpawner: bird clicked", bird)
+
+		if (isFart) {
+			SoundManager.playSound([...sfx.fart, ...sfx.coo], bird, 20)
+		} else {	
+			SoundManager.playSound(sfx.coo, bird, 20)
 		}
 	}
 }

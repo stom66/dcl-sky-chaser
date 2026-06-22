@@ -1,11 +1,11 @@
-import { EasingFunction, engine, Entity, GltfContainer, GltfNodeModifiers, Material, MeshRenderer, Transform, TriggerArea, triggerAreaEventsSystem, Tween } from "@dcl/sdk/ecs"
-import { Vector3 } from "@dcl/sdk/math"
+import { EasingFunction, engine, Entity, GltfContainer, GltfNodeModifiers, Material, MeshRenderer, PBMaterial, Transform, TriggerArea, triggerAreaEventsSystem, Tween } from "@dcl/sdk/ecs"
+import { Quaternion, Vector3 } from "@dcl/sdk/math"
 import * as utils from '@dcl-sdk/utils'
 
 import { ComponentStore } from "src/shared/components/componentStore"
 import { BalloonPickup as BalloonPickupComponent } from "src/shared/components/balloonPickup"
 
-import { theme } from "../ui"
+import { darken, lighten, theme } from "../ui"
 import { sfx, SoundManager } from "../soundManager"
 import { ClientMessaging } from "../clientMessaging"
 
@@ -21,50 +21,122 @@ export class BalloonPickup {
 
 	private pickupTriggered: boolean = false
 
+	private randomIndex: number = Math.floor(Math.random() * 4) + 1
+
+	private randomBalloonColors = [
+		theme.colors.warning,
+		darken(theme.colors.warning, 0.125),
+		darken(theme.colors.warning, 0.25),
+		lighten(theme.colors.warning, 0.125),
+		lighten(theme.colors.warning, 0.25),
+	]
+	private randomPackageColors = [
+		theme.colors.warning,
+		theme.colors.info,
+		theme.colors.success,
+		theme.colors.danger,
+	]
+
     constructor(
 		public position : Vector3, 
 		public value    : number = this.defaultValue,
 		public maxHeight: number = 200,
-		public riseSpeed: number = Math.random() * 4 + 0.1
+		public riseSpeed: number = Math.random() * 4 + 0.1,
+		public spinSpeed: number = Math.random() * 20 - 10
 	) {
 
 		this.entity = engine.addEntity()
 		BalloonPickupComponent.create(this.entity, { 
 			value    : this.value,
-			riseSpeed: this.riseSpeed
+			riseSpeed: this.riseSpeed,
+			spinSpeed: this.spinSpeed
 		})
 
 		this.startPosition = this.position
 		Transform.create(this.entity, { 
-			position: this.position 
+			position: this.position,
+			rotation: Quaternion.fromEulerDegrees(0, Math.random() * 360, 0)
 		})
 
 		GltfContainer.create(this.entity, {
-			src: "assets/models/balloon.gltf"
+			src: `assets/models/balloon_0${this.randomIndex}.gltf`
 		})
+
+		// Define materials
+		const randomBalloonColorIndex = Math.floor(Math.random() * this.randomBalloonColors.length)
+		const randomBalloonColor = this.randomBalloonColors[randomBalloonColorIndex]
+		const materialBalloonOverRide = {
+			$case: "pbr",
+			pbr: {
+				albedoColor: randomBalloonColor,
+				emissiveColor: randomBalloonColor,
+				emissiveIntensity: 0.3
+			}
+		} as PBMaterial["material"]
+
+		const randomPackageColorIndex = Math.floor(Math.random() * this.randomPackageColors.length)
+		const randomPackageColor = this.randomPackageColors[randomPackageColorIndex]
+		const materialPackageOverRide = {
+			$case: "pbr",
+			pbr: {
+				albedoColor: randomPackageColor,
+				emissiveColor: randomPackageColor,
+				emissiveIntensity: 0.3
+			}
+		} as PBMaterial["material"]
+
 		GltfNodeModifiers.create(this.entity, {
 			modifiers: [
 				{
-					path: "",
+					path: "balloon.001",
 					material: {
-						material: {
-							$case: "pbr",
-							pbr: {
-								albedoColor: theme.colors.warning,
-								emissiveColor: theme.colors.warning,
-								emissiveIntensity: 0.3
-							}
-						}
+						material: materialBalloonOverRide
+					}
+				},
+				{
+					path: "balloon.002",
+					material: {
+						material: materialBalloonOverRide
+					}
+				},
+				{
+					path: "balloon.003",
+					material: {
+						material: materialBalloonOverRide
+					}
+				},
+				{
+					path: "balloon.004",
+					material: {
+						material: materialBalloonOverRide
+					}
+				},
+				{
+					path: "package.001",
+					material: {
+						material: materialPackageOverRide
+					}
+				},
+				{
+					path: "package.002",
+					material: {
+						material: materialPackageOverRide
+					}
+				},
+				{
+					path: "package.003",
+					material: {
+						material: materialPackageOverRide
+					}
+				},
+				{
+					path: "package.004",
+					material: {
+						material: materialPackageOverRide
 					}
 				}
 			]
 		})
-		//MeshRenderer.setSphere(this.entity)
-		//Material.setPbrMaterial(this.entity, { 
-		//	albedoColor      : theme.colors.warning,
-		//	emissiveColor    : theme.colors.warning,
-		//	emissiveIntensity: 0.2
-		//})
 
 		this.triggerEntity = engine.addEntity()
 		Transform.create(this.triggerEntity, { parent: this.entity, scale: Vector3.create(this.triggerScale, this.triggerScale, this.triggerScale) })

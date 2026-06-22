@@ -7,6 +7,9 @@ import { alpha, theme } from 'src/client/ui/index'
 import { ButtonAction, Divider, InfoRow, SectionHeader } from 'src/client/ui/components'
 import { PlayerMover } from 'src/client/playerMover'
 import { ClientEvents, eventBus } from 'src/shared/utils/eventBus'
+import { ParticleSpawner } from 'src/client/particleSpawner'
+import { engine, Transform } from '@dcl/sdk/ecs'
+import { Vector3 } from '@dcl/sdk/math'
 
 
 // MARK: Vars
@@ -21,8 +24,8 @@ export function DebugUI() {
 		<UiEntity
 			key         = "ui_debug_root"
 			uiTransform = {{
-				width         : 220,
-				height        : 270,
+				width         : 240,
+				height        : 420,
 				flexDirection : 'column',
 				alignItems    : 'flex-start',
 				justifyContent: 'space-between',
@@ -43,6 +46,7 @@ export function DebugUI() {
 				<ButtonAction textLabel="toSpawn" callback={() => PlayerMover.movePlayerToSpawn() } />
 				<ButtonAction textLabel="newGame" callback={() => ClientMessaging.RequestNewGame() } />
 				<ButtonAction textLabel="addPoints" callback={() => ClientMessaging.RequestScoreUpdate() } />
+				<ButtonAction textLabel="triggerDustSpurt" callback={() => ParticleSpawner.TriggerDustSpurt(Transform.getOrNull(engine.PlayerEntity)?.position ?? Vector3.create(256, 63.2, 256)) } />
 					
 				{/* 
 				<ButtonAction textLabel="incrementScore" callback={() => ClientMessaging.RequestScoreUpdate() } /> 
@@ -61,11 +65,13 @@ export function DebugUI() {
 
 				<InfoRow
 					label="LeaderboardAllTime"
+					firstColumnWidth={75}
 					value={ComponentStore.getLeaderboardAllTime().length.toString()}
 				/>
 
 				<InfoRow
 					label="LeaderboardWeekly"
+					firstColumnWidth={75}
 					value={ComponentStore.getLeaderboardWeekly().length.toString()}
 				/>
 			</UiEntity>

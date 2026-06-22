@@ -5,5 +5,6 @@ export const BalloonPickup = engine.defineComponent(
 	{
 		value: Schemas.Int,
 		riseSpeed: Schemas.Int,
+		spinSpeed: Schemas.Int,
 	}
 )

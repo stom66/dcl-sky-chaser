@@ -1,6 +1,7 @@
 import { ColliderLayer, engine, Entity, MeshCollider, MeshRenderer, Physics, Transform, TriggerArea, triggerAreaEventsSystem } from "@dcl/sdk/ecs"
 import { Quaternion, Vector3 } from "@dcl/sdk/math"
 import { sfx, SoundManager } from "./soundManager"
+import { ParticleSpawner } from "./particleSpawner"
 
 export namespace Trampolines {
 
@@ -61,6 +62,7 @@ export namespace Trampolines {
 			// Apply an impulse to the player
 			Physics.applyImpulseToPlayer(this.direction, IMPULSE_FORCE)
 			SoundManager.playSound(sfx.boing)
+			ParticleSpawner.TriggerDustSpurt(Transform.getOrNull(engine.PlayerEntity)?.position ?? Vector3.create(256, 63.2, 256))
 		}
 	
 		onTriggerExit() {
