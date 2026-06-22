@@ -111,12 +111,12 @@
             "parent": 0
           }
         },
-        "514": {
+        "515": {
           "json": {
             "position": {
-              "x": 3.6600000858306885,
-              "y": 1.5898768901824951,
-              "z": 5.5
+              "x": 0,
+              "y": 0,
+              "z": 0
             },
             "scale": {
               "x": 1,
@@ -125,9 +125,30 @@
             },
             "rotation": {
               "x": 0,
-              "y": 0.2572920024394989,
+              "y": 1,
               "z": 0,
-              "w": 0.9663336873054504
+              "w": 0
+            },
+            "parent": 0
+          }
+        },
+        "516": {
+          "json": {
+            "position": {
+              "x": 4,
+              "y": 0,
+              "z": 4.25
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            },
+            "rotation": {
+              "x": 0,
+              "y": 0.9659258127212524,
+              "z": 0,
+              "w": -0.258819043636322
             },
             "parent": 0
           }
@@ -228,11 +249,11 @@
             ]
           }
         },
-        "517": {
+        "515": {
           "json": {
             "states": [
               {
-                "clip": "Cube.097",
+                "clip": "Armature.001Action",
                 "playing": false,
                 "weight": 1,
                 "speed": 1,
@@ -240,7 +261,15 @@
                 "shouldReset": false
               },
               {
-                "clip": "Cube.098",
+                "clip": "Armature.002Action",
+                "playing": true,
+                "weight": 1,
+                "speed": 1,
+                "loop": true,
+                "shouldReset": false
+              },
+              {
+                "clip": "ArmatureAction",
                 "playing": false,
                 "weight": 1,
                 "speed": 1,
@@ -248,13 +277,51 @@
                 "shouldReset": false
               },
               {
-                "clip": "Cube.099",
+                "clip": "Pigeon1",
                 "playing": false,
                 "weight": 1,
                 "speed": 1,
                 "loop": false,
                 "shouldReset": false
               },
+              {
+                "clip": "Pigeon1.001",
+                "playing": false,
+                "weight": 1,
+                "speed": 1,
+                "loop": false,
+                "shouldReset": false
+              },
+              {
+                "clip": "Pigeon1.001-Armature_Prop2",
+                "playing": false,
+                "weight": 1,
+                "speed": 1,
+                "loop": false,
+                "shouldReset": false
+              },
+              {
+                "clip": "Pigeon1.002",
+                "playing": false,
+                "weight": 1,
+                "speed": 1,
+                "loop": false,
+                "shouldReset": false
+              },
+              {
+                "clip": "Pigeon1.002-Armature_Prop2",
+                "playing": false,
+                "weight": 1,
+                "speed": 1,
+                "loop": false,
+                "shouldReset": false
+              }
+            ]
+          }
+        },
+        "517": {
+          "json": {
+            "states": [
               {
                 "clip": "Armature.001Action",
                 "playing": true,
@@ -264,7 +331,7 @@
                 "shouldReset": false
               },
               {
-                "clip": "Cube.104",
+                "clip": "ArmatureAction",
                 "playing": false,
                 "weight": 1,
                 "speed": 1,
@@ -272,7 +339,7 @@
                 "shouldReset": false
               },
               {
-                "clip": "windSock.pole._collider_box",
+                "clip": "Pigeon1",
                 "playing": false,
                 "weight": 1,
                 "speed": 1,
@@ -280,7 +347,31 @@
                 "shouldReset": false
               },
               {
-                "clip": "windSock.pole._collider_box.001",
+                "clip": "Pigeon1.001",
+                "playing": false,
+                "weight": 1,
+                "speed": 1,
+                "loop": false,
+                "shouldReset": false
+              },
+              {
+                "clip": "Pigeon1.001-Armature_Prop2",
+                "playing": false,
+                "weight": 1,
+                "speed": 1,
+                "loop": false,
+                "shouldReset": false
+              },
+              {
+                "clip": "Pigeon1.002",
+                "playing": false,
+                "weight": 1,
+                "speed": 1,
+                "loop": false,
+                "shouldReset": false
+              },
+              {
+                "clip": "Pigeon1.002-Armature_Prop2",
                 "playing": false,
                 "weight": 1,
                 "speed": 1,
@@ -7904,7 +7995,14 @@
             "invisibleMeshesCollisionMask": 3
           }
         },
-        "514": {
+        "515": {
+          "json": {
+            "src": "assets/models/windVane.gltf",
+            "visibleMeshesCollisionMask": 0,
+            "invisibleMeshesCollisionMask": 3
+          }
+        },
+        "516": {
           "json": {
             "src": "assets/models/errorSign.gltf",
             "visibleMeshesCollisionMask": 0,
@@ -7952,9 +8050,14 @@
             "value": "clouds.gltf"
           }
         },
-        "514": {
+        "515": {
           "json": {
-            "value": "errorSign.gltf"
+            "value": "windVane.gltf"
+          }
+        },
+        "516": {
+          "json": {
+            "value": "errorSign.gltf_2"
           }
         },
         "517": {
@@ -8016,7 +8119,7 @@
         "serializationType": "map"
       },
       "data": {
-        "0": {
+        "515": {
           "json": {
             "gizmo": 0
           }
@@ -8070,10 +8173,11 @@
                 "open": true,
                 "children": [
                   513,
-                  514,
                   517,
                   518,
-                  519
+                  519,
+                  515,
+                  516
                 ]
               },
               {
@@ -8089,10 +8193,6 @@
                 "children": []
               },
               {
-                "entity": 514,
-                "children": []
-              },
-              {
                 "entity": 517,
                 "children": []
               },
@@ -8102,6 +8202,14 @@
               },
               {
                 "entity": 519,
+                "children": []
+              },
+              {
+                "entity": 515,
+                "children": []
+              },
+              {
+                "entity": 516,
                 "children": []
               }
             ]
@@ -8129,7 +8237,10 @@
         "513": {
           "json": {}
         },
-        "514": {
+        "515": {
+          "json": {}
+        },
+        "516": {
           "json": {}
         },
         "517": {
