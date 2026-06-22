@@ -14,7 +14,7 @@ export namespace UILeaderboard {
 
 	export function init() {
 
-		updateLeaderboard(currentLeaderboard, ComponentStore.getLeaderboardAllTime())
+		updateLeaderboard(currentLeaderboard, ComponentStore.getLeaderboardWeekly())
 
 		ComponentStore.onComponentChange(C_Leaderboards.leaderboardWeekly, (data) => {
 			if (currentLeaderboard === "Weekly") {
