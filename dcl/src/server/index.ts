@@ -9,6 +9,7 @@ import { ComponentStore } from "src/shared/components/componentStore"
 import { serverHandler } from "src/server/serverHandler"
 import { ServerMessaging } from "src/server/serverMessaging"
 import { ServerStore } from "src/server/serverStore"
+import { LeaderboardManager } from "./leaderboardManager"
 
 
 export async function initServer(): Promise<void> {
@@ -20,6 +21,9 @@ export async function initServer(): Promise<void> {
 	
 	serverHandler.init()
 	const serverStore = ServerStore.getInstance() // Initialize the store
+
+	// Initialize the leaderboard manager
+	LeaderboardManager.init()
 
 	// Periodically send the server time to the clients
 	ServerMessaging.sendServerTime()

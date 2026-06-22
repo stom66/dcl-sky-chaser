@@ -21,6 +21,9 @@ import { ParticleSpawner } from './particleSpawner'
 import { DiscordNotifyNewPlayer } from 'src/shared/utils/discord-webhooks'
 import { GameStateManager } from './gameStateManager'
 import { Trampolines } from './trampolines'
+import { UILeaderboard } from './ui-leaderboard'
+import { BeaconManager } from './beaconManager'
+import { BirdSpawner } from './birdSpawner'
 
 
 export function initClient() {
@@ -89,6 +92,10 @@ export function initClient() {
 		TriggerSpawner.spawnTriggers()
 		Trampolines.init()
 		
+		UILeaderboard.init()
+		BeaconManager.init()
+		BirdSpawner.init()
+
 		const { SetupUI } = await import('src/client/ui-screen')
 		SetupUI()
 	})

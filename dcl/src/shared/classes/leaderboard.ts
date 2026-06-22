@@ -1,107 +1,117 @@
 import { Storage } from "@dcl/sdk/server"
-import { userProfileCache } from "../utils/userProfileCache"
 
-export type LeaderboardData = {
+import { userProfileCache } from "src/shared/utils/userProfileCache"
+
+export type LeaderboardEntry = {
 	userId     : string
 	displayName: string
 	score      : number
-	rank       : number
 	lastUpdated: number
+	rank       : number
 }
 
 export class Leaderboard {
-	private data         : LeaderboardData[] = []
-	private dataStoreName: string
-	private lastFetched  : number            = 0
-	private maxDataAge   : number            = 1000 * 60 * 1 // 1 minute
-	private recordLimit  : number            = 10 // Max number of records to return
+	protected storeName  : string
+	protected recordLimit: number = 10
 
-	constructor(dataStoreName: string) {
-		this.dataStoreName = dataStoreName
+	constructor(storeName: string) {
+		this.storeName = storeName
 
-		this.updateData()
+		this.read().then((entries) => {
+			this.callback(entries)
+		})
 	}
 
-	private async updateData(): Promise<LeaderboardData[]> {
-		const data = await this.readDataFromStorage()
 
-		this.data = data
-		this.lastFetched = Date.now()
+	// MARK: read
+	/**
+	 * Reads entries from storage, clean them up, remove stale entries, sorted high
+	 * to low, and capped to recordLimit.
+	 */
+	public async read(): Promise<LeaderboardEntry[]> {
+		const raw = await Storage.get<string>(this.storeName)
+		if (!raw) return []
 
-		// Sort and clean on fetch
-		this.sortData()
-		this.cleanData()
-
-		return this.data
-	}
-
-	private async readDataFromStorage(): Promise<LeaderboardData[]> {		
 		try {
-			const data = await Storage.get<string>(this.dataStoreName)
-			if (data) {
-				try {
-					return JSON.parse(data) as LeaderboardData[]
-				} catch (parseError) {
-					console.error('Leaderboard: fetchStoredLeaderboard: failed to parse leaderboard data', parseError)
-					return []
-				}
-			}
-			return []
+			const entries = JSON.parse(raw) as LeaderboardEntry[]
+			const cleaned = this.cleanup(entries)
+			return cleaned
 		} catch (error) {
-			console.error('Leaderboard: fetchStoredLeaderboard: error fetching from storage', error)
+			console.error(`Leaderboard: read: failed to parse "${this.storeName}"`, error)
 			return []
 		}
 	}
 
-	public getData(): LeaderboardData[] {
-		if (Date.now() - this.lastFetched > this.maxDataAge) {
-			this.updateData()
-		}
 
-		return this.data.slice(0, this.recordLimit)
-	}
-
-	public updateScore(
-		userId: string, 
+	// MARK: submitScore
+	/**
+	 * Reads the latest data, applies the score if shouldReplace allows it, then writes
+	 * the cleaned result back so storage never grows beyond recordLimit or keeps dead entries.
+	 */
+	public async submitScore(
+		userId: string,
 		score : number
-	): void {
+	): Promise<void> {
+		const entries  = await this.read()
+		const existing = entries.find((e) => e.userId === userId)
 
-		this.updateData()
-
-		const index = this.data.findIndex((l) => l.userId === userId)
-		if (index !== -1) {
-			if (this.data[index].score < score) {
-				this.data[index].score = score
-				this.data[index].lastUpdated = Date.now()
-			}
+		if (existing) {
+			if (!this.shouldReplace(existing, score)) return
+			existing.score       = score
+			existing.lastUpdated = Date.now()
 		} else {
-			this.data.push({ 
-				userId     : userId, 
-				displayName: userProfileCache.getDisplayName(userId), 
-				score, 
-				rank: this.data.length + 1, lastUpdated: Date.now() 
+			entries.push({
+				userId     : userId,
+				displayName: userProfileCache.getDisplayName(userId),
+				score      : score,
+				lastUpdated: Date.now(),
+				rank       : 0
 			})
 		}
 
-		// Sort and clean the data after every modification
-		this.sortData()
-		this.cleanData()
-
-		// Write it back to the data store
-		Storage.set(this.dataStoreName, JSON.stringify(this.data))
-			.then(() => {
-				console.log('Leaderboard: updateScore: data written to storage')
-			})
-			.catch((error) => {
-				console.error('Leaderboard: updateScore: error writing to storage', error)
-			})
+		try {
+			const cleaned = this.cleanup(entries)
+			await Storage.set(this.storeName, JSON.stringify(cleaned))
+			console.log(`Leaderboard: submitScore: wrote "${this.storeName}"`, entries)
+			this.callback(entries)
+		} catch (error) {
+			console.error(`Leaderboard: submitScore: failed to write "${this.storeName}"`, error)
+		}
 	}
 
-	private sortData(): void {
-		this.data.sort((a, b) => b.score - a.score)
+	// MARK: callback
+	/**
+	 * Callback to be overridden by subclasses to perform additional actions when a score is 
+	 * submitted or data is read.
+	 */
+	protected callback(entries: LeaderboardEntry[]): void {
+		console.log(`Leaderboard: submitScore: wrote "${this.storeName}"`, entries)
 	}
 
-	private cleanData(): void {
-		this.data = this.data.slice(0, this.recordLimit)
+
+	// MARK: cleanup
+	/**
+	 * Sorts entries high to low and caps to recordLimit. Run on every read and write
+	 * so storage stays bounded. Override wholesale for boards with extra requirements
+	 * (eg weekly dropping entries from previous weeks).
+	 */
+	protected cleanup(entries: LeaderboardEntry[]): LeaderboardEntry[] {
+		return entries
+			.sort((a, b) => b.score - a.score)
+			.slice(0, this.recordLimit)
+			.map((entry, index) => ({ ...entry, rank: index + 1 }))
+	}
+
+
+	// MARK: shouldReplace
+	/**
+	 * Whether an incoming score should replace the stored entry. Defaults to keeping
+	 * the player's best score.
+	 */
+	protected shouldReplace(
+		existing: LeaderboardEntry,
+		score   : number
+	): boolean {
+		return score > existing.score
 	}
 }

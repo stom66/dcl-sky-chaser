@@ -4,14 +4,15 @@ import { ComponentData, Entity } from "@dcl/sdk/ecs"
 import { GameStatus } from "src/shared/enums"
 import { GameDataSnapshot } from "src/shared/types/shared-types"
 
-import { ComponentManager, C_GameData, C_PlayerFuel, C_Combo } from "src/shared/components/componentManager"
-import { GameSettings } from "../settings"
+import { ComponentManager, C_GameData, C_PlayerFuel, C_Combo, C_Leaderboards } from "src/shared/components/componentManager"
+import { GameSettings } from "src/shared/settings"
+import { LeaderboardEntry } from "src/shared/classes/leaderboard"
 
 // Re-export Components for easy importing elsewhere
 export * as C_GameData from "src/shared/components/gameData"
 export * as C_PlayerFuel from "src/shared/components/playerFuel"
 export * as C_Combo from "src/shared/components/combo"
-
+export * as C_Leaderboards from "src/shared/components/leaderboards"
 /**
  * Data-access wrapper around the synced components. Reads work on both
  * server and client; writes are gated by `isServer()` and silently no-op on
@@ -41,6 +42,8 @@ export namespace ComponentStore {
 		C_GameData.GameData,
 		C_GameData.ScoreBoard,
 		C_PlayerFuel.PlayerFuel,
+		C_Leaderboards.leaderboardAllTime,
+		C_Leaderboards.leaderboardWeekly,
 	] as const
 
 	const watchers = new Map<
@@ -59,6 +62,7 @@ export namespace ComponentStore {
 				emitOnChange(component, current)
 			})
 		}
+
 		isInitialized = true
 	}
 
@@ -118,7 +122,7 @@ export namespace ComponentStore {
 
 
 	// MARK: resetAllComponents
-	export function resetAllComponents(): void {
+	export function resetAfterRound(): void {
 		if (!isServer()) return
 
 		ComponentManager.seedComponentDefaults()
@@ -236,6 +240,14 @@ export namespace ComponentStore {
 		}
 	}
 
+	export function getPlayerScores(): { userId: string, score: number }[] {
+		const entity = ComponentManager.tryGetComponentEntity()
+		if (entity === undefined) return []
+
+		const c = C_GameData.ScoreBoard.get(entity)
+		return [...(c?.scores ?? [])]
+	}
+
 
 	// MARK: Fuel
 	export function getFuelValue(): {
@@ -325,5 +337,43 @@ export namespace ComponentStore {
 		const c = C_Combo.Combo.getMutable(entity)
 		c.value = 1
 		c.lastUpdatedTime = 0
+	}
+
+
+	// MARK: Leaderboards
+	export function setLeaderboardAllTime(leaderboard: LeaderboardEntry[]): void {
+		if (!isServer()) return
+
+		const entity = ComponentManager.tryGetComponentEntity()
+		if (entity === undefined) return
+
+		const c = C_Leaderboards.leaderboardAllTime.getMutable(entity)
+		c.scores = leaderboard
+	}
+
+	export function setLeaderboardWeekly(leaderboard: LeaderboardEntry[]): void {
+		if (!isServer()) return
+
+		const entity = ComponentManager.tryGetComponentEntity()
+		if (entity === undefined) return
+
+		const c = C_Leaderboards.leaderboardWeekly.getMutable(entity)
+		c.scores = leaderboard
+	}
+
+	export function getLeaderboardAllTime(): Omit<LeaderboardEntry, 'lastUpdated'>[] {
+		const entity = ComponentManager.tryGetComponentEntity()
+		if (entity === undefined) return []
+
+		const c = C_Leaderboards.leaderboardAllTime.get(entity)
+		return [...(c?.scores ?? [])]
+	}
+
+	export function getLeaderboardWeekly(): Omit<LeaderboardEntry, 'lastUpdated'>[] {
+		const entity = ComponentManager.tryGetComponentEntity()
+		if (entity === undefined) return []
+
+		const c = C_Leaderboards.leaderboardWeekly.get(entity)
+		return [...(c?.scores ?? [])]
 	}
 }

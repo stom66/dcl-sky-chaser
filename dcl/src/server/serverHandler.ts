@@ -7,6 +7,7 @@ import { ServerMessaging } from 'src/server/serverMessaging'
 import { ServerStore } from 'src/server/serverStore'
 import { GameStatus } from 'src/shared/enums'
 import { GameSettings } from 'src/shared/settings'
+import { LeaderboardManager } from "./leaderboardManager"
 
 
 export namespace serverHandler {
@@ -34,7 +35,7 @@ export namespace serverHandler {
 
 
 		if (ComponentStore.getGameStatus() === GameStatus.IDLE) {
-			ComponentStore.resetAllComponents()
+			ComponentStore.resetAfterRound()
 			StartNewGame()
 		} else {
 			console.log('handleRequestNewGame: game is not idle, skipping')
@@ -67,13 +68,20 @@ export namespace serverHandler {
 
 		// End Game after duration + countdown
 		utils.timers.setTimeout(() => {
+			// Submit scores to leaderboards
+			const scores = ComponentStore.getPlayerScores()
+			for (const score of scores) {
+				LeaderboardManager.submitScore('alltime', score.userId, score.score)
+				LeaderboardManager.submitScore('weekly', score.userId, score.score)
+			}
+
 			ComponentStore.setGameStatus(GameStatus.ENDING)
 		}, GameSettings.COUNTDOWN_DURATION + GameSettings.GAME_DURATION)
 
 		// End Game after duration + countdown
 		utils.timers.setTimeout(() => {
 			ComponentStore.setGameStatus(GameStatus.IDLE)
-			ComponentStore.resetAllComponents()
+			ComponentStore.resetAfterRound()
 		}, GameSettings.COUNTDOWN_DURATION + GameSettings.GAME_DURATION + GameSettings.END_GAME_DURATION)
 	}
 }

@@ -14,7 +14,8 @@ export * as C_PlayerFuel from "src/shared/components/playerFuel"
 import * as C_Combo from "src/shared/components/combo"
 export * as C_Combo from "src/shared/components/combo"
 
-
+import * as C_Leaderboards from "src/shared/components/leaderboards"
+export * as C_Leaderboards from "src/shared/components/leaderboards"
 
 /**
  * Lifecycle-only namespace: creates the synced gameplay entity, registers it
@@ -41,17 +42,17 @@ export namespace ComponentManager {
 	let componentEntity              : (Entity | undefined) = undefined
 	let isInitialised                : boolean              = false
 
-	const clientComponents = [
+/* 	const clientComponents = [
 		C_PlayerFuel.PlayerFuel,
 		C_Combo.Combo,
-	]
+	] */
 
 	const syncedComponents = [
 		C_GameData.GameData,
 		C_GameData.ScoreBoard,
-	]
-
-	const syncedComponentIds = Array.from(syncedComponents, (component) => component.componentId)
+		C_Leaderboards.leaderboardAllTime,
+		C_Leaderboards.leaderboardWeekly,
+	]	
 
 
 	// MARK: init
@@ -75,7 +76,9 @@ export namespace ComponentManager {
 
 		seedComponentDefaults()
 
+		const syncedComponentIds = Array.from(syncedComponents, (component) => component.componentId)
 		syncEntity(entity, syncedComponentIds, LANE_ENTITY_SYNC_ENUM_BASE + 1)
+
 		protectServerEntity(entity, syncedComponents)
 	}
 
@@ -84,17 +87,7 @@ export namespace ComponentManager {
 	export function seedComponentDefaults(): void {
 		const entity = getComponentEntity()
 
-		if (!isServer()) {
-			// Client
-			C_PlayerFuel.PlayerFuel.createOrReplace(entity, {	
-				value: 100,
-				maxValue: 100,
-			})
-			C_Combo.Combo.createOrReplace(entity, {
-				value: 1,
-				lastUpdatedTime: 0,
-			})
-		} else {	
+		if (isServer()) {
 			// Server
 			C_GameData.GameData.createOrReplace(entity, {
 				players  : [],
@@ -103,6 +96,31 @@ export namespace ComponentManager {
 			})
 			C_GameData.ScoreBoard.createOrReplace(entity, {
 				scores: [],
+			})
+
+			// Leaderboards
+			const leaderboardAllTimeExists = C_Leaderboards.leaderboardAllTime.has(entity)
+			if (!leaderboardAllTimeExists) {
+				C_Leaderboards.leaderboardAllTime.createOrReplace(entity, { 
+					scores: [] 
+				})
+			}
+			const leaderboardWeeklyExists = C_Leaderboards.leaderboardWeekly.has(entity)
+			if (!leaderboardWeeklyExists) {
+				C_Leaderboards.leaderboardWeekly.createOrReplace(entity, { 
+					scores: [] 
+				})
+			}
+
+		} else {	
+			// Client
+			C_PlayerFuel.PlayerFuel.createOrReplace(entity, {	
+				value: 100,
+				maxValue: 100,
+			})
+			C_Combo.Combo.createOrReplace(entity, {
+				value: 1,
+				lastUpdatedTime: 0,
 			})
 		}
 	}

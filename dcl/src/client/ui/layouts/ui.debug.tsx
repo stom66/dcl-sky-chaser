@@ -42,6 +42,7 @@ export function DebugUI() {
 
 				<ButtonAction textLabel="toSpawn" callback={() => PlayerMover.movePlayerToSpawn() } />
 				<ButtonAction textLabel="newGame" callback={() => ClientMessaging.RequestNewGame() } />
+				<ButtonAction textLabel="addPoints" callback={() => ClientMessaging.RequestScoreUpdate() } />
 					
 				{/* 
 				<ButtonAction textLabel="incrementScore" callback={() => ClientMessaging.RequestScoreUpdate() } /> 
@@ -59,8 +60,13 @@ export function DebugUI() {
 				/>
 
 				<InfoRow
-					label="GameStatus"
-					value={ComponentStore.getGameStatus().toString()}
+					label="LeaderboardAllTime"
+					value={ComponentStore.getLeaderboardAllTime().length.toString()}
+				/>
+
+				<InfoRow
+					label="LeaderboardWeekly"
+					value={ComponentStore.getLeaderboardWeekly().length.toString()}
 				/>
 			</UiEntity>
 
