@@ -58,6 +58,7 @@ export class Leaderboard {
 		if (existing) {
 			if (!this.shouldReplace(existing, score)) return
 			existing.score       = score
+			existing.displayName = userProfileCache.getDisplayName(userId)
 			existing.lastUpdated = Date.now()
 		} else {
 			entries.push({
