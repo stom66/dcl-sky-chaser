@@ -20,6 +20,7 @@ export class BalloonPickup {
 	private SHOW_TRIGGER: boolean = false
 
 	private pickupTriggered: boolean = false
+	private isDestroyed    : boolean = false
 
 	private randomIndex: number = Math.floor(Math.random() * 4) + 1
 
@@ -85,52 +86,22 @@ export class BalloonPickup {
 			}
 		} as PBMaterial["material"]
 
+		// Each balloon_0X model contains exactly one balloon node and one package
+		// node, both numbered to match the model index (e.g. balloon_03 has
+		// balloon.003 and package.003). Modifiers must only target nodes that
+		// exist in the loaded model, otherwise the Explorer's ResetMaterialSystem
+		// crashes when the entity is destroyed.
+		const nodeSuffix = String(this.randomIndex).padStart(3, "0")
 		GltfNodeModifiers.create(this.entity, {
 			modifiers: [
 				{
-					path: "balloon.001",
+					path: `balloon.${nodeSuffix}`,
 					material: {
 						material: materialBalloonOverRide
 					}
 				},
 				{
-					path: "balloon.002",
-					material: {
-						material: materialBalloonOverRide
-					}
-				},
-				{
-					path: "balloon.003",
-					material: {
-						material: materialBalloonOverRide
-					}
-				},
-				{
-					path: "balloon.004",
-					material: {
-						material: materialBalloonOverRide
-					}
-				},
-				{
-					path: "package.001",
-					material: {
-						material: materialPackageOverRide
-					}
-				},
-				{
-					path: "package.002",
-					material: {
-						material: materialPackageOverRide
-					}
-				},
-				{
-					path: "package.003",
-					material: {
-						material: materialPackageOverRide
-					}
-				},
-				{
-					path: "package.004",
+					path: `package.${nodeSuffix}`,
 					material: {
 						material: materialPackageOverRide
 					}
@@ -174,12 +145,20 @@ export class BalloonPickup {
 	}
 
 	Destroy(muteSound: boolean = false) {
+		if (this.isDestroyed) return
+		this.isDestroyed = true
+
 		Tween.setScale(this.entity, Vector3.One(), Vector3.Zero(), 200, EasingFunction.EF_LINEAR)
 		
 		if (!muteSound) SoundManager.playSound(sfx.balloonPickup, this.entity, 64)
 
-		utils.timers.setTimeout(() => {	
-			engine.removeEntity(this.entity)
+		utils.timers.setTimeout(() => {
+			GltfNodeModifiers.createOrReplace(this.entity, {modifiers: []})
+
+			utils.timers.setTimeout(() => {
+				engine.removeEntity(this.triggerEntity)
+				engine.removeEntity(this.entity)
+			}, 100)
 		}, 1000)
 	}
 }

@@ -17,6 +17,7 @@ export class FuelPickup {
 	private triggerScale : number = 2
 
 	private pickupTriggered: boolean = false
+	private isDestroyed    : boolean = false
 
 	private meshScaleVector3   : Vector3 = Vector3.create(this.meshScale, this.meshScale, this.meshScale)
 	private triggerScaleVector3: Vector3 = Vector3.create(this.triggerScale, this.triggerScale, this.triggerScale)
@@ -47,36 +48,11 @@ export class FuelPickup {
 			this.Destroy()
 		})
 
-
-		
 		GltfContainer.create(this.entity, {
 			src: "assets/models/fuel.gltf", 
 			visibleMeshesCollisionMask: ColliderLayer.CL_POINTER
 		})
-/* 		GltfNodeModifiers.create(this.entity, {
-			modifiers: [
-				{
-					path: "",
-					material: {
-						material: {
-							$case: "pbr",
-							pbr: {
-								albedoColor: theme.colors.success,
-								emissiveColor: theme.colors.success,
-								emissiveIntensity: 0.3
-							}
-						}
-					}
-				}
-			]
-		}) */
 
-		//MeshRenderer.setSphere(this.triggerEntity)
-/* 		Material.setPbrMaterial(this.triggerEntity, { 
-			albedoColor      : theme.colors.success,
-			emissiveColor    : theme.colors.success,
-			emissiveIntensity: 0.2
-		}) */
     }
 
 	onTriggerEnter() {
@@ -92,9 +68,13 @@ export class FuelPickup {
 	}
 
 	Destroy() {
+		if (this.isDestroyed) return
+		this.isDestroyed = true
+
 		Tween.setScale(this.entity, this.meshScaleVector3, Vector3.Zero(), 200, EasingFunction.EF_LINEAR)
 
 		utils.timers.setTimeout(() => {	
+			engine.removeEntity(this.triggerEntity)
 			engine.removeEntity(this.entity)
 		}, 1000)
 	}
