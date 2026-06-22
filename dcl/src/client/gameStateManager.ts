@@ -36,7 +36,7 @@ export namespace GameStateManager {
 				eventBus.emit(ClientEvents.GAME_IDLE, data)
 
 				// Client components reset - fuel and combo
-				ComponentStore.resetAllComponents()
+				ComponentStore.resetAfterRound()
 			}
 
 			previousState = newState
