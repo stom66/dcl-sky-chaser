@@ -27,4 +27,9 @@ export const sfx = {
 		"assets/sfx/pop_3.wav",
 	],
 
+	lever: [
+		"assets/sfx/lever_1.mp3",
+		"assets/sfx/lever_2.mp3",
+	],
+
 }
