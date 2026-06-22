@@ -1,5 +1,16 @@
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 
+declare var process: {
+    env: {
+        NODE_ENV: string
+    }
+}
+
+const env = process.env.NODE_ENV
+export const IS_DEV = env == "development"
+export const FORCE_DEBUG = true
+
+
 
 export const SceneSettings = {
 	SCENE_TRANSFORM: {
@@ -19,8 +30,8 @@ export const SceneSettings = {
 export const GameSettings = {
 	LOADING_SCREEN_DELAY       : 1000 * 2,
 
-	COUNTDOWN_DURATION         : 1000 * 5,
-	GAME_DURATION              : 1000 * 90, 
+	COUNTDOWN_DURATION         : FORCE_DEBUG ? 1000 * 1 : 1000 * 5,
+	GAME_DURATION              : FORCE_DEBUG ? 1000 * 10 : 1000 * 90, 
 	END_GAME_DURATION          : 1000 * 3,
 
 	COMBO_COOLDOWN_TIME        : 1000 * 10,
@@ -34,13 +45,3 @@ export const GameSettings = {
 export const ServerSettings = {
 	SERVER_TIME_UPDATE_INTERVAL: 1000 * 10,
 }
-
-declare var process: {
-    env: {
-        NODE_ENV: string
-    }
-}
-
-const env = process.env.NODE_ENV
-export const IS_DEV = env == "development"
-export const FORCE_DEBUG = true
