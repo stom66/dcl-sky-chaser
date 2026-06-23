@@ -26,16 +26,16 @@ export namespace BalloonSpawner {
 
 	const randomBalloonColors = [
 		theme.colors.warning,
-		darken(theme.colors.warning, 0.05),
-		darken(theme.colors.warning, 0.1),
-		darken(theme.colors.warning, 0.15),
-		darken(theme.colors.warning, 0.2),
-		darken(theme.colors.warning, 0.25),
-		lighten(theme.colors.warning, 0.05),
-		lighten(theme.colors.warning, 0.1),
-		lighten(theme.colors.warning, 0.15),
-		lighten(theme.colors.warning, 0.2),
-		lighten(theme.colors.warning, 0.25),
+		darken(theme.colors.balloon, 0.05),
+		darken(theme.colors.balloon, 0.1),
+		darken(theme.colors.balloon, 0.15),
+		darken(theme.colors.balloon, 0.2),
+		darken(theme.colors.balloon, 0.25),
+		lighten(theme.colors.balloon, 0.05),
+		lighten(theme.colors.balloon, 0.1),
+		lighten(theme.colors.balloon, 0.15),
+		lighten(theme.colors.balloon, 0.2),
+		lighten(theme.colors.balloon, 0.25),
 	]
 
 	const randomPackageColors = [

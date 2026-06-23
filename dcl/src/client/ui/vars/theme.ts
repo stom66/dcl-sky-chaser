@@ -15,5 +15,10 @@ export const theme = {
 
 		light    : Color4.fromHexString('#f8f9faff'),
 		dark     : Color4.fromHexString('#212529ff'),
+
+
+		// Objects
+		balloon  : Color4.fromHexString('#F0BB18ff'),
+		
 	}
 }
