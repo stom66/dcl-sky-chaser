@@ -20,12 +20,11 @@ import { ComboManager } from './comboManager'
 import { ParticleSpawner } from './particleSpawner'
 import { DiscordWebhooks } from 'src/shared/utils/discord-webhooks'
 import { GameStateManager } from './gameStateManager'
-import { Trampolines } from './trampolines'
 import { UILeaderboard } from './ui-leaderboard'
 import { BeaconManager } from './beaconManager'
 import { BirdSpawner } from './birdSpawner'
-import { UmbrellaBouncer } from './umbrellaBouncer'
 import { Light } from './light'
+import { BounceSpawner } from './spawners/bounceSpawner'
 
 
 export function initClient() {
@@ -92,14 +91,14 @@ export function initClient() {
 		ParticleSpawner.init()
 		RingSpawner.init()
 		TriggerSpawner.spawnTriggers()
-		Trampolines.init()
 		
 		UILeaderboard.init()
 		BeaconManager.init()
-		UmbrellaBouncer.init()
 
 		BirdSpawner.init()
 		Light.init()
+
+		BounceSpawner.init()
 
 		const { SetupUI } = await import('src/client/ui-screen')
 		SetupUI()
