@@ -36,180 +36,6 @@
 			"name":"barrel_1.pivot.001"
 		}
 	],
-	"animations":[
-		{
-			"channels":[
-				{
-					"sampler":0,
-					"target":{
-						"node":3,
-						"path":"translation"
-					}
-				},
-				{
-					"sampler":1,
-					"target":{
-						"node":3,
-						"path":"rotation"
-					}
-				},
-				{
-					"sampler":2,
-					"target":{
-						"node":3,
-						"path":"scale"
-					}
-				}
-			],
-			"name":"barrel_1.pivot.001",
-			"samplers":[
-				{
-					"input":17,
-					"interpolation":"STEP",
-					"output":18
-				},
-				{
-					"input":17,
-					"interpolation":"STEP",
-					"output":19
-				},
-				{
-					"input":17,
-					"interpolation":"STEP",
-					"output":20
-				}
-			]
-		},
-		{
-			"channels":[
-				{
-					"sampler":0,
-					"target":{
-						"node":1,
-						"path":"translation"
-					}
-				},
-				{
-					"sampler":1,
-					"target":{
-						"node":1,
-						"path":"rotation"
-					}
-				},
-				{
-					"sampler":2,
-					"target":{
-						"node":1,
-						"path":"scale"
-					}
-				}
-			],
-			"name":"barrel_1.001",
-			"samplers":[
-				{
-					"input":17,
-					"interpolation":"STEP",
-					"output":18
-				},
-				{
-					"input":17,
-					"interpolation":"STEP",
-					"output":19
-				},
-				{
-					"input":17,
-					"interpolation":"STEP",
-					"output":20
-				}
-			]
-		},
-		{
-			"channels":[
-				{
-					"sampler":0,
-					"target":{
-						"node":0,
-						"path":"translation"
-					}
-				},
-				{
-					"sampler":1,
-					"target":{
-						"node":0,
-						"path":"rotation"
-					}
-				},
-				{
-					"sampler":2,
-					"target":{
-						"node":0,
-						"path":"scale"
-					}
-				}
-			],
-			"name":"barrel_1.003",
-			"samplers":[
-				{
-					"input":17,
-					"interpolation":"STEP",
-					"output":18
-				},
-				{
-					"input":17,
-					"interpolation":"STEP",
-					"output":19
-				},
-				{
-					"input":17,
-					"interpolation":"STEP",
-					"output":20
-				}
-			]
-		},
-		{
-			"channels":[
-				{
-					"sampler":0,
-					"target":{
-						"node":2,
-						"path":"translation"
-					}
-				},
-				{
-					"sampler":1,
-					"target":{
-						"node":2,
-						"path":"rotation"
-					}
-				},
-				{
-					"sampler":2,
-					"target":{
-						"node":2,
-						"path":"scale"
-					}
-				}
-			],
-			"name":"Cylinder",
-			"samplers":[
-				{
-					"input":17,
-					"interpolation":"STEP",
-					"output":18
-				},
-				{
-					"input":17,
-					"interpolation":"STEP",
-					"output":19
-				},
-				{
-					"input":17,
-					"interpolation":"STEP",
-					"output":20
-				}
-			]
-		}
-	],
 	"materials":[
 		{
 			"alphaMode":"BLEND",
@@ -224,13 +50,21 @@
 			}
 		},
 		{
-			"name":"Wood_InteriorFloor_v02_Red",
-			"normalTexture":{
+			"emissiveFactor":[
+				1,
+				1,
+				1
+			],
+			"emissiveTexture":{
 				"index":1
+			},
+			"name":"BarrelGlow",
+			"normalTexture":{
+				"index":2
 			},
 			"pbrMetallicRoughness":{
 				"baseColorTexture":{
-					"index":2
+					"index":3
 				},
 				"metallicFactor":0,
 				"roughnessFactor":0.5
@@ -240,7 +74,7 @@
 			"name":"AtlasGradient_Metal",
 			"pbrMetallicRoughness":{
 				"baseColorTexture":{
-					"index":3
+					"index":4
 				},
 				"roughnessFactor":0.8451327085494995
 			}
@@ -248,11 +82,11 @@
 		{
 			"name":"ClockTower_Metal_v01_Mat",
 			"normalTexture":{
-				"index":4
+				"index":5
 			},
 			"pbrMetallicRoughness":{
 				"baseColorTexture":{
-					"index":5
+					"index":6
 				},
 				"metallicFactor":0,
 				"roughnessFactor":0.5833333134651184
@@ -309,6 +143,15 @@
 					},
 					"indices":16,
 					"material":3
+				},
+				{
+					"attributes":{
+						"POSITION":17,
+						"NORMAL":18,
+						"TEXCOORD_0":19
+					},
+					"indices":20,
+					"material":1
 				}
 			]
 		}
@@ -325,6 +168,10 @@
 		{
 			"sampler":0,
 			"source":2
+		},
+		{
+			"sampler":0,
+			"source":1
 		},
 		{
 			"sampler":0,
@@ -347,13 +194,13 @@
 		},
 		{
 			"mimeType":"image/png",
-			"name":"stylizedWood_v01_normal",
-			"uri":"tex/stylizedWood_v01_normal.png"
+			"name":"stylizedWood_v01_basecolor_red",
+			"uri":"tex/stylizedWood_v01_basecolor_red.png"
 		},
 		{
 			"mimeType":"image/png",
-			"name":"stylizedWood_v01_basecolor_red",
-			"uri":"tex/stylizedWood_v01_basecolor_red.png"
+			"name":"stylizedWood_v01_normal",
+			"uri":"tex/stylizedWood_v01_normal.png"
 		},
 		{
 			"mimeType":"image/png",
@@ -483,7 +330,7 @@
 		{
 			"bufferView":13,
 			"componentType":5126,
-			"count":259,
+			"count":194,
 			"max":[
 				0.12018297612667084,
 				0.6882206201553345,
@@ -499,50 +346,54 @@
 		{
 			"bufferView":14,
 			"componentType":5126,
-			"count":259,
+			"count":194,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":15,
 			"componentType":5126,
-			"count":259,
+			"count":194,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":16,
 			"componentType":5123,
-			"count":918,
+			"count":630,
 			"type":"SCALAR"
 		},
 		{
 			"bufferView":17,
 			"componentType":5126,
-			"count":2,
+			"count":65,
 			"max":[
-				5
+				0.12018297612667084,
+				0.6882206201553345,
+				0.12018297612667084
 			],
 			"min":[
-				0.016666666666666666
+				-0.12018297612667084,
+				0.604638397693634,
+				-0.12018297612667084
 			],
-			"type":"SCALAR"
+			"type":"VEC3"
 		},
 		{
 			"bufferView":18,
 			"componentType":5126,
-			"count":2,
+			"count":65,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":19,
 			"componentType":5126,
-			"count":2,
-			"type":"VEC4"
+			"count":65,
+			"type":"VEC2"
 		},
 		{
 			"bufferView":20,
-			"componentType":5126,
-			"count":2,
-			"type":"VEC3"
+			"componentType":5123,
+			"count":288,
+			"type":"SCALAR"
 		}
 	],
 	"bufferViews":[
@@ -626,47 +477,51 @@
 		},
 		{
 			"buffer":0,
-			"byteLength":3108,
+			"byteLength":2328,
 			"byteOffset":20008,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":3108,
-			"byteOffset":23116,
+			"byteLength":2328,
+			"byteOffset":22336,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":2072,
-			"byteOffset":26224,
+			"byteLength":1552,
+			"byteOffset":24664,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":1836,
-			"byteOffset":28296,
+			"byteLength":1260,
+			"byteOffset":26216,
 			"target":34963
 		},
 		{
 			"buffer":0,
-			"byteLength":8,
-			"byteOffset":30132
+			"byteLength":780,
+			"byteOffset":27476,
+			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":24,
-			"byteOffset":30140
+			"byteLength":780,
+			"byteOffset":28256,
+			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":32,
-			"byteOffset":30164
+			"byteLength":520,
+			"byteOffset":29036,
+			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":24,
-			"byteOffset":30196
+			"byteLength":576,
+			"byteOffset":29556,
+			"target":34963
 		}
 	],
 	"samplers":[
@@ -677,7 +532,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":30220,
+			"byteLength":30132,
 			"uri":"fuel.bin"
 		}
 	]
