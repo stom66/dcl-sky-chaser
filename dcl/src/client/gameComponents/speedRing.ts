@@ -6,6 +6,8 @@ import { alpha, theme } from "src/client/ui"
 import { IS_DEV } from "src/shared/settings"
 import { sfx, SoundManager } from "../soundManager"
 import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
+import { ClientMessaging } from "../clientMessaging"
+import { PlayerStats } from "src/server/metrics/playerStats"
 
 export class SpeedRing {
 	entity: Entity
@@ -64,6 +66,8 @@ export class SpeedRing {
 		SoundManager.playSound(sfx.swish)
 
 		eventBus.emit(ClientEvents.TRIGGER_RING, undefined)
+		
+		ClientMessaging.RequestStatsUpdate(PlayerStats.TRIGGERED_SPEEDRINGS)
 	}
 
 	Destroy() {
@@ -71,6 +75,6 @@ export class SpeedRing {
 
 		utils.timers.setTimeout(() => {	
 			engine.removeEntity(this.entity)
-		}, 300)
+		}, 500 + (Math.floor(Math.random() * 1500)))
 	}
 }

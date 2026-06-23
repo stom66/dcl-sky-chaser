@@ -9,6 +9,7 @@ import { theme } from "../ui"
 import { sfx, SoundManager } from "../soundManager"
 import { ClientMessaging } from "../clientMessaging"
 import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
+import { PlayerStats } from "src/server/metrics/playerStats"
 
 export class FuelPickup {
 	private entity       : Entity
@@ -62,7 +63,8 @@ export class FuelPickup {
 		console.log("FuelPickup: Player entered")
 		ComponentStore.increaseFuelValue(this.amount)
 		SoundManager.playSound(sfx.fuelPickup)
-		//ClientMessaging.RequestScoreUpdate()
+
+		ClientMessaging.RequestStatsUpdate(PlayerStats.COLLECTED_FUEL, this.amount)
 		
 		eventBus.emit(ClientEvents.TRIGGER_FUEL, undefined)
 	}
@@ -76,6 +78,6 @@ export class FuelPickup {
 		utils.timers.setTimeout(() => {	
 			engine.removeEntity(this.triggerEntity)
 			engine.removeEntity(this.entity)
-		}, 1000)
+		}, 500 + (Math.floor(Math.random() * 1500)))
 	}
 }

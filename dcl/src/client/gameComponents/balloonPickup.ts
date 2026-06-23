@@ -8,6 +8,7 @@ import { BalloonPickup as BalloonPickupComponent } from "src/shared/components/b
 import { darken, lighten, theme } from "../ui"
 import { sfx, SoundManager } from "../soundManager"
 import { ClientMessaging } from "../clientMessaging"
+import { PlayerStats } from "src/server/metrics/playerStats"
 
 export class BalloonPickup {
 	public entity: Entity
@@ -141,7 +142,9 @@ export class BalloonPickup {
 
 		console.log("BalloonPickup: Player entered")
 		const combo = ComponentStore.getComboValue()
-		ClientMessaging.RequestScoreUpdate(this.getValue() * combo)
+
+		ClientMessaging.RequestStatsUpdate(PlayerStats.COLLECTED_POINTS, this.getValue() * combo)
+		ClientMessaging.RequestStatsUpdate(PlayerStats.COLLECTED_BALLOONS)
 	}
 
 	Destroy(muteSound: boolean = false) {
@@ -159,6 +162,6 @@ export class BalloonPickup {
 				engine.removeEntity(this.triggerEntity)
 				engine.removeEntity(this.entity)
 			}, 100)
-		}, 1000)
+		}, 500 + (Math.floor(Math.random() * 1500)))
 	}
 }
