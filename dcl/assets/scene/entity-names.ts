@@ -5,6 +5,22 @@
  * Object containing all entity names in the scene for autocomplete support.
  */
 export enum EntityNames {
+  Axe_1 = "Axe 1",
+  Barbacue = "Barbacue",
+  Barrel_3 = "Barrel 3",
+  Bird_s_Nest_Fern_Container = "Bird’s Nest Fern Container",
+  Boombox = "Boombox",
+  Chest = "Chest",
+  Construction_Cone = "Construction Cone",
+  Construction_Materials = "Construction Materials",
+  Construction_Materials_2 = "Construction Materials_2",
+  Hammock = "Hammock",
+  Outdoor_Box_Lamp = "Outdoor Box Lamp",
+  Outdoor_Box_Lamp3 = "Outdoor Box Lamp3",
+  Residential_Mailbox = "Residential Mailbox",
+  Round_Rug = "Round Rug",
+  Wine_Glass = "Wine Glass",
+  Wooden_Door = "Wooden Door",
   clouds_gltf = "clouds.gltf",
   errorSign_gltf_2 = "errorSign.gltf_2",
   tower_gltf = "tower.gltf",
