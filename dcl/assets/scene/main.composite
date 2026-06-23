@@ -13357,7 +13357,7 @@
               }
             },
             "silenceVoiceChat": false,
-            "disablePortableExperiences": false,
+            "disablePortableExperiences": true,
             "spawnPoints": [
               {
                 "name": "spawn1",
