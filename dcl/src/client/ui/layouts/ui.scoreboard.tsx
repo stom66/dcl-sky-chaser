@@ -7,6 +7,7 @@ import { userProfileCache } from 'src/shared/utils/userProfileCache'
 import { EasingFunction, UiText } from '@dcl/sdk/ecs'
 import { ClientEvents, eventBus } from 'src/shared/utils/eventBus'
 import { tweenValue } from '../utils/tweens'
+import { getUVsForIconAtlasRow, IconAtlasLabel } from '../utils/atlas'
 
 
 let scoreboard: Map<string, number> = new Map()
@@ -47,6 +48,8 @@ const POS_TOP_DEFAULT    = 10
 const POS_TOP_CENTERED   = vhAsPixels(50) - 128 // half the height
 const POS_TOP_HIDDEN     = -310
 
+
+//var elementPositionTop: number = POS_TOP_DEFAULT // DEBUG -REMOVE FOR PROD
 var elementPositionTop: number = POS_TOP_HIDDEN
 var elementPositionRight: number = POS_RIGHT_DEFAULT
 
@@ -130,16 +133,29 @@ export function ScoreboardUI() {
 						justifyContent: 'center',
 						padding       : { top: 10, bottom: 4 },
 					}}
-					uiText={{
-						value: 'Scoreboard',
-						textAlign: 'middle-center',
-						fontSize: 26,
-						color: theme.colors.light,
-					}}
+					//uiText={{
+					//	value: 'Scoreboard',
+					//	textAlign: 'middle-center',
+					//	fontSize: 26,
+					//	color: theme.colors.light,
+					//}}
 					uiBackground={{
 						color: alpha(theme.colors.info, 0.7),
 					}}
-				/>
+				>	
+					<UiEntity
+						key={`ui_Combo_inner_image`}
+						uiTransform={{
+							width       : 256,
+							height      : 64,
+						}}
+						uiBackground={{
+							texture    : { src: "assets/images/ui/atlas-gui-labels.png" },
+							textureMode: 'stretch',
+							uvs        : getUVsForIconAtlasRow(IconAtlasLabel.POINT),
+						}}
+					/>
+				</UiEntity>
 				{getScoreboardRows()}
 			</UiEntity>
 		</UiEntity>
