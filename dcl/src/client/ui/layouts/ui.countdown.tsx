@@ -9,6 +9,7 @@ import { tweenValue } from '../utils/tweens'
 import { ClientMessaging } from 'src/client/clientMessaging'
 import { clockSync } from 'src/shared/utils/clockSync'
 import { GameStatus } from 'src/shared/enums'
+import { getUVsForIconAtlasRow, IconAtlasLabel } from '../utils/atlas'
 
 
 /* eventBus.on(ClientEvents.GAME_ACTIVE, (data) => {
@@ -22,6 +23,7 @@ const POS_HIDDEN  = -256
 const POS_VISIBLE = 0
 var elementPosition: number = POS_VISIBLE
 
+const SCALE = 1.25
 
 let gameStartTime       = 0
 let remaining           = 0
@@ -89,6 +91,25 @@ function getStatusText() {
 	}
 }
 
+function getStatusIcon() {
+	const gameStatus = ComponentStore.getGameStatus()
+	if (gameStatus === GameStatus.IDLE) {
+		return IconAtlasLabel.START_GAME
+	}
+	else if (gameStatus === GameStatus.STARTING) {
+		return IconAtlasLabel.GAME_STARTING
+	}
+	else if (gameStatus === GameStatus.ACTIVE) {
+		return IconAtlasLabel.GAME_IN_PROGRESS
+	}
+	else if (gameStatus === GameStatus.ENDING) {
+		return IconAtlasLabel.UNKNOWN
+	}
+	else {
+		return IconAtlasLabel.UNKNOWN
+	}
+}
+
 var btnHover: boolean = false
 
 // MARK: CountdownUI
@@ -110,9 +131,9 @@ export function CountdownUI() {
 			<UiEntity
 				key={`ui_Countdown_outer`}
 				uiTransform={{
-					width         : 420,
-					height        : 90,
-					borderRadius  : 45,
+					width         : 420*SCALE,
+					height        : 90*SCALE,
+					borderRadius  : 45*SCALE,
 					overflow      : 'hidden',
 					flexDirection : 'row',
 					justifyContent: 'flex-start',
@@ -138,7 +159,7 @@ export function CountdownUI() {
 
 			>
 				<UiEntity
-					key={`ui_Countdown_inner`}
+					key={`ui_Countdown_inner_fil`}
 					uiTransform={{
 						height       : '100%',
 						width      : `${ratio}%`,
@@ -149,18 +170,25 @@ export function CountdownUI() {
 					}}
 				/>
 				<UiEntity
-					key={`ui_Countdown_inner`}
+					key={`ui_Countdown_inner_label`}
 					uiTransform={{
-						width       : '100%',
-						height      : '48',
+						width       : 320*SCALE,
+						height      : 80*SCALE,
 						alignContent: 'center',
 						positionType: 'absolute',
+						position: { left: (210-160)*SCALE }, // nasty hard coded value
+						alignSelf: 'center',
 					}}
-					uiText={{
-						value    : getStatusText(),
-						textAlign: 'middle-center',
-						fontSize : 28
-						
+					//uiText={{
+					//	value    : getStatusText(),
+					//	textAlign: 'middle-center',
+					//	fontSize : 28
+					//	
+					//}}
+					uiBackground={{
+						texture: { src: "assets/images/ui/atlas-gui-labels.png" },
+						textureMode: 'stretch',
+						uvs: getUVsForIconAtlasRow(getStatusIcon() ?? IconAtlasLabel.UNKNOWN),
 					}}
 				/>
 			</UiEntity>

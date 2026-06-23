@@ -50,6 +50,7 @@ export function DebugUI() {
 				<ButtonAction textLabel="addPoints" callback={() => ClientMessaging.RequestStatsUpdate(PlayerStats.COLLECTED_BALLOONS) } />
 				<ButtonAction textLabel="triggerDustSpurt" callback={() => ParticleSpawner.TriggerDustSpurt(Transform.getOrNull(engine.PlayerEntity)?.position ?? Vector3.create(256, 63.2, 256)) } />
 				<ButtonAction textLabel="triggerLeaderboardWinner" callback={() => ClientHandler.handleNotifyLeaderboardWinner("ALL TIME") } />
+				<ButtonAction textLabel="incrementCombo" callback={() => ComponentStore.incrementComboValue() } />
 					
 				{/* 
 				<ButtonAction textLabel="incrementScore" callback={() => ClientMessaging.RequestScoreUpdate() } /> 

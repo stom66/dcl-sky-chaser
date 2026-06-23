@@ -6,6 +6,7 @@ import { C_Combo, ComponentStore } from 'src/shared/components/componentStore'
 import { GameSettings } from 'src/shared/settings'
 import { ClientEvents, eventBus } from 'src/shared/utils/eventBus'
 import { tweenValue } from '../utils/tweens'
+import { getUVsForIconAtlasNumber, getUVsForIconAtlasRow, IconAtlasLabel } from '../utils/atlas'
 
 let comboValue          = 0
 let lastUpdatedTime     = 0
@@ -24,6 +25,9 @@ eventBus.on(ClientEvents.GAME_END, (data) => {
 const POS_HIDDEN  = -256
 const POS_VISIBLE = 0
 var elementPosition: number = POS_HIDDEN
+//var elementPosition: number = POS_VISIBLE
+
+const SCALE = 1.25
 
 ComponentStore.onComponentChange(C_Combo.Combo, (data) => {
 	comboValue      = data?.value ?? 0
@@ -66,9 +70,9 @@ export function ComboUI() {
 			<UiEntity
 				key={`ui_Combo_outer`}
 				uiTransform={{
-					width         : 420,
-					height        : 90,
-					borderRadius  : 45,
+					width         : 420*SCALE,
+					height        : 90*SCALE,
+					borderRadius  : 45*SCALE,
 					overflow      : 'hidden',
 					flexDirection : 'row',
 					justifyContent: 'flex-start',
@@ -81,7 +85,7 @@ export function ComboUI() {
 
 			>
 				<UiEntity
-					key={`ui_Combo_inner`}
+					key={`ui_Combo_inner_fill`}
 					uiTransform={{
 						height       : '100%',
 						width      : `${100-ratio}%`,
@@ -95,17 +99,45 @@ export function ComboUI() {
 					key={`ui_Combo_inner`}
 					uiTransform={{
 						width       : '100%',
-						height      : '48',
+						height      : '100%',
 						alignContent: 'center',
 						positionType: 'absolute',
+						alignSelf: 'center',
+						flexDirection: 'row',
 					}}
-					uiText={{
-						value    : `Boost-Ring Combo: ${comboValue}`,
-						textAlign: 'middle-center',
-						fontSize : 28
-						
-					}}
-				/>
+				>
+					<UiEntity
+						key={`ui_Combo_inner_image`}
+						uiTransform={{
+							width       : 336*SCALE,
+							height      : 84*SCALE,
+						}}
+						uiBackground={{
+							texture    : { src: "assets/images/ui/atlas-gui-labels.png" },
+							textureMode: 'stretch',
+							uvs        : getUVsForIconAtlasRow(IconAtlasLabel.COMBO),
+						}}
+					/>
+					<UiEntity
+						key={`ui_Combo_inner_text`}
+						uiTransform={{
+							width       : 42*SCALE,
+							height      : 84*SCALE,
+							alignContent: 'center',
+						}}
+						uiBackground={{
+							texture    : { src: "assets/images/ui/atlas-numbers.png" },
+							textureMode: 'stretch',
+							uvs        : getUVsForIconAtlasNumber(comboValue),
+						}}
+						//uiText={{
+						//	value    : `${comboValue}`,
+						//	textAlign: 'middle-center',
+						//	fontSize : 48
+						//	
+						//}}
+					/>
+				</UiEntity>
 			</UiEntity>
 		</UiEntity>
 	)
