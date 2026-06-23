@@ -7,6 +7,7 @@ import { IS_DEV } from 'src/shared/settings'
 const PANEL_HIDDEN  = -1200
 const PANEL_VISIBLE = 8
 var panelBottom     : number        = IS_DEV ? PANEL_HIDDEN : PANEL_VISIBLE
+//var panelBottom     : number        = PANEL_VISIBLE
 
 
 const isVisible = () => {return panelBottom > PANEL_HIDDEN}
@@ -52,12 +53,13 @@ export function HowToPlayUI() {
 			>
 				<UiEntity
 					uiTransform={{
-						width: '80',
-						height: '80',
+						width: '90',
+						height: '90',
 						positionType: 'absolute',
-						position: { top: '32', right: '32' },
+						position: { top: '24', right: '24' },
 					}}
 					onMouseDown={HideJoinGameUI}
+					//uiBackground={{ color: Color4.fromHexString('#ffffffaa') }}
 				/>
 			</UiEntity>
 		</UiEntity>
