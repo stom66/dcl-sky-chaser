@@ -17,7 +17,7 @@ export namespace Trampolines {
 
 	
 	class Trampoline {
-		private isAwning: boolean = false
+		public isAwning: boolean = false
 		entity   : Entity
 		direction: Vector3
 
@@ -45,9 +45,8 @@ export namespace Trampolines {
 			//MeshCollider.setSphere(this.entity)
 
 			// if we have a scale, then we should use a cube
-			if (isAwning) {
+			if (this.isAwning) {
 				TriggerArea.setBox(this.entity)
-				//MeshRenderer.setBox(this.entity)
 			} else {
 				TriggerArea.setSphere(this.entity)
 			}
