@@ -12,6 +12,6 @@ export enum PlayerStats {
 	COLLECTED_FUEL        = "collectedFuel",
 	TRIGGERED_SPEEDRINGS  = "collectedSpeedRing",
 	TRIGGERED_TRAMPOLINES = "triggeredTrampoline",
-	TRIGGERED_AWNING      = "triggeredTrampoline",
+	TRIGGERED_AWNING      = "triggeredAwning",
 	TRIGGERED_UMBRELLAS   = "triggeredUmbrellas",
 }
