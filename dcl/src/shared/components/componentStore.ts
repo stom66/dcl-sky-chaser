@@ -245,7 +245,11 @@ export namespace ComponentStore {
 		if (entity === undefined) return []
 
 		const c = C_GameData.ScoreBoard.get(entity)
-		return [...(c?.scores ?? [])]
+
+		const scores = [...(c?.scores ?? [])]
+		scores.sort((a, b) => b.score - a.score)
+		
+		return scores
 	}
 
 
