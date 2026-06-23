@@ -38,7 +38,8 @@
 	],
 	"materials":[
 		{
-			"alphaMode":"BLEND",
+			"alphaCutoff":0.10000002384185791,
+			"alphaMode":"MASK",
 			"doubleSided":true,
 			"name":"fuel-logo",
 			"pbrMetallicRoughness":{
