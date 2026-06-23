@@ -18,7 +18,7 @@ import { BoosterInput } from './boosterInput'
 import { BalloonSpawner } from './spawners/balloonSpawner'
 import { ComboManager } from './comboManager'
 import { ParticleSpawner } from './particleSpawner'
-import { DiscordNotifyNewPlayer } from 'src/shared/utils/discord-webhooks'
+import { DiscordWebhooks } from 'src/shared/utils/discord-webhooks'
 import { GameStateManager } from './gameStateManager'
 import { Trampolines } from './trampolines'
 import { UILeaderboard } from './ui-leaderboard'
@@ -35,7 +35,7 @@ export function initClient() {
 	onEnterScene((player) => {
 		hasEnteredScene = true
 
-		if (!IS_DEV) DiscordNotifyNewPlayer(player.name, player.userId)
+		if (!IS_DEV) DiscordWebhooks.newPlayer(player.name, player.userId)
 	})
 
 	// MARK: Wait for Load
