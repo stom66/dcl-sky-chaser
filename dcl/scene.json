@@ -1073,7 +1073,7 @@
   ],
   "featureToggles": {
     "voiceChat": "enabled",
-    "portableExperiences": "enabled",
+    "portableExperiences": "disabled",
     "nearbyVoiceChat": "enabled"
   },
   "authoritativeMultiplayer": true,
@@ -1087,7 +1087,7 @@
     "projectId": "e07770ee-e8a8-42b0-af0b-ec05d2b79494"
   },
   "worldConfiguration": {
-    "name": "stom.dcl.eth"
+    "name": "skychaser.dcl.eth"
   },
   "rating": "T"
 }
