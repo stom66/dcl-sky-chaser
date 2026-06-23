@@ -8,18 +8,21 @@ import { ServerStore } from 'src/server/serverStore'
 import { GameStatus } from 'src/shared/enums'
 import { GameSettings } from 'src/shared/settings'
 import { LeaderboardManager } from "./leaderboardManager"
+import { Metrics } from "./metrics/client"
+import { PlayerStats } from "./metrics/playerStats"
 
 
 export namespace serverHandler {
 
 	// MARK: Vars
-	const store = ServerStore.getInstance()
+	//const store = ServerStore.getInstance()
 
 
 	// MARK: Init
 	export function init() {
 		room.onMessage(MessageType.REQUEST_NEW_GAME, (data, context) => handleRequestNewGame(data, context))
-		room.onMessage(MessageType.REQUEST_SCORE_UPDATE, (data, context) => handleRequestScoreUpdate(data, context))
+		//room.onMessage(MessageType.REQUEST_SCORE_UPDATE, (data, context) => handleRequestScoreUpdate(data, context))
+		room.onMessage(MessageType.REQUEST_STATS_UPDATE, (data, context) => handleRequestStatsUpdate(data, context))
 	}
 
 
@@ -37,18 +40,31 @@ export namespace serverHandler {
 		if (ComponentStore.getGameStatus() === GameStatus.IDLE) {
 			ComponentStore.resetAfterRound()
 			StartNewGame()
+
+			Metrics.trackGameCreated(userId, ComponentStore.getGameStartTime())
 		} else {
 			console.log('handleRequestNewGame: game is not idle, skipping')
 			return
 		}
 	}
 
-	// MARK: Request Score Update
+/* 	// MARK: Request Score Update
 	export async function handleRequestScoreUpdate(data: any, context: any) {
 		const userId = getUserId(context)
 		console.log('handleRequestScoreUpdate: userId', userId)
 
 		ComponentStore.incrementPlayerScore(userId, data)
+	} */
+
+	export async function handleRequestStatsUpdate(data: any, context: any) {
+		const userId = getUserId(context)
+		console.log('handleRequestStatsUpdate: userId', userId, 'stat', data.stat, 'amount', data.amount)
+
+		if (data.stat === PlayerStats.COLLECTED_POINTS) {
+			ComponentStore.incrementPlayerScore(userId, data.amount)
+		}
+
+		Metrics.incrementPlayerStat(userId, data.stat, data.amount)
 	}
 
 	// MARK: Start New Game
@@ -79,6 +95,8 @@ export namespace serverHandler {
 	// MARK: On Game Start
 	function OnGameStart() {
 		ComponentStore.setGameStatus(GameStatus.ACTIVE)
+		
+		Metrics.trackGameStarted(ComponentStore.getGameStartTime(), ComponentStore.getPlayers())
 	}
 
 	// MARK: On Game End
@@ -90,7 +108,15 @@ export namespace serverHandler {
 		const lbAlltimeHighestScore = scores.reduce((max, score) => Math.max(max, score.score), 0)
 		const lbWeeklyHighestScore = scores.reduce((max, score) => Math.max(max, score.score), 0)
 
-		for (const score of scores) {
+		for (const [index, score] of scores.entries()) {
+
+			// Winner
+			if (index === 0) {
+				Metrics.trackGameWon(score.userId, ComponentStore.getGameStartTime())
+			} else {
+				Metrics.trackGameNotWon(score.userId, ComponentStore.getGameStartTime())
+			}
+
 			// All time scores
 			LeaderboardManager.submitScore('alltime', score.userId, score.score)
 			if (score.score > lbAlltimeHighestScore) {
@@ -109,6 +135,8 @@ export namespace serverHandler {
 		}
 
 		ComponentStore.setGameStatus(GameStatus.ENDING)
+
+		Metrics.trackGameEnded(ComponentStore.getGameStartTime(), ComponentStore.getPlayers(), scores[0]?.userId)
 	}
 
 	// MARK: On Game Reset

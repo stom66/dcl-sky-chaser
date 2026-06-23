@@ -2,6 +2,8 @@ import { ColliderLayer, engine, Entity, MeshCollider, MeshRenderer, Physics, Tra
 import { Quaternion, Vector3 } from "@dcl/sdk/math"
 import { sfx, SoundManager } from "./soundManager"
 import { ParticleSpawner } from "./particleSpawner"
+import { ClientMessaging } from "./clientMessaging"
+import { PlayerStats } from "src/server/metrics/playerStats"
 
 export namespace Trampolines {
 
@@ -13,7 +15,9 @@ export namespace Trampolines {
 
 	const VERTICAL_OFFSET = 1
 
+	
 	class Trampoline {
+		private isAwning: boolean = false
 		entity   : Entity
 		direction: Vector3
 
@@ -21,8 +25,10 @@ export namespace Trampolines {
 			pos  : Vector3, 
 			rot  : Quaternion,
 			scale: Vector3 = Vector3.create(TRIGGER_RADIUS, TRIGGER_RADIUS, TRIGGER_RADIUS),
-			useCubeTrigger: boolean = false
+			isAwning: boolean = false
 		) {
+			this.isAwning = isAwning
+
 			this.entity = engine.addEntity()
 			Transform.create(this.entity, { 
 				position: Vector3.create(pos.x, pos.y + VERTICAL_OFFSET, pos.z), 
@@ -39,7 +45,7 @@ export namespace Trampolines {
 			//MeshCollider.setSphere(this.entity)
 
 			// if we have a scale, then we should use a cube
-			if (useCubeTrigger) {
+			if (isAwning) {
 				TriggerArea.setBox(this.entity)
 				//MeshRenderer.setBox(this.entity)
 			} else {
@@ -63,6 +69,12 @@ export namespace Trampolines {
 			Physics.applyImpulseToPlayer(this.direction, IMPULSE_FORCE)
 			SoundManager.playSound(sfx.boing)
 			ParticleSpawner.TriggerDustSpurt(Transform.getOrNull(engine.PlayerEntity)?.position ?? Vector3.create(256, 63.2, 256))
+
+			if (this.isAwning) {
+				ClientMessaging.RequestStatsUpdate(PlayerStats.TRIGGERED_AWNING)
+			} else {
+				ClientMessaging.RequestStatsUpdate(PlayerStats.TRIGGERED_TRAMPOLINES)
+			}
 		}
 	
 		onTriggerExit() {

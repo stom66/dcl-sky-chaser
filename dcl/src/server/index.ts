@@ -10,6 +10,9 @@ import { serverHandler } from "src/server/serverHandler"
 import { ServerMessaging } from "src/server/serverMessaging"
 import { ServerStore } from "src/server/serverStore"
 import { LeaderboardManager } from "./leaderboardManager"
+import { Metrics } from "./metrics/client"
+import { Transform } from "@dcl/sdk/ecs"
+import { DiscordWebhooks } from "src/shared/utils/discord-webhooks"
 
 
 export async function initServer(): Promise<void> {
@@ -36,9 +39,16 @@ export async function initServer(): Promise<void> {
 	onEnterScene((player) => {
 		ServerMessaging.sendServerTime()
 		serverStore.addPlayer(player.userId, player.name)
+
+		const playerPosition = Transform.getOrNull(player.entity)?.position
+		DiscordWebhooks.newPlayer(player.name, player.userId, playerPosition)
+
+		Metrics.startSession(player.userId, player.name)
 	})
+
 	onLeaveScene((userId) => {
 		serverStore.removePlayer(userId)
+		Metrics.endSession(userId)
 	})
 }
  

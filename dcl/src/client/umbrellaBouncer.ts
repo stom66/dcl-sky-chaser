@@ -2,6 +2,8 @@ import { engine, Entity, Material, MeshRenderer, Physics, RaycastQueryType, rayc
 import { Vector3 } from "@dcl/sdk/math"
 import { sfx, SoundManager } from "./soundManager"
 import { ParticleSpawner } from "./particleSpawner"
+import { ClientMessaging } from "./clientMessaging"
+import { PlayerStats } from "src/server/metrics/playerStats"
 
 export namespace UmbrellaBouncer {
 
@@ -97,6 +99,8 @@ export namespace UmbrellaBouncer {
 		Physics.applyImpulseToPlayer(Vector3.Up(), strength)
 		SoundManager.playSound(sfx.boing)
 		ParticleSpawner.TriggerDustSpurt(Transform.getOrNull(engine.PlayerEntity)?.position ?? Vector3.create(256, 63.2, 256))
+
+		ClientMessaging.RequestStatsUpdate(PlayerStats.TRIGGERED_UMBRELLAS)
 	}
 
 }

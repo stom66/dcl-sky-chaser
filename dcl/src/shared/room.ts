@@ -1,11 +1,13 @@
 import { registerMessages } from '@dcl/sdk/network'
 import { Schemas } from '@dcl/sdk/ecs'
+import { PlayerStats } from 'src/server/metrics/playerStats'
 
 
 // MARK: MessageTypes
 export enum MessageType {
 	REQUEST_NEW_GAME     = 'requestNewGame',
 	REQUEST_SCORE_UPDATE = 'requestScoreUpdate',
+	REQUEST_STATS_UPDATE = 'requestStatsUpdate',
 
 	NOTIFY_SERVER_TIME                 = "notifyServerTime",
 	NOTIFY_LEADERBOARD_WINNER_WEEKLY   = "notifyLeaderboardWinnerWeekly",
@@ -23,6 +25,10 @@ const Messages = {
 	// Sent by client
 	[MessageType.REQUEST_NEW_GAME]: Schemas.Map({}),
 	[MessageType.REQUEST_SCORE_UPDATE]: Schemas.Int,
+	[MessageType.REQUEST_STATS_UPDATE]: Schemas.Map({
+		stat: Schemas.EnumString(PlayerStats, PlayerStats.COLLECTED_BALLOONS),
+		amount: Schemas.Int,
+	}),
 
 
 	// Sent by server
