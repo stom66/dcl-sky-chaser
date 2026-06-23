@@ -1,32 +1,23 @@
-## `dcl-boilerplate-scene`
+## `dcl-sky-chaser`
 
-# Decentraland SDK7 Template
+# Sky Chaser
 
-A basic Decentraland SDK7 Scene, setup with a generic folder structure and various utility scripts.
+Built for Decentraland SDK7 with the new Auth-Server, Sky Chaser is a multiplayer game where players compete to catch the most escaping packages per round. Includes Weekly and AllTime leaderboards.
 
-This repo is a template repository. See [using the template](/docs/USING_THE_TEMPLATE.md) for info on using it for a project.
+### Play it here: [stom.dcl.eth](https://play.decentraland.org/?realm=stom.dcl.eth)
 
-**Warning**: here be dragons
-
+![SkyChaser: how to Play](dcl/assets/images/ui/howToPlay.png)
 ---
 
 ## Contents
 
-- [Resources](#resources)
 - [Repository Overview](#repository-overview)
 - [Getting Started](#getting-started)
   - [Pre-requisites](#pre-requisites)
-  - [Using this template](#using-this-template)
   - [Preview the DCL scene](#preview-the-dcl-scene)
+- [License](#license)
 
 ---
-
-## Resources
-
-- Google Sheet - [DCL scene limits calculator](https://docs.google.com/spreadsheets/d/1p4aEoGuguFRqeSSXUCC4DLK-HQ8f1cHM2VzXApo7MBk/edit?usp=sharing)
-- Guide - [Asset pipeline overview](/docs/ASSETS.md)
-- Guide - [Automatic deployment via GitHub Actions](/docs/GITHUB_AUTOMATIC_DEPLOYMENT.md)
-- Guide - [Updating DCL dependencies](/docs/UPDATE_DCL_DEPENDENCIES.md)
 
 ## Repository Overview
 
@@ -53,29 +44,16 @@ This repository is split in the following folders:
   - You will require the [Decentraland Creator Hub](https://decentraland.org/download/creator-hub/) to launch and host the scene.
   - You will require the [Decentraland Client](https://decentraland.org/download/) to join and view the scene.
 
-- **Utility scripts** (optional)
-
-  - Various dev scripts require bash (linux) to run.
-  - They have been tested on Ubuntu under WSL.
-  - See [DEPENDENCIES](/docs/DEPENDENCIES.md) for the required packages.
-
-## Using this template
-
-- [Using the template](/docs/USING_THE_TEMPLATE.md)
-- [Asset pipeline overview](/docs/ASSETS.md)
-- [Automatic deployment via GitHub Actions](/docs/GITHUB_AUTOMATIC_DEPLOYMENT.md)
-- [Updating DCL dependencies](/docs/UPDATE_DCL_DEPENDENCIES.md)
-
 ## Preview the DCL scene
 
-#### First-time setup:
+### First-time setup
 
 1. Launch the Decentraland Creator Hub
 1. Select the "Scenes" tab
 1. Select "Import Scene"
 1. Navigate to the repository folder and select the `dcl` folder inside it.
 
-#### Normal use:
+### Normal use
 
 1. Launch the Decentraland Creator Hub
 1. Select the scene from the home screen
@@ -84,12 +62,6 @@ This repository is split in the following folders:
 
 ---
 
-## Known Bugs
-
-- Lack of caffeine causes occassional I/O errors.
-
----
-
 ## License
 
-This work is licensed under the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-nd/4.0/, see the license included in this repository, or send a letter to Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
+This work is licensed under the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License. To view a copy of this license, visit <http://creativecommons.org/licenses/by-nc-nd/4.0/>, see the license included in this repository, or send a letter to Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
