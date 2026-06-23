@@ -1,5 +1,5 @@
 import { EasingFunction, engine, Entity, GltfContainer, GltfNodeModifiers, Material, MeshRenderer, PBMaterial, Transform, TriggerArea, triggerAreaEventsSystem, Tween } from "@dcl/sdk/ecs"
-import { Quaternion, Vector3 } from "@dcl/sdk/math"
+import { Color4, Quaternion, Vector3 } from "@dcl/sdk/math"
 import * as utils from '@dcl-sdk/utils'
 
 import { ComponentStore } from "src/shared/components/componentStore"
@@ -25,26 +25,14 @@ export class BalloonPickup {
 
 	private randomIndex: number = Math.floor(Math.random() * 4) + 1
 
-	private randomBalloonColors = [
-		theme.colors.warning,
-		darken(theme.colors.warning, 0.125),
-		darken(theme.colors.warning, 0.25),
-		lighten(theme.colors.warning, 0.125),
-		lighten(theme.colors.warning, 0.25),
-	]
-	private randomPackageColors = [
-		theme.colors.warning,
-		theme.colors.info,
-		theme.colors.success,
-		theme.colors.danger,
-	]
-
     constructor(
 		public position : Vector3, 
+		public packageColor: Color4 = theme.colors.warning,
+		public balloonColor: Color4 = theme.colors.warning,
 		public value    : number = this.defaultValue,
 		public maxHeight: number = 200,
 		public riseSpeed: number = Math.random() * 4 + 0.1,
-		public spinSpeed: number = Math.random() * 20 - 10
+		public spinSpeed: number = Math.random() * 20 - 10,
 	) {
 
 		this.entity = engine.addEntity()
@@ -65,24 +53,20 @@ export class BalloonPickup {
 		})
 
 		// Define materials
-		const randomBalloonColorIndex = Math.floor(Math.random() * this.randomBalloonColors.length)
-		const randomBalloonColor = this.randomBalloonColors[randomBalloonColorIndex]
 		const materialBalloonOverRide = {
 			$case: "pbr",
 			pbr: {
-				albedoColor: randomBalloonColor,
-				emissiveColor: randomBalloonColor,
+				albedoColor: this.balloonColor,
+				emissiveColor: this.balloonColor,
 				emissiveIntensity: 0.3
 			}
 		} as PBMaterial["material"]
 
-		const randomPackageColorIndex = Math.floor(Math.random() * this.randomPackageColors.length)
-		const randomPackageColor = this.randomPackageColors[randomPackageColorIndex]
 		const materialPackageOverRide = {
 			$case: "pbr",
 			pbr: {
-				albedoColor: randomPackageColor,
-				emissiveColor: randomPackageColor,
+				albedoColor: this.packageColor,
+				emissiveColor: this.packageColor,
 				emissiveIntensity: 0.3
 			}
 		} as PBMaterial["material"]
