@@ -1,13 +1,12 @@
 import { Vector3 } from "@dcl/sdk/math"
 import { isServer } from "@dcl/sdk/network"
 import { EnvVar } from "@dcl/sdk/server"
+import { GameSettings } from "../settings"
 
 
 export namespace DiscordWebhooks {
 	// MARK: Vars
 	const DISCORD_WEBHOOK_URL_KEY = "DISCORD_WEBHOOK_URL"
-	const GAME_NAME               = "SkyChaser"
-	//const WORLD                   = "stom.dcl.eth"
 
 	let discordWebhookUrlPromise: Promise<string | null> | null = null
 
@@ -31,11 +30,17 @@ export namespace DiscordWebhooks {
 		userId  : string,
 		position?: Vector3
 	) => {
-		const title     = `Sky Chaser :balloon: ${username} has joined the game!`
-		let description = `${userId}`
+		const title     = `${GameSettings.GAME_NAME} :balloon: ${username} has joined the game!`
+		let description = `UserID: ${userId}`
 
 		if (position) {
-			description += `\nPosition: ${position.x}, ${position.y}, ${position.z}`
+			// Round off the position to 2 decimal places
+			const roundedPosition = Vector3.create(
+				Math.round(position.x * 100) / 100,
+				Math.round(position.y * 100) / 100,
+				Math.round(position.z * 100) / 100
+			)
+			description += `\nPosition: ${roundedPosition.x}, ${roundedPosition.y}, ${roundedPosition.z}`
 		}
 
 		const body = buildMessage(title, description)

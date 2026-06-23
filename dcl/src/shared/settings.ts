@@ -28,6 +28,8 @@ export const SceneSettings = {
 
 
 export const GameSettings = {
+	GAME_NAME                  : "SkyChaser",
+	
 	LOADING_SCREEN_DELAY       : 1000 * 2,
 
 	COUNTDOWN_DURATION         : FORCE_DEBUG ? 1000 * 1 : 1000 * 5,
