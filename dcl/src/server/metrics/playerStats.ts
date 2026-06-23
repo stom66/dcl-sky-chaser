@@ -4,7 +4,6 @@ export enum PlayerStats {
 	GAMES_CREATED       = "gamesCreated",
 	GAMES_PLAYED        = "gamesPlayed",
 	GAMES_WON           = "gamesWon",
-	GAMES_LEFT_EARLY    = "gamesLeftEarly",
 
 	// CUSTOM_STAT = "customStat"
 	COLLECTED_POINTS      = "collectedPoints",
