@@ -3,7 +3,7 @@ import { Vector3 } from "@dcl/sdk/math"
 import * as utils from '@dcl-sdk/utils'
 
 import { ComponentStore } from "src/shared/components/componentStore"
-import { FuelPickup as FuelPickupComponent } from "src/shared/components/fuelPickup"
+import { FuelPickupComponent, FuelPickupChildComponent } from "src/shared/components/fuelPickup"
 
 import { theme } from "../ui"
 import { sfx, SoundManager } from "../soundManager"
@@ -12,13 +12,14 @@ import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
 import { PlayerStats } from "src/server/metrics/playerStats"
 
 export class FuelPickup {
-	private entity       : Entity
-	private triggerEntity: Entity
-	private meshScale    : number = 1.75
-	private triggerScale : number = 2
+	private rootEntity         : Entity
+	private childEntity        : Entity
+	private triggerEntity      : Entity
+	private meshScale          : number  = 1.75
+	private triggerScale       : number  = 2
 
-	private pickupTriggered: boolean = false
-	private isDestroyed    : boolean = false
+	private pickupTriggered    : boolean = false
+	private isDestroyed        : boolean = false
 
 	private meshScaleVector3   : Vector3 = Vector3.create(this.meshScale, this.meshScale, this.meshScale)
 	private triggerScaleVector3: Vector3 = Vector3.create(this.triggerScale, this.triggerScale, this.triggerScale)
@@ -28,17 +29,32 @@ export class FuelPickup {
 		public amount  : number
 	) {
 
-		this.entity = engine.addEntity()
-		FuelPickupComponent.create(this.entity, { amount: this.amount })
-		Transform.create(this.entity, { 
+		// Root entity - main barrel model
+		this.rootEntity = engine.addEntity()
+		FuelPickupComponent.create(this.rootEntity, { amount: this.amount })
+		Transform.create(this.rootEntity, { 
 			position: this.position,
 			scale   : Vector3.Zero()
 		})
-		Tween.setScale(this.entity, Vector3.Zero(), this.meshScaleVector3, 200, EasingFunction.EF_EASEOUTBACK)
+		GltfContainer.create(this.rootEntity, {
+			src: "assets/models/fuel.gltf", 
+			visibleMeshesCollisionMask: ColliderLayer.CL_POINTER
+		})
+		Tween.setScale(this.rootEntity, Vector3.Zero(), this.meshScaleVector3, 200, EasingFunction.EF_EASEOUTBACK)
 
+		// Child entity - top fan model
+		this.childEntity = engine.addEntity()
+		Transform.create(this.childEntity, { parent: this.rootEntity })
+		FuelPickupChildComponent.create(this.childEntity)
+		GltfContainer.create(this.childEntity, {
+			src: "assets/models/fuelTop.gltf", 
+			visibleMeshesCollisionMask: ColliderLayer.CL_POINTER
+		})
+
+		// Trigger entity - for player interaction
 		this.triggerEntity = engine.addEntity()
 		Transform.create(this.triggerEntity, { 
-			parent: this.entity, 
+			parent: this.rootEntity, 
 			scale : this.triggerScaleVector3
 		})
 		TriggerArea.setSphere(this.triggerEntity)
@@ -47,11 +63,6 @@ export class FuelPickup {
 				this.onTriggerEnter()
 			}
 			this.Destroy()
-		})
-
-		GltfContainer.create(this.entity, {
-			src: "assets/models/fuel.gltf", 
-			visibleMeshesCollisionMask: ColliderLayer.CL_POINTER
 		})
 
     }
@@ -73,11 +84,12 @@ export class FuelPickup {
 		if (this.isDestroyed) return
 		this.isDestroyed = true
 
-		Tween.setScale(this.entity, this.meshScaleVector3, Vector3.Zero(), 200, EasingFunction.EF_LINEAR)
+		Tween.setScale(this.rootEntity, this.meshScaleVector3, Vector3.Zero(), 200, EasingFunction.EF_LINEAR)
 
 		utils.timers.setTimeout(() => {	
 			engine.removeEntity(this.triggerEntity)
-			engine.removeEntity(this.entity)
+			engine.removeEntity(this.childEntity)
+			engine.removeEntity(this.rootEntity)
 		}, 500 + (Math.floor(Math.random() * 1500)))
 	}
 }

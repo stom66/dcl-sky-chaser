@@ -1,7 +1,7 @@
-import { engine } from "@dcl/sdk/ecs"
-import { Vector3 } from "@dcl/sdk/math"
+import { engine, Transform } from "@dcl/sdk/ecs"
+import { Quaternion, Vector3 } from "@dcl/sdk/math"
 
-import { FuelPickup as FuelPickupComponent } from "src/shared/components/fuelPickup"
+import { FuelPickupComponent, FuelPickupChildComponent } from "src/shared/components/fuelPickup"
 
 import { FuelPickup } from "src/client/gameComponents/fuelPickup"
 import { createRng } from "src/shared/utils/mulberry"
@@ -17,6 +17,8 @@ export namespace FuelSpawner {
 	const maxRadius  = 120
 	const minHeight  = 20
 	const maxHeight  = 180
+
+	const spinSpeed = 360
 
 	var rng: () => number
 	var gameStartTime: number = 0
@@ -35,7 +37,7 @@ export namespace FuelSpawner {
 	export function onGameStart(startTime: number) {
 		if (startTime === gameStartTime) return
 		gameStartTime = startTime
-		removePickups()
+		//removePickups()
 		spawnPickups()
 	}
 
@@ -50,9 +52,8 @@ export namespace FuelSpawner {
 			spawnRandomPickup()
 		}
 
-		if (!spawnerSystem) {
-			engine.addSystem(spawnerSystem)
-		}
+		engine.addSystem(system_Spawner)
+		engine.addSystem(system_Mover)
 	}
 
 	function spawnRandomPickup() {
@@ -67,13 +68,16 @@ export namespace FuelSpawner {
 	}
 
 	export function removePickups() {
+		engine.removeSystem(system_Mover)
+		engine.removeSystem(system_Spawner)
+
 		for (const [entity] of engine.getEntitiesWith(FuelPickupComponent)) {
 			engine.removeEntity(entity)
 		}
-		engine.removeSystem(spawnerSystem)
+		engine.removeSystem(system_Spawner)
 	}
 
-	function spawnerSystem(dt: number) {
+	function system_Spawner(dt: number) {
 		var count = 0
 		for (const [entity] of engine.getEntitiesWith(FuelPickupComponent)) {
 			count++
@@ -82,6 +86,20 @@ export namespace FuelSpawner {
 			for (let i = count; i < maxSpawns; i++) {
 				spawnRandomPickup()
 			}
+		}
+	}
+
+	function system_Mover(dt: number) {
+		for (const [entity] of engine.getEntitiesWith(FuelPickupChildComponent)) {
+			const transform = Transform.getMutableOrNull(entity)
+			if (!transform) continue
+
+			const currentRotation = Quaternion.toEulerAngles(transform.rotation)
+			transform.rotation = Quaternion.fromEulerDegrees(
+				currentRotation.x,
+				currentRotation.y + dt * spinSpeed,
+				currentRotation.z
+			)
 		}
 	}
 }
