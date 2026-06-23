@@ -9,6 +9,7 @@ import { ScoreboardUI } from './ui/layouts/ui.scoreboard'
 import { ComboUI } from './ui/layouts/ui.combo'
 import { HowToPlayUI } from './ui/layouts/ui.howToPlay'
 import { CountdownUI } from './ui/layouts/ui.countdown'
+import { LeaderboardWinnerUI } from './ui/layouts/ui.leaderboardWinner'
 
 
 // MARK: Vars
@@ -37,6 +38,7 @@ const uiComponent = () => (
 		{ComboUI()}
 		{HowToPlayUI()}
 		{CountdownUI()}
+		{LeaderboardWinnerUI()}
 	</UiEntity>
 )
 

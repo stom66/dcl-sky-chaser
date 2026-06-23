@@ -7,7 +7,9 @@ export enum MessageType {
 	REQUEST_NEW_GAME     = 'requestNewGame',
 	REQUEST_SCORE_UPDATE = 'requestScoreUpdate',
 
-	NOTIFY_SERVER_TIME   = "notifyServerTime",
+	NOTIFY_SERVER_TIME                 = "notifyServerTime",
+	NOTIFY_LEADERBOARD_WINNER_WEEKLY   = "notifyLeaderboardWinnerWeekly",
+	NOTIFY_LEADERBOARD_WINNER_ALL_TIME = "notifyLeaderboardWinnerAllTime",
 }
 
 // MARK: Schema constant
@@ -25,6 +27,12 @@ const Messages = {
 
 	// Sent by server
 	[MessageType.NOTIFY_SERVER_TIME]: Schemas.Map({
+		...SchemaSentAt
+	}),
+	[MessageType.NOTIFY_LEADERBOARD_WINNER_WEEKLY]: Schemas.Map({
+		...SchemaSentAt
+	}),
+	[MessageType.NOTIFY_LEADERBOARD_WINNER_ALL_TIME]: Schemas.Map({
 		...SchemaSentAt
 	})
 }

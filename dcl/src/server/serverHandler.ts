@@ -51,6 +51,7 @@ export namespace serverHandler {
 		ComponentStore.incrementPlayerScore(userId, data)
 	}
 
+	// MARK: Start New Game
 	function StartNewGame() {
 		const currentGameStatus = ComponentStore.getGameStatus()
 		if (currentGameStatus !== GameStatus.IDLE) {
@@ -61,29 +62,58 @@ export namespace serverHandler {
 		ComponentStore.setGameStartTime(Date.now() + GameSettings.COUNTDOWN_DURATION)
 		ComponentStore.setGameStatus(GameStatus.STARTING)
 
-		// MARK: Start Game
 		utils.timers.setTimeout(() => {
-			ComponentStore.setGameStatus(GameStatus.ACTIVE)
+			OnGameStart()
 		}, GameSettings.COUNTDOWN_DURATION)
 
-
-		// MARK: End Game
 		utils.timers.setTimeout(() => {
-			// Submit scores to leaderboards
-			const scores = ComponentStore.getPlayerScores()
-			for (const score of scores) {
-				LeaderboardManager.submitScore('alltime', score.userId, score.score)
-				LeaderboardManager.submitScore('weekly', score.userId, score.score)
-			}
-
-			ComponentStore.setGameStatus(GameStatus.ENDING)
+			OnGameEnd()
 		}, GameSettings.COUNTDOWN_DURATION + GameSettings.GAME_DURATION)
 
-		
-		// MARK: Reset Game
 		utils.timers.setTimeout(() => {
-			ComponentStore.setGameStatus(GameStatus.IDLE)
-			ComponentStore.resetAfterRound()
+			OnGameReset()
 		}, GameSettings.COUNTDOWN_DURATION + GameSettings.GAME_DURATION + GameSettings.END_GAME_DURATION)
+	}
+
+
+	// MARK: On Game Start
+	function OnGameStart() {
+		ComponentStore.setGameStatus(GameStatus.ACTIVE)
+	}
+
+	// MARK: On Game End
+	function OnGameEnd() {
+		// Submit scores to leaderboards
+		const scores = ComponentStore.getPlayerScores()
+
+		// Get the current highest score
+		const lbAlltimeHighestScore = scores.reduce((max, score) => Math.max(max, score.score), 0)
+		const lbWeeklyHighestScore = scores.reduce((max, score) => Math.max(max, score.score), 0)
+
+		for (const score of scores) {
+			// All time scores
+			LeaderboardManager.submitScore('alltime', score.userId, score.score)
+			if (score.score > lbAlltimeHighestScore) {
+				room.send(MessageType.NOTIFY_LEADERBOARD_WINNER_ALL_TIME, {
+					sentAt: Date.now()
+				}, { to: [score.userId] })
+			}
+
+			// Weekly scores
+			LeaderboardManager.submitScore('weekly', score.userId, score.score)
+			if (score.score > lbWeeklyHighestScore) {
+				room.send(MessageType.NOTIFY_LEADERBOARD_WINNER_WEEKLY, {
+					sentAt: Date.now()
+				}, { to: [score.userId] })
+			}
+		}
+
+		ComponentStore.setGameStatus(GameStatus.ENDING)
+	}
+
+	// MARK: On Game Reset
+	function OnGameReset() {
+		ComponentStore.setGameStatus(GameStatus.IDLE)
+		ComponentStore.resetAfterRound()
 	}
 }

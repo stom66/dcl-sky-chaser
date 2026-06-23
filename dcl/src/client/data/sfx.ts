@@ -1,5 +1,11 @@
 export const sfx = {
 
+	leaderboard: [
+		"assets/sfx/leaderboard_01.mp3",
+		"assets/sfx/leaderboard_02.mp3",
+		"assets/sfx/leaderboard_03.mp3",
+	],
+
 	music: [
 		"assets/sfx/music/music_zapsplat_astro_race.mp3",
 	],
