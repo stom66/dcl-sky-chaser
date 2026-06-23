@@ -2,6 +2,7 @@ import { AvatarLocomotionSettings, engine, InputAction, inputSystem, Physics } f
 import { ComponentStore } from "src/shared/components/componentStore"
 import { GameSettings } from "src/shared/settings"
 import { LocomotionController } from "./locomotionController"
+import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
 
 export namespace BoosterInput {
 
@@ -13,6 +14,10 @@ export namespace BoosterInput {
 
 	export function init() {
 		engine.addSystem(systemInputWatcher)
+
+		eventBus.on(ClientEvents.GAME_ACTIVE, () => {
+			ComponentStore.resetFuelValue()
+		})
 	}
 
 	function systemInputWatcher(dt: number) {

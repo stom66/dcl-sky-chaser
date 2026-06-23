@@ -143,7 +143,9 @@ export namespace ComponentStore {
 		const entity = ComponentManager.tryGetComponentEntity()
 		if (entity === undefined) return
 
-		const c = C_GameData.GameData.getMutable(entity)
+		const c = C_GameData.GameData.getMutableOrNull(entity)
+		if (c === null) return
+
 		c.status = status
 	}
 	
@@ -165,7 +167,9 @@ export namespace ComponentStore {
 		const entity = ComponentManager.tryGetComponentEntity()
 		if (entity === undefined) return
 
-		const c = C_GameData.GameData.getMutable(entity)
+		const c = C_GameData.GameData.getMutableOrNull(entity)
+		if (c === null) return
+
 		c.startTime = startTime
 	}
 
@@ -185,7 +189,9 @@ export namespace ComponentStore {
 		const entity = ComponentManager.tryGetComponentEntity()
 		if (entity === undefined) return
 
-		const c = C_GameData.GameData.getMutable(entity)
+		const c = C_GameData.GameData.getMutableOrNull(entity)
+		if (c === null) return
+
 		c.players = players
 	}
 
@@ -195,7 +201,9 @@ export namespace ComponentStore {
 		const entity = ComponentManager.tryGetComponentEntity()
 		if (entity === undefined) return
 
-		const c = C_GameData.GameData.getMutable(entity)
+		const c = C_GameData.GameData.getMutableOrNull(entity)
+		if (c === null) return
+
 		const prior = c.players ?? []
 		if (prior.includes(userId)) return
 
@@ -209,7 +217,9 @@ export namespace ComponentStore {
 		const entity = ComponentManager.tryGetComponentEntity()
 		if (entity === undefined) return
 
-		const c = C_GameData.GameData.getMutable(entity)
+		const c = C_GameData.GameData.getMutableOrNull(entity)
+		if (c === null) return
+
 		c.players = (c.players ?? []).filter((p) => p !== userId)
 
 		// TODO: may needs checks in here, to abort a game if no players are left
@@ -227,7 +237,8 @@ export namespace ComponentStore {
 		const entity = ComponentManager.tryGetComponentEntity()
 		if (entity === undefined) return
 
-		const c = C_GameData.ScoreBoard.getMutable(entity)
+		const c = C_GameData.ScoreBoard.getMutableOrNull(entity)
+		if (c === null) return
 
 		// Ensure the player exists in the scoreboard
 		const player = c.scores?.find((s) => s.userId === userId)
@@ -270,12 +281,27 @@ export namespace ComponentStore {
 			maxValue: c?.maxValue ?? 100,
 		}
 	}
+	export function resetFuelValue(): void {
+		const entity = ComponentManager.tryGetComponentEntity()
+		if (entity === undefined) {
+			console.log('getFuelValue: entity is undefined')
+			return
+		}
+
+		const c = C_PlayerFuel.PlayerFuel.getMutableOrNull(entity)
+		if (c === null) return
+
+		c.value = c.maxValue
+		console.log('resetFuelValue: fuel value reset to', c.value)
+	}
 
 	export function decreaseFuelValue(amount: number): void {
 		const entity = ComponentManager.tryGetComponentEntity()
 		if (entity === undefined) return
 
-		const c = C_PlayerFuel.PlayerFuel.getMutable(entity)
+		const c = C_PlayerFuel.PlayerFuel.getMutableOrNull(entity)
+		if (c === null) return
+
 		c.value -= amount
 	}
 
@@ -283,7 +309,9 @@ export namespace ComponentStore {
 		const entity = ComponentManager.tryGetComponentEntity()
 		if (entity === undefined) return
 
-		const c = C_PlayerFuel.PlayerFuel.getMutable(entity)
+		const c = C_PlayerFuel.PlayerFuel.getMutableOrNull(entity)
+		if (c === null) return
+
 		c.value += amount
 	}
 
@@ -329,7 +357,9 @@ export namespace ComponentStore {
 		if (c === undefined) return
 		if (c.value <= 1) return
 
-		const cm = C_Combo.Combo.getMutable(entity)
+		const cm = C_Combo.Combo.getMutableOrNull(entity)
+		if (cm === null) return
+
 		cm.value -= 1
 		cm.lastUpdatedTime = Date.now()
 	}
@@ -338,7 +368,9 @@ export namespace ComponentStore {
 		const entity = ComponentManager.tryGetComponentEntity()
 		if (entity === undefined) return
 
-		const c = C_Combo.Combo.getMutable(entity)
+		const c = C_Combo.Combo.getMutableOrNull(entity)
+		if (c === null) return
+
 		c.value = 1
 		c.lastUpdatedTime = 0
 	}
@@ -351,7 +383,9 @@ export namespace ComponentStore {
 		const entity = ComponentManager.tryGetComponentEntity()
 		if (entity === undefined) return
 
-		const c = C_Leaderboards.leaderboardAllTime.getMutable(entity)
+		const c = C_Leaderboards.leaderboardAllTime.getMutableOrNull(entity)
+		if (c === null) return
+
 		c.scores = leaderboard
 	}
 
@@ -361,7 +395,9 @@ export namespace ComponentStore {
 		const entity = ComponentManager.tryGetComponentEntity()
 		if (entity === undefined) return
 
-		const c = C_Leaderboards.leaderboardWeekly.getMutable(entity)
+		const c = C_Leaderboards.leaderboardWeekly.getMutableOrNull(entity)
+		if (c === null) return
+
 		c.scores = leaderboard
 	}
 
