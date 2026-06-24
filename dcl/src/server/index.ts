@@ -13,6 +13,7 @@ import { LeaderboardManager } from "./leaderboardManager"
 import { Metrics } from "./metrics/client"
 import { Transform } from "@dcl/sdk/ecs"
 import { DiscordWebhooks } from "src/shared/utils/discord-webhooks"
+import { isBlockedPlayer } from "./metrics/blocklist"
 
 
 export async function initServer(): Promise<void> {
@@ -42,8 +43,10 @@ export async function initServer(): Promise<void> {
 		ServerMessaging.sendServerTime()
 		serverStore.addPlayer(player.userId, player.name)
 
-		const playerPosition = Transform.getOrNull(player.entity)?.position
-		DiscordWebhooks.newPlayer(player.name, player.userId, playerPosition)
+		if (!isBlockedPlayer(player.userId)) {
+			const playerPosition = Transform.getOrNull(player.entity)?.position
+			DiscordWebhooks.newPlayer(player.name, player.userId, playerPosition)
+		}
 
 		Metrics.startSession(player.userId, player.name)
 	})
