@@ -104,7 +104,7 @@ export namespace ParticleSpawner {
 		Transform.create(entity, { position: position, rotation: Quaternion.fromEulerDegrees(-90, 0, 0) })
 		ParticleSystem.create(entity, {
 			active              : true,
-			loop                : true,
+			loop                : false,
 			prewarm             : false,
 			faceTravelDirection : false,
 			rate                : 0,
@@ -132,5 +132,92 @@ export namespace ParticleSpawner {
 			engine.removeEntity(entity)
 		}, 2000)
 
+	}
+
+	export function TriggerPickupFuel(
+		position: Vector3
+	) {
+		TriggerPickup(position, Color4.fromHexString("#55dd55"), "assets/tex/particles-fuel.png")
+	}
+	export function TriggerPickupBalloon(
+		position: Vector3
+	) {
+		TriggerPickup(position, Color4.fromHexString("#dddd55"), "assets/tex/particles-fuel.png")
+	}
+
+	export function TriggerPickup(
+		position: Vector3,
+		startColor: Color4,
+		texture: string,
+	) {
+		const entity = engine.addEntity()
+		Transform.create(entity, { position: position, rotation: Quaternion.fromEulerDegrees(-90, 0, 0) })
+		ParticleSystem.create(entity, {
+			active              : true,
+			loop                : false,
+			prewarm             : false,
+			faceTravelDirection : false,
+			rate                : 0,
+			lifetime            : 2,
+			maxParticles        : 300,
+			gravity             : 6,
+			blendMode           : PBParticleSystem_BlendMode.PSB_ADD,
+			shape               : ParticleSystem.Shape.Cone({ angle: 30, radius: 0.2 }),
+			initialVelocitySpeed: { start: 12.5, end: 17.5 },
+			initialSize         : { start: 0.25, end: 0.75 },
+			sizeOverTime        : { start: 1, end: 0 },
+			//rotationOverTime    : { x: 0, y: 0, z: 0, w: 1 },
+			initialColor        : { start: Color4.fromHexString("#ffffff"), end: Color4.fromHexString("#cccccc") },
+			//colorOverTime       : { start: Color4.create(1.000, 0.800, 0.500, 1.000), end: Color4.create(0.800, 0.200, 0.000, 0.000) },
+			bursts              : { values: [
+				{ time: 0, count: 64, cycles: 1, interval: 0.01, probability: 1 },
+			] },
+			billboard           : true,
+			texture             : { src: 'assets/tex/particles-dust.png' },
+			spriteSheet         : { tilesX: 2, tilesY: 2, framesPerSecond: 10},
+		})
+
+		utils.timers.setTimeout(() => {
+			ParticleSystem.deleteFrom(entity)
+			engine.removeEntity(entity)
+		}, 2000)
+
+	}
+
+	export function TriggerPickupSpeedRing(
+		position: Vector3,
+		yRot: number,
+	) {
+		const entity = engine.addEntity()
+		Transform.create(entity, { position: position, rotation: Quaternion.fromEulerDegrees(-45, yRot, 0) })
+		ParticleSystem.create(entity, {
+			active              : true,
+			loop                : false,
+			prewarm             : false,
+			faceTravelDirection : false,
+			rate                : 0,
+			lifetime            : 2,
+			maxParticles        : 300,
+			gravity             : 2,
+			blendMode           : PBParticleSystem_BlendMode.PSB_ADD,
+			shape               : ParticleSystem.Shape.Cone({ angle: 15, radius: 0.2 }),
+			initialVelocitySpeed: { start: 25, end: 45 },
+			initialSize         : { start: 0.25, end: 0.55 },
+			sizeOverTime        : { start: 1, end: 0 },
+			//rotationOverTime    : { x: 0, y: 0, z: 0, w: 1 },
+			initialColor        : { start: Color4.fromHexString("#00aadd"), end: Color4.fromHexString("#cccccc") },
+			//colorOverTime       : { start: Color4.create(1.000, 0.800, 0.500, 1.000), end: Color4.create(0.800, 0.200, 0.000, 0.000) },
+			bursts              : { values: [
+				{ time: 0, count: 64, cycles: 1, interval: 0.01, probability: 1 },
+			] },
+			billboard           : true,
+			texture             : { src: 'assets/tex/particles-dust.png' },
+			spriteSheet         : { tilesX: 2, tilesY: 2, framesPerSecond: 10},
+		})
+
+		utils.timers.setTimeout(() => {
+			ParticleSystem.deleteFrom(entity)
+			engine.removeEntity(entity)
+		}, 2000)
 	}
 }

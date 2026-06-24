@@ -1,5 +1,5 @@
 import { ColliderLayer, EasingFunction, engine, Entity, GltfContainer, GltfNodeModifiers, Material, MeshRenderer, Transform, TriggerArea, triggerAreaEventsSystem, Tween } from "@dcl/sdk/ecs"
-import { Vector3 } from "@dcl/sdk/math"
+import { Quaternion, Vector3 } from "@dcl/sdk/math"
 import * as utils from '@dcl-sdk/utils'
 
 import { ComponentStore } from "src/shared/components/componentStore"
@@ -10,13 +10,14 @@ import { sfx, SoundManager } from "../soundManager"
 import { ClientMessaging } from "../clientMessaging"
 import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
 import { PlayerStats } from "src/server/metrics/playerStats"
+import { ParticleSpawner } from "../particleSpawner"
 
 export class FuelPickup {
 	private rootEntity         : Entity
 	private childEntity        : Entity
 	private triggerEntity      : Entity
 	private meshScale          : number  = 1.75
-	private triggerScale       : number  = 2
+	private triggerScale       : number  = 2.5
 
 	private pickupTriggered    : boolean = false
 	private isDestroyed        : boolean = false
@@ -34,6 +35,7 @@ export class FuelPickup {
 		FuelPickupComponent.create(this.rootEntity, { amount: this.amount })
 		Transform.create(this.rootEntity, { 
 			position: this.position,
+			rotation: Quaternion.fromEulerDegrees(0, Math.random() * 360, 0),
 			scale   : Vector3.Zero()
 		})
 		GltfContainer.create(this.rootEntity, {
@@ -74,6 +76,7 @@ export class FuelPickup {
 		console.log("FuelPickup: Player entered")
 		ComponentStore.increaseFuelValue(this.amount)
 		SoundManager.playSound(sfx.fuelPickup)
+		ParticleSpawner.TriggerPickupFuel(this.position)
 
 		ClientMessaging.RequestStatsUpdate(PlayerStats.COLLECTED_FUEL, this.amount)
 		

@@ -8,10 +8,13 @@ import { sfx, SoundManager } from "../soundManager"
 import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
 import { ClientMessaging } from "../clientMessaging"
 import { PlayerStats } from "src/server/metrics/playerStats"
+import { ParticleSpawner } from "../particleSpawner"
 
 export class SpeedRing {
 	entity: Entity
-	private pickupTriggered: boolean = false
+	private triggerEntity   : Entity
+	private pickupTriggered : boolean = false
+	private isDestroyed     : boolean = false
 
 	constructor(
 		pos: Vector3,
@@ -32,11 +35,11 @@ export class SpeedRing {
 		}, Math.random() * 800 + 200)
 
 		
-		const triggerEntity = engine.addEntity()
-		Transform.create(triggerEntity, { parent: this.entity, scale: Vector3.create(5, 5, 5) })
+		this.triggerEntity = engine.addEntity()
+		Transform.create(this.triggerEntity, { parent: this.entity, scale: Vector3.create(5, 5, 5) })
 
-		TriggerArea.setSphere(triggerEntity)
-		triggerAreaEventsSystem.onTriggerEnter(triggerEntity, (e) => {
+		TriggerArea.setSphere(this.triggerEntity)
+		triggerAreaEventsSystem.onTriggerEnter(this.triggerEntity, (e) => {
 			if (e.trigger?.entity === engine.PlayerEntity) {
 				this.onTriggerEnter()
 			}
@@ -64,6 +67,9 @@ export class SpeedRing {
 		
 		Physics.applyImpulseToPlayer(playerForward, 64)
 		SoundManager.playSound(sfx.swish)
+		
+		const yRot = Quaternion.toEulerAngles(playerTransform.rotation).y
+		ParticleSpawner.TriggerPickupSpeedRing(playerTransform.position, yRot)
 
 		eventBus.emit(ClientEvents.TRIGGER_RING, undefined)
 		
@@ -71,9 +77,13 @@ export class SpeedRing {
 	}
 
 	Destroy() {
+		if (this.isDestroyed) return
+		this.isDestroyed = true
+
 		Tween.setScale(this.entity, Vector3.One(), Vector3.Zero(), 200, EasingFunction.EF_EASEINCIRC)
 
 		utils.timers.setTimeout(() => {	
+			engine.removeEntity(this.triggerEntity)
 			engine.removeEntity(this.entity)
 		}, 500 + (Math.floor(Math.random() * 1500)))
 	}
