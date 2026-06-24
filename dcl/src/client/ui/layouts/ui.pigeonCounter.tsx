@@ -3,9 +3,14 @@ import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
 import { alpha, darken, theme } from 'src/client/ui/index'
 import { C_PigeonCounter, ComponentStore } from 'src/shared/components/componentStore'
 import { tweenValue } from '../utils/tweens'
-import { EasingFunction } from '@dcl/sdk/ecs'
+import { EasingFunction, engine, Transform } from '@dcl/sdk/ecs'
 import { getUVsForIconAtlasNumber, getUVsForIconAtlasRow, IconAtlasLabel } from '../utils/atlas'
 import * as utils from '@dcl-sdk/utils'
+import { vwAsPixels } from '../utils/sizing'
+import { ClientEvents, eventBus } from 'src/shared/utils/eventBus'
+import { sfx, SoundManager } from 'src/client/soundManager'
+import { ParticleSpawner } from 'src/client/particleSpawner'
+import { Vector3 } from '@dcl/sdk/math'
 
 
 let count    = 0
@@ -17,11 +22,25 @@ ComponentStore.onComponentChange(C_PigeonCounter.PigeonCounter, (data) => {
 		count = newCount
 		ShowUI()
 
-		utils.timers.setTimeout(() => {
-			HideUI()
-		}, 2500)
+		//utils.timers.setTimeout(() => {
+		//	HideUI()
+		//}, 2500)
 		console.log("PigeonCounterUI: count changed to", count)
 	}
+	if (newCount === 0) {
+		HideUI()
+	}
+})
+
+eventBus.on(ClientEvents.FOUND_ALL_PIGEONS, (data) => {
+	HideUI()
+	
+	for (let i = 0; i < 8; i++) {
+		utils.timers.setTimeout(() => {
+			SoundManager.playSound(sfx.coo)
+		}, i * 400)
+	}
+	ParticleSpawner.TriggerPigeonSpurt(Transform.getOrNull(engine.PlayerEntity)?.position ?? Vector3.create(256, 63.2, 256))
 })
 
 
@@ -33,7 +52,7 @@ function HideUI() {
 	tweenValue(elementPositionTop, POS_HIDDEN, 0.4, (v) => elementPositionTop = v), EasingFunction.EF_EASEOUTBACK
 }
 
-const POS_DEFAULT    = 10
+const POS_DEFAULT    = vwAsPixels(20)
 const POS_HIDDEN     = -310
 
 var elementPositionTop: number   = POS_HIDDEN

@@ -49,10 +49,7 @@ export function DebugUI() {
 				<ButtonAction textLabel="newGame" callback={() => ClientMessaging.RequestNewGame() } />
 				<ButtonAction textLabel="addPoints" callback={() => ClientMessaging.RequestStatsUpdate(PlayerStats.COLLECTED_BALLOONS) } />
 				<ButtonAction textLabel="triggerDustSpurt" callback={() => {
-					const playerTransform = Transform.getOrNull(engine.PlayerEntity)
-					if (!playerTransform) return
-					const yRot = Quaternion.toEulerAngles(playerTransform.rotation).y
-					ParticleSpawner.TriggerPickupSpeedRing(playerTransform.position, yRot)
+					eventBus.emit(ClientEvents.FOUND_ALL_PIGEONS, {  })
 				}} />
 				<ButtonAction textLabel="triggerLeaderboardWinner" callback={() => ClientHandler.handleNotifyLeaderboardWinner("ALL TIME") } />
 				<ButtonAction textLabel="incrementCombo" callback={() => ComponentStore.incrementComboValue() } />

@@ -13,4 +13,6 @@ export enum PlayerStats {
 	TRIGGERED_TRAMPOLINES = "triggeredTrampoline",
 	TRIGGERED_AWNING      = "triggeredAwning",
 	TRIGGERED_UMBRELLAS   = "triggeredUmbrellas",
+	
+	FOUND_ALL_PIGEONS     = "foundAllPigeons",
 }

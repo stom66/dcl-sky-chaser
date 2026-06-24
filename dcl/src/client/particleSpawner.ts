@@ -134,6 +134,43 @@ export namespace ParticleSpawner {
 
 	}
 
+	export function TriggerPigeonSpurt(
+		position: Vector3
+	) {
+		const entity = engine.addEntity()
+		Transform.create(entity, { position: position, rotation: Quaternion.fromEulerDegrees(-90, 0, 0) })
+		ParticleSystem.create(entity, {
+			active              : true,
+			loop                : false,
+			prewarm             : false,
+			faceTravelDirection : false,
+			rate                : 0,
+			lifetime            : 2,
+			maxParticles        : 300,
+			gravity             : 4,
+			blendMode           : PBParticleSystem_BlendMode.PSB_ADD,
+			shape               : ParticleSystem.Shape.Cone({ angle: 30, radius: 0.2 }),
+			initialVelocitySpeed: { start: 12.5, end: 20 },
+			initialSize         : { start: 0.25, end: 0.75 },
+			sizeOverTime        : { start: 1, end: 0 },
+			//rotationOverTime    : { x: 0, y: 0, z: 0, w: 1 },
+			initialColor        : { start: Color4.fromHexString("#ffffff"), end: Color4.fromHexString("#cccccc") },
+			//colorOverTime       : { start: Color4.create(1.000, 0.800, 0.500, 1.000), end: Color4.create(0.800, 0.200, 0.000, 0.000) },
+			bursts              : { values: [
+				{ time: 0, count: 32, cycles: 6, interval: 0.8, probability: 1 },
+			] },
+			billboard           : true,
+			texture             : { src: 'assets/tex/particles-pigeons.png' },
+			spriteSheet         : { tilesX: 2, tilesY: 2, framesPerSecond: 10},
+		})
+
+		utils.timers.setTimeout(() => {
+			ParticleSystem.deleteFrom(entity)
+			engine.removeEntity(entity)
+		}, 2000)
+
+	}
+
 	export function TriggerPickupFuel(
 		position: Vector3
 	) {

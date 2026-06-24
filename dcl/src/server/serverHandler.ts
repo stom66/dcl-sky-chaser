@@ -23,6 +23,7 @@ export namespace serverHandler {
 		room.onMessage(MessageType.REQUEST_NEW_GAME, (data, context) => handleRequestNewGame(data, context))
 		//room.onMessage(MessageType.REQUEST_SCORE_UPDATE, (data, context) => handleRequestScoreUpdate(data, context))
 		room.onMessage(MessageType.REQUEST_STATS_UPDATE, (data, context) => handleRequestStatsUpdate(data, context))
+		room.onMessage(MessageType.REQUEST_FOUND_ALL_PIGEONS, (data, context) => handleRequestFoundAllPigeons(data, context))
 	}
 
 
@@ -143,5 +144,14 @@ export namespace serverHandler {
 	function OnGameReset() {
 		ComponentStore.setGameStatus(GameStatus.IDLE)
 		//ComponentStore.resetAfterRound()
+	}
+
+	// MARK: On Found All Pigeons
+	function handleRequestFoundAllPigeons(data: any, context: any) {
+		const userId = getUserId(context)
+		console.log('handleRequestFoundAllPigeons: userId', userId)
+
+
+		Metrics.trackFoundAllPigeons(userId)
 	}
 }

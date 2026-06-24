@@ -8,6 +8,7 @@ export enum MessageType {
 	REQUEST_NEW_GAME     = 'requestNewGame',
 	REQUEST_SCORE_UPDATE = 'requestScoreUpdate',
 	REQUEST_STATS_UPDATE = 'requestStatsUpdate',
+	REQUEST_FOUND_ALL_PIGEONS = 'requestFoundAllPigeons',
 
 	NOTIFY_SERVER_TIME                 = "notifyServerTime",
 	NOTIFY_LEADERBOARD_WINNER_WEEKLY   = "notifyLeaderboardWinnerWeekly",
@@ -29,6 +30,7 @@ const Messages = {
 		stat: Schemas.EnumString(PlayerStats, PlayerStats.COLLECTED_BALLOONS),
 		amount: Schemas.Int,
 	}),
+	[MessageType.REQUEST_FOUND_ALL_PIGEONS]: Schemas.Map({}),
 
 
 	// Sent by server

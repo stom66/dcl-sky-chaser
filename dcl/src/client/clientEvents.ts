@@ -7,4 +7,5 @@ export enum ClientEvents {
 	TRIGGER_RING    = "triggerRing",
 	TRIGGER_FUEL    = "triggerFuel",
 	TRIGGER_BALLOON = "triggerBalloon",
+	FOUND_ALL_PIGEONS = "foundAllPigeons",
 }

@@ -7,6 +7,7 @@ import { GameDataSnapshot } from "src/shared/types/shared-types"
 import { ComponentManager, C_GameData, C_PlayerFuel, C_Combo, C_Leaderboards, C_PigeonCounter } from "src/shared/components/componentManager"
 import { GameSettings } from "src/shared/settings"
 import { LeaderboardEntry } from "src/shared/classes/leaderboard"
+import { ClientEvents, eventBus } from "../utils/eventBus"
 
 // Re-export Components for easy importing elsewhere
 export * as C_GameData from "src/shared/components/gameData"
@@ -456,5 +457,10 @@ export namespace ComponentStore {
 		// count how many of the status values are "true"
 		c.count = c.status.filter((status) => status).length
 		console.log("foundPigeon: pigeon found", index, "count is now", c.count)
+
+		if (c.count === c.maxCount) {
+			eventBus.emit(ClientEvents.FOUND_ALL_PIGEONS, {})
+			console.log("foundPigeon: all pigeons found")
+		}
 	}
 }

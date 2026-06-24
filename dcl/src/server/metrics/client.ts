@@ -227,4 +227,19 @@ export namespace Metrics {
 		console.log('Metrics: trackGameEnded: gameId', gameId, 'gameStartTime', gameStartTime, 'playerCount', playerIds.length, 'winnerUserId', winnerUserId)
 	}
 
+	export function trackFoundAllPigeons(
+		userId: string
+	) {
+		if (isBlockedPlayer(userId)) return
+		
+		incrementPlayerStat(userId, PlayerStats.FOUND_ALL_PIGEONS)
+
+		Posthog.capture(userDistinctId(userId), MetricEvents.PLAYER_FOUND_ALL_PIGEONS, {
+			version              : VERSION,
+			sessionStartTimestamp: sessions.get(userId)
+		})
+
+		console.log('Metrics: trackGameJoined: userId', userId)
+	}
+
 }
