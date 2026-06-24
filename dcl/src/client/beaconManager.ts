@@ -6,24 +6,39 @@ export namespace BeaconManager {
 	let beacons: Entity[] = []
 	let elapsed = 0
 
+	let beaconMap: Map<Entity, Entity> = new Map() // Maps PlayerEntity <-> BeaconEntity
+
 	export function init() {
 		console.log("BeaconManager: init")
 
 		eventBus.on(ClientEvents.GAME_ACTIVE, (data) => {
 			createBeacons()
 			elapsed = 0
-			engine.addSystem(systemPulseBeacons)
+			engine.addSystem(systemUpdateBeacons)
 		})
 		eventBus.on(ClientEvents.GAME_END, () => {
+			engine.removeSystem(systemUpdateBeacons)
+
 			destroyBeacons()
-			engine.removeSystem(systemPulseBeacons)
 		})
 	}
 
-	function systemPulseBeacons(dt: number) {
+	function systemUpdateBeacons(dt: number) {
 		elapsed += dt
+
 		let intensity = Math.sin(elapsed * 5) + 1 * 0.5 + 0.5
-		for (const beacon of beacons) {
+
+		let offset = 0
+		for (const [player, beacon] of beaconMap) {
+			offset += 0.2
+			let intensity = Math.sin(elapsed * 5) + 1 * 0.5 + 0.5 + offset
+
+			const bT = Transform.getMutableOrNull(beacon)
+			const pT = Transform.getOrNull(player)
+			if (!bT || !pT) continue
+
+			bT.position = pT.position
+
 			setBeaconMaterial(beacon, intensity)
 		}
 	}
@@ -42,23 +57,23 @@ export namespace BeaconManager {
 
 			const beacon = engine.addEntity()
 			Transform.create(beacon, {
-				parent: entity,
-				scale: Vector3.create(1, 1024, 1),
+				scale: Vector3.create(1.5, 1024, 1.5),
 			})
 			Billboard.create(beacon, {
 				billboardMode: BillboardMode.BM_Y,
 			})
 			MeshRenderer.setPlane(beacon)
 			setBeaconMaterial(beacon, 0)
-			beacons.push(beacon)
+			beaconMap.set(entity, beacon)
 		}
 	}
 
 	function destroyBeacons() {
-		for (const beacon of beacons) {
+		for (const [player, beacon] of beaconMap) {
 			engine.removeEntity(beacon)
+			beaconMap.delete(player)
 		}
-		beacons.length = 0
+		beaconMap.clear()
 	}
 
 	function setBeaconMaterial(
