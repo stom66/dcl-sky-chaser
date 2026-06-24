@@ -48,5 +48,8 @@ const uiComponent = () => (
 
 // MARK: SetupUI
 export function SetupUI() {
-	ReactEcsRenderer.setUiRenderer(uiComponent)
+	ReactEcsRenderer.setUiRenderer(uiComponent, {
+		virtualWidth: 1920,
+		virtualHeight: 1080,
+	})
 }
