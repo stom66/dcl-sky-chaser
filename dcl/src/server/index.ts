@@ -34,6 +34,8 @@ export async function initServer(): Promise<void> {
 		ServerMessaging.sendServerTime()
 	}, ServerSettings.SERVER_TIME_UPDATE_INTERVAL)
 
+	Metrics.init()
+
 
 	// MARK: Event bindings
 	onEnterScene((player) => {
