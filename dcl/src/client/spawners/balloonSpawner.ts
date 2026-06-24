@@ -112,10 +112,13 @@ export namespace BalloonSpawner {
 	}
 
 	export function removePickups() {
+		engine.removeSystem(spawnerSystem)
+		engine.removeSystem(moverSystem)
+		systemsAdded = false
+
 		for (const [entity] of ballonInstances.entries()) {
 			removePickup(entity, true)
 		}
-		engine.removeSystem(spawnerSystem)
 	}
 
 	function removePickup(entity: Entity, muteSound: boolean = false) {

@@ -11,6 +11,8 @@ import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
 
 export namespace FuelSpawner {
 
+	const fuelPickups: FuelPickup[] = []
+
 	const origin     = Vector3.create(256, 1, 256)
 	const maxSpawns  = 128
 	const minRadius  = 32
@@ -37,7 +39,7 @@ export namespace FuelSpawner {
 	export function onGameStart(startTime: number) {
 		if (startTime === gameStartTime) return
 		gameStartTime = startTime
-		//removePickups()
+		removePickups()
 		spawnPickups()
 	}
 
@@ -65,16 +67,17 @@ export namespace FuelSpawner {
 		const z        = origin.z + distance * Math.sin(angle)
 		const value = Math.ceil(Math.random()*3) * 10
 		const pickup   = new FuelPickup(Vector3.create(x, y, z), value)
+		fuelPickups.push(pickup)
 	}
 
 	export function removePickups() {
 		engine.removeSystem(system_Mover)
 		engine.removeSystem(system_Spawner)
 
-		for (const [entity] of engine.getEntitiesWith(FuelPickupComponent)) {
-			engine.removeEntity(entity)
+		for (const pickup of fuelPickups) {
+			pickup.Destroy()
 		}
-		engine.removeSystem(system_Spawner)
+		fuelPickups.length = 0
 	}
 
 	function system_Spawner(dt: number) {
