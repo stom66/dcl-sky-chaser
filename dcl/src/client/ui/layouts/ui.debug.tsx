@@ -9,7 +9,7 @@ import { PlayerMover } from 'src/client/playerMover'
 import { ClientEvents, eventBus } from 'src/shared/utils/eventBus'
 import { ParticleSpawner } from 'src/client/particleSpawner'
 import { engine, Transform } from '@dcl/sdk/ecs'
-import { Vector3 } from '@dcl/sdk/math'
+import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { ClientHandler } from 'src/client/clientHandler'
 import { PlayerStats } from 'src/server/metrics/playerStats'
 
@@ -48,7 +48,12 @@ export function DebugUI() {
 				<ButtonAction textLabel="toSpawn" callback={() => PlayerMover.movePlayerToSpawn() } />
 				<ButtonAction textLabel="newGame" callback={() => ClientMessaging.RequestNewGame() } />
 				<ButtonAction textLabel="addPoints" callback={() => ClientMessaging.RequestStatsUpdate(PlayerStats.COLLECTED_BALLOONS) } />
-				<ButtonAction textLabel="triggerDustSpurt" callback={() => ParticleSpawner.TriggerDustSpurt(Transform.getOrNull(engine.PlayerEntity)?.position ?? Vector3.create(256, 63.2, 256)) } />
+				<ButtonAction textLabel="triggerDustSpurt" callback={() => {
+					const playerTransform = Transform.getOrNull(engine.PlayerEntity)
+					if (!playerTransform) return
+					const yRot = Quaternion.toEulerAngles(playerTransform.rotation).y
+					ParticleSpawner.TriggerPickupSpeedRing(playerTransform.position, yRot)
+				}} />
 				<ButtonAction textLabel="triggerLeaderboardWinner" callback={() => ClientHandler.handleNotifyLeaderboardWinner("ALL TIME") } />
 				<ButtonAction textLabel="incrementCombo" callback={() => ComponentStore.incrementComboValue() } />
 					
