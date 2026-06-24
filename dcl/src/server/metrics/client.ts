@@ -58,6 +58,7 @@ export namespace Metrics {
 		if (isBlockedPlayer(userId)) return
 
 		sessions.set(userId, Date.now())
+		playerStats.set(userId, createEmptyPlayerStats())
 
 		trackSceneJoined(userId, displayName)
 	}
