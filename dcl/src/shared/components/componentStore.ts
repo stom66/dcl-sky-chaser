@@ -421,7 +421,7 @@ export namespace ComponentStore {
 	}
 	
 
-	// MARK: Pigeon Counter
+	// MARK: Pigeon Counter - Client only
 	export function setPigeonMaxCount(numPigeons: number): void {
 		const entity = ComponentManager.tryGetComponentEntity()
 		if (entity === undefined) return

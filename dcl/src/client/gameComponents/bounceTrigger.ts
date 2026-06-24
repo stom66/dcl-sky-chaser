@@ -149,11 +149,11 @@ export class BounceTrigger {
 			Physics.applyImpulseToPlayer(normal, this.config.impulseStrength)
 		}
 
-		this.OnBounce()
+		this.OnBounce(position, normal)
 	}
 	
 	// MARK: OnBounce
-	protected OnBounce() {
+	protected OnBounce(position: Vector3, normal: Vector3) {
 		/// Override this in the subclass
 	}
 }

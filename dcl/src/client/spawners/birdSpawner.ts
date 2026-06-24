@@ -3,6 +3,7 @@ import { Quaternion, Vector3 } from "@dcl/sdk/math"
 
 import { sfx, SoundManager } from "src/client/soundManager"
 import { ComponentStore } from "src/shared/components/componentStore"
+import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
 
 export namespace BirdSpawner {
 
@@ -127,13 +128,20 @@ export namespace BirdSpawner {
 		isFart: boolean
 	) {
 		console.log("BirdSpawner: bird clicked", bird)
-		
+
 		ComponentStore.foundPigeon(index)
 
 		if (isFart) {
 			SoundManager.playSound([...sfx.fart, ...sfx.fart, ...sfx.coo], bird, 20)
 		} else {	
 			SoundManager.playSound(sfx.coo, bird, 20)
+		}
+
+		const t = Transform.getOrNull(bird)
+		if (t) {
+			eventBus.emit(ClientEvents.TRIGGER_PIGEON, { position: t.position })
+		} else {
+			eventBus.emit(ClientEvents.TRIGGER_PIGEON, undefined)
 		}
 	}
 }

@@ -7,6 +7,8 @@ import { ClientMessaging } from "src/client/clientMessaging"
 import { sfx, SoundManager } from "src/client/soundManager"
 import { ParticleSpawner } from "src/client/particleSpawner"
 import { PlayerStats } from "src/server/metrics/playerStats"
+import { ClientEvents } from "src/client/clientEvents"
+import { eventBus } from "src/shared/utils/eventBus"
 
 
 export class BounceTriggerAwning extends BounceTrigger {
@@ -28,9 +30,14 @@ export class BounceTriggerAwning extends BounceTrigger {
 		})
 	}
 
-	protected OnBounce() {
+	protected OnBounce(
+		position: Vector3, 
+		normal  : Vector3
+	) {
 		ClientMessaging.RequestStatsUpdate(PlayerStats.TRIGGERED_AWNING)
 		SoundManager.playSound(sfx.boing)
 		ParticleSpawner.TriggerDustSpurt(Transform.getOrNull(engine.PlayerEntity)?.position ?? Vector3.create(256, 63.2, 256))
+		
+		eventBus.emit(ClientEvents.TRIGGER_AWNING, { position, normal })
 	}
 }
