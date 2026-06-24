@@ -131,7 +131,7 @@ export namespace BirdSpawner {
 		ComponentStore.foundPigeon(index)
 
 		if (isFart) {
-			SoundManager.playSound([...sfx.fart, ...sfx.coo], bird, 20)
+			SoundManager.playSound([...sfx.fart, ...sfx.fart, ...sfx.coo], bird, 20)
 		} else {	
 			SoundManager.playSound(sfx.coo, bird, 20)
 		}
