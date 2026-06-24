@@ -97,6 +97,7 @@ export namespace ParticleSpawner {
 		}
 	}
 
+	// MARK: Dust
 	export function TriggerDustSpurt(
 		position: Vector3
 	) {
@@ -134,6 +135,7 @@ export namespace ParticleSpawner {
 
 	}
 
+	// MARK: Pigeons
 	export function TriggerPigeonSpurt(
 		position: Vector3
 	) {
@@ -148,13 +150,13 @@ export namespace ParticleSpawner {
 			lifetime            : 2,
 			maxParticles        : 300,
 			gravity             : 4,
-			blendMode           : PBParticleSystem_BlendMode.PSB_ADD,
+			//blendMode           : PBParticleSystem_BlendMode.PSB_ALPHA,
 			shape               : ParticleSystem.Shape.Cone({ angle: 30, radius: 0.2 }),
 			initialVelocitySpeed: { start: 12.5, end: 20 },
 			initialSize         : { start: 0.25, end: 0.75 },
 			sizeOverTime        : { start: 1, end: 0 },
 			//rotationOverTime    : { x: 0, y: 0, z: 0, w: 1 },
-			initialColor        : { start: Color4.fromHexString("#ffffff"), end: Color4.fromHexString("#cccccc") },
+			initialColor        : { start: Color4.fromHexString("#ffffffff"), end: Color4.fromHexString("#ffffffff") },
 			//colorOverTime       : { start: Color4.create(1.000, 0.800, 0.500, 1.000), end: Color4.create(0.800, 0.200, 0.000, 0.000) },
 			bursts              : { values: [
 				{ time: 0, count: 32, cycles: 6, interval: 0.8, probability: 1 },
@@ -171,6 +173,7 @@ export namespace ParticleSpawner {
 
 	}
 
+	// MARK: Pickups
 	export function TriggerPickupFuel(
 		position: Vector3
 	) {
@@ -221,6 +224,7 @@ export namespace ParticleSpawner {
 
 	}
 
+	// MARK: Speed Rings
 	export function TriggerPickupSpeedRing(
 		position: Vector3,
 		yRot: number,
