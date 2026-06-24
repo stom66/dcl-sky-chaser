@@ -3,7 +3,7 @@
   "runtimeVersion": "7",
   "display": {
     "title": "Sky Chaser",
-    "description": "Sky game prototype",
+    "description": "Collect escaping balloons, earn points, and climb the leaderboard! Zoom around the skies with a jetpack! Bounce on things! Pigeons!",
     "navmapThumbnail": "assets/scene/Images/scene-thumbnail.png",
     "favicon": "favicon_asset"
   },
