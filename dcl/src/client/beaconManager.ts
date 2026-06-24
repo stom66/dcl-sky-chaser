@@ -26,8 +26,6 @@ export namespace BeaconManager {
 	function systemUpdateBeacons(dt: number) {
 		elapsed += dt
 
-		let intensity = Math.sin(elapsed * 5) + 1 * 0.5 + 0.5
-
 		let offset = 0
 		for (const [player, beacon] of beaconMap) {
 			offset += 0.2
