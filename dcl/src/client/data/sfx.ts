@@ -51,10 +51,10 @@ export const sfx = {
 	],
 
 	fart: [
-		"assets/sfx/fart_01.wav",
-		"assets/sfx/fart_02.wav",
-		"assets/sfx/fart_03.wav",
-		"assets/sfx/fart_04.wav",
+		"assets/sfx/fart_01.mp3",
+		"assets/sfx/fart_02.mp3",
+		"assets/sfx/fart_03.mp3",
+		"assets/sfx/fart_04.mp3",
 	],
 
 }
