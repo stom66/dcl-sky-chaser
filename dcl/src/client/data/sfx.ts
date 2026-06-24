@@ -41,6 +41,12 @@ export const sfx = {
 	boing: [
 		"assets/sfx/boing_1.wav",
 		"assets/sfx/boing_2.wav",
+		"assets/sfx/boing_3.mp3",
+		"assets/sfx/boing_4.mp3",
+		"assets/sfx/boing_5.wav",
+		"assets/sfx/boing_6.wav",
+		"assets/sfx/boing_7.wav",
+		"assets/sfx/boing_8.wav",
 	],
 
 	coo: [
