@@ -45,6 +45,7 @@ export namespace ComponentStore {
 		C_PlayerFuel.PlayerFuel,
 		C_Leaderboards.leaderboardAllTime,
 		C_Leaderboards.leaderboardWeekly,
+		C_PigeonCounter.PigeonCounter,
 	] as const
 
 	const watchers = new Map<
@@ -439,10 +440,8 @@ export namespace ComponentStore {
 		const c = C_PigeonCounter.PigeonCounter.getMutableOrNull(entity)
 		if (c === null) return
 
-		const numPigeons = 
-
 		c.status = Array(c.maxCount).fill(false)
-		c.count = 0
+		c.count  = 0
 	}
 
 	export function foundPigeon(index: number): void {

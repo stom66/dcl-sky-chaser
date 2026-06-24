@@ -26,17 +26,17 @@ ComponentStore.onComponentChange(C_PigeonCounter.PigeonCounter, (data) => {
 
 
 function ShowUI() {
-	tweenValue(elementPositionTop, POS_TOP_DEFAULT, 0.4, (v) => elementPositionTop = v), EasingFunction.EF_EASEOUTBACK
+	tweenValue(elementPositionTop, POS_DEFAULT, 0.4, (v) => elementPositionTop = v), EasingFunction.EF_EASEOUTBACK
 }
 
 function HideUI() {
-	tweenValue(elementPositionTop, POS_TOP_HIDDEN, 0.4, (v) => elementPositionTop = v), EasingFunction.EF_EASEOUTBACK
+	tweenValue(elementPositionTop, POS_HIDDEN, 0.4, (v) => elementPositionTop = v), EasingFunction.EF_EASEOUTBACK
 }
 
-const POS_TOP_DEFAULT    = 10
-const POS_TOP_HIDDEN     = -310
+const POS_DEFAULT    = 10
+const POS_HIDDEN     = -310
 
-var elementPositionTop: number   = POS_TOP_HIDDEN
+var elementPositionTop: number   = POS_HIDDEN
 
 // MARK: FuelUI
 export function PigeonCounterUI() {
@@ -47,7 +47,7 @@ export function PigeonCounterUI() {
 				width         : '256',
 				height        : '128',
 				flexDirection : 'column',
-				position      : { right: 10, bottom: 10 },
+				position      : { right: elementPositionTop, bottom: 10 },
 				positionType  : 'absolute',
 				justifyContent: 'center',
 			}}

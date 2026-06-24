@@ -126,8 +126,9 @@ export namespace ComponentManager {
 				lastUpdatedTime: 0,
 			})
 			C_PigeonCounter.PigeonCounter.createOrReplace(entity, {
-				status: [false, false, false, false, false, false, false, false, false, false],
-				count: 0,
+				status  : [false, false, false, false, false, false, false, false, false, false],
+				count   : 0,
+				maxCount: 10,
 			})
 		}
 	}

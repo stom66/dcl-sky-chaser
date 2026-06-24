@@ -55,6 +55,10 @@ export namespace BirdSpawner {
 			position: Vector3.create(265.183, 54.073, 247.209),
 			rotation: Quaternion.fromEulerDegrees(0, 334.694, 0),
 		},
+		{
+			position: Vector3.create(249.526, 58.8501, 255.508),
+			rotation: Quaternion.fromEulerDegrees(0, 90, 0),
+		},
 	]
 
 
