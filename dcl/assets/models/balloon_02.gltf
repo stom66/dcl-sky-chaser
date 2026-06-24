@@ -25,7 +25,7 @@
 			"rotation":[
 				0,
 				0,
-				0.09119479358196259,
+				0.09119486808776855,
 				0.995833158493042
 			],
 			"translation":[
@@ -44,26 +44,22 @@
 			"doubleSided":true,
 			"name":"Balloon",
 			"pbrMetallicRoughness":{
-				"baseColorFactor":[
-					0.800000011920929,
-					0.800000011920929,
-					0.800000011920929,
-					1
-				],
+				"baseColorTexture":{
+					"index":0
+				},
 				"metallicFactor":0,
-				"roughnessFactor":0.5
+				"metallicRoughnessTexture":{
+					"index":1
+				}
 			}
 		},
 		{
 			"doubleSided":true,
 			"name":"Package",
 			"pbrMetallicRoughness":{
-				"baseColorFactor":[
-					0.800000011920929,
-					0.800000011920929,
-					0.800000011920929,
-					1
-				],
+				"baseColorTexture":{
+					"index":2
+				},
 				"metallicFactor":0,
 				"roughnessFactor":0.5
 			}
@@ -72,18 +68,18 @@
 			"doubleSided":true,
 			"name":"Rope001",
 			"normalTexture":{
-				"index":0
+				"index":3
 			},
 			"occlusionTexture":{
-				"index":1
+				"index":4
 			},
 			"pbrMetallicRoughness":{
 				"baseColorTexture":{
-					"index":2
+					"index":5
 				},
 				"metallicFactor":0,
 				"metallicRoughnessTexture":{
-					"index":1
+					"index":4
 				}
 			}
 		}
@@ -143,10 +139,32 @@
 		},
 		{
 			"sampler":0,
+			"source":0
+		},
+		{
+			"sampler":0,
 			"source":2
+		},
+		{
+			"sampler":0,
+			"source":3
+		},
+		{
+			"sampler":0,
+			"source":4
 		}
 	],
 	"images":[
+		{
+			"mimeType":"image/png",
+			"name":"gradient",
+			"uri":"tex/gradient.png"
+		},
+		{
+			"mimeType":"image/png",
+			"name":"gradient",
+			"uri":"tex/gradient-1.png"
+		},
 		{
 			"mimeType":"image/jpeg",
 			"name":"Rope_001_normal",

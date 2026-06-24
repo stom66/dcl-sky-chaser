@@ -59,7 +59,7 @@ export class BalloonPickup {
 			pbr: {
 				albedoColor: this.balloonColor,
 				emissiveColor: this.balloonColor,
-				emissiveIntensity: 0.3
+				emissiveIntensity: 0.1
 			}
 		} as PBMaterial["material"]
 
@@ -68,7 +68,7 @@ export class BalloonPickup {
 			pbr: {
 				albedoColor: this.packageColor,
 				emissiveColor: this.packageColor,
-				emissiveIntensity: 0.3
+				emissiveIntensity: 0.2
 			}
 		} as PBMaterial["material"]
 

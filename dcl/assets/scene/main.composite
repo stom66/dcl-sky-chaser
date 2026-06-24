@@ -13720,7 +13720,9 @@
                 }
               }
             ],
-            "skyboxConfig": {},
+            "skyboxConfig": {
+              "fixedTime": 51600
+            },
             "creator": "0xCEC7e38e088A87D77F2B60Fcae6840D00E018155",
             "disableNearbyVoiceChat": false
           }

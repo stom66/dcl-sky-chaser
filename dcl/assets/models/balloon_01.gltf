@@ -25,7 +25,7 @@
 			"rotation":[
 				0,
 				0,
-				0.09119479358196259,
+				0.09119486808776855,
 				0.995833158493042
 			],
 			"translation":[
@@ -44,26 +44,22 @@
 			"doubleSided":true,
 			"name":"Balloon",
 			"pbrMetallicRoughness":{
-				"baseColorFactor":[
-					0.800000011920929,
-					0.800000011920929,
-					0.800000011920929,
-					1
-				],
+				"baseColorTexture":{
+					"index":0
+				},
 				"metallicFactor":0,
-				"roughnessFactor":0.5
+				"metallicRoughnessTexture":{
+					"index":1
+				}
 			}
 		},
 		{
 			"doubleSided":true,
 			"name":"Package",
 			"pbrMetallicRoughness":{
-				"baseColorFactor":[
-					0.800000011920929,
-					0.800000011920929,
-					0.800000011920929,
-					1
-				],
+				"baseColorTexture":{
+					"index":2
+				},
 				"metallicFactor":0,
 				"roughnessFactor":0.5
 			}
@@ -72,18 +68,18 @@
 			"doubleSided":true,
 			"name":"Rope001",
 			"normalTexture":{
-				"index":0
+				"index":3
 			},
 			"occlusionTexture":{
-				"index":1
+				"index":4
 			},
 			"pbrMetallicRoughness":{
 				"baseColorTexture":{
-					"index":2
+					"index":5
 				},
 				"metallicFactor":0,
 				"metallicRoughnessTexture":{
-					"index":1
+					"index":4
 				}
 			}
 		}
@@ -143,10 +139,32 @@
 		},
 		{
 			"sampler":0,
+			"source":0
+		},
+		{
+			"sampler":0,
 			"source":2
+		},
+		{
+			"sampler":0,
+			"source":3
+		},
+		{
+			"sampler":0,
+			"source":4
 		}
 	],
 	"images":[
+		{
+			"mimeType":"image/png",
+			"name":"gradient",
+			"uri":"tex/gradient.png"
+		},
+		{
+			"mimeType":"image/png",
+			"name":"gradient",
+			"uri":"tex/gradient-1.png"
+		},
 		{
 			"mimeType":"image/jpeg",
 			"name":"Rope_001_normal",
@@ -167,7 +185,7 @@
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":559,
+			"count":482,
 			"max":[
 				0.7499997615814209,
 				0.9790925979614258,
@@ -183,13 +201,13 @@
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":559,
+			"count":482,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":559,
+			"count":482,
 			"type":"VEC2"
 		},
 		{
@@ -270,74 +288,74 @@
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":6708,
+			"byteLength":5784,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":6708,
-			"byteOffset":6708,
+			"byteLength":5784,
+			"byteOffset":5784,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":4472,
-			"byteOffset":13416,
+			"byteLength":3856,
+			"byteOffset":11568,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":5760,
-			"byteOffset":17888,
+			"byteOffset":15424,
 			"target":34963
 		},
 		{
 			"buffer":0,
 			"byteLength":504,
-			"byteOffset":23648,
+			"byteOffset":21184,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":504,
-			"byteOffset":24152,
+			"byteOffset":21688,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":336,
-			"byteOffset":24656,
+			"byteOffset":22192,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":480,
-			"byteOffset":24992,
+			"byteOffset":22528,
 			"target":34963
 		},
 		{
 			"buffer":0,
 			"byteLength":3648,
-			"byteOffset":25472,
+			"byteOffset":23008,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":3648,
-			"byteOffset":29120,
+			"byteOffset":26656,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":2432,
-			"byteOffset":32768,
+			"byteOffset":30304,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":2976,
-			"byteOffset":35200,
+			"byteOffset":32736,
 			"target":34963
 		}
 	],
@@ -349,7 +367,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":38176,
+			"byteLength":35712,
 			"uri":"balloon_01.bin"
 		}
 	]
