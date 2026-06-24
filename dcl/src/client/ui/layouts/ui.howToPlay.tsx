@@ -43,7 +43,7 @@ export function HowToPlayUI() {
 					width: '128',
 					height: '128',
 					positionType: 'absolute',
-					position: { top: vhAsPixels(50)-400, right: '10' },
+					position: { top: 512 - 256 - 128, right: '10' }, // minus half the screen height, the half height of the fuel gauge, minus the full height of this
 				}}
 				onMouseDown={ShowUI}
 				uiBackground={{ 
