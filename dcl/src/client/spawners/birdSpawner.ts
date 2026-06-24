@@ -2,6 +2,7 @@ import { Animator, engine, Entity, GltfContainer, InputAction, MeshCollider, poi
 import { Quaternion, Vector3 } from "@dcl/sdk/math"
 
 import { sfx, SoundManager } from "src/client/soundManager"
+import { ComponentStore } from "src/shared/components/componentStore"
 
 export namespace BirdSpawner {
 
@@ -63,6 +64,8 @@ export namespace BirdSpawner {
 		for (const [index, transform] of transforms.entries()) {
 			createBird(index, transform)
 		}
+
+		ComponentStore.setPigeonMaxCount(transforms.length)
 	}
 
 	function createBird(
@@ -107,15 +110,21 @@ export namespace BirdSpawner {
 				maxDistance: MAX_INTERACTION_DISTANCE
 			}
 		}, () => {
-			onBirdClicked(bird, isFart)
+			onBirdClicked(bird, index, isFart)
 		})
 
 		console.log("BirdSpawner: spawned bird", index, src)	
 		
 	}
 
-	function onBirdClicked(bird: Entity, isFart: boolean) {
+	function onBirdClicked(
+		bird  : Entity, 
+		index : number, 
+		isFart: boolean
+	) {
 		console.log("BirdSpawner: bird clicked", bird)
+		
+		ComponentStore.foundPigeon(index)
 
 		if (isFart) {
 			SoundManager.playSound([...sfx.fart, ...sfx.coo], bird, 20)

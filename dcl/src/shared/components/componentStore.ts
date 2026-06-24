@@ -4,7 +4,7 @@ import { ComponentData, Entity } from "@dcl/sdk/ecs"
 import { GameStatus } from "src/shared/enums"
 import { GameDataSnapshot } from "src/shared/types/shared-types"
 
-import { ComponentManager, C_GameData, C_PlayerFuel, C_Combo, C_Leaderboards } from "src/shared/components/componentManager"
+import { ComponentManager, C_GameData, C_PlayerFuel, C_Combo, C_Leaderboards, C_PigeonCounter } from "src/shared/components/componentManager"
 import { GameSettings } from "src/shared/settings"
 import { LeaderboardEntry } from "src/shared/classes/leaderboard"
 
@@ -13,6 +13,7 @@ export * as C_GameData from "src/shared/components/gameData"
 export * as C_PlayerFuel from "src/shared/components/playerFuel"
 export * as C_Combo from "src/shared/components/combo"
 export * as C_Leaderboards from "src/shared/components/leaderboards"
+export * as C_PigeonCounter from "src/shared/components/pigeonCounter"
 /**
  * Data-access wrapper around the synced components. Reads work on both
  * server and client; writes are gated by `isServer()` and silently no-op on
@@ -415,5 +416,46 @@ export namespace ComponentStore {
 
 		const c = C_Leaderboards.leaderboardWeekly.get(entity)
 		return [...(c?.scores ?? [])]
+	}
+	
+
+	// MARK: Pigeon Counter
+	export function setPigeonMaxCount(numPigeons: number): void {
+		const entity = ComponentManager.tryGetComponentEntity()
+		if (entity === undefined) return
+
+		const c = C_PigeonCounter.PigeonCounter.getMutableOrNull(entity)
+		if (c === null) return
+
+		c.count    = 0
+		c.maxCount = numPigeons
+		c.status   = Array(numPigeons).fill(false)
+	}
+
+	export function resetPigeonCounter(): void {
+		const entity = ComponentManager.tryGetComponentEntity()
+		if (entity === undefined) return
+
+		const c = C_PigeonCounter.PigeonCounter.getMutableOrNull(entity)
+		if (c === null) return
+
+		const numPigeons = 
+
+		c.status = Array(c.maxCount).fill(false)
+		c.count = 0
+	}
+
+	export function foundPigeon(index: number): void {
+		const entity = ComponentManager.tryGetComponentEntity()
+		if (entity === undefined) return
+
+		const c = C_PigeonCounter.PigeonCounter.getMutableOrNull(entity)
+		if (c === null) return
+
+		c.status[index] = true
+		
+		// count how many of the status values are "true"
+		c.count = c.status.filter((status) => status).length
+		console.log("foundPigeon: pigeon found", index, "count is now", c.count)
 	}
 }

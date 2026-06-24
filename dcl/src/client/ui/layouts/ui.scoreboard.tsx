@@ -25,46 +25,21 @@ ComponentStore.onComponentChange(C_GameData.ScoreBoard, (data) => {
 })
 
 
-eventBus.on(ClientEvents.GAME_ACTIVE, (data) => { toDefault() })
-eventBus.on(ClientEvents.GAME_END,    (data) => { toHidden() })
-//eventBus.on(ClientEvents.GAME_IDLE,   (data) => { toHidden() })
+eventBus.on(ClientEvents.GAME_ACTIVE, (data) => { ShowUI() })
+eventBus.on(ClientEvents.GAME_END,    (data) => { HideUI() })
 
-function toDefault() {
+function ShowUI() {
 	tweenValue(elementPositionTop, POS_TOP_DEFAULT, 0.4, (v) => elementPositionTop = v), EasingFunction.EF_EASEOUTBACK
-	//tweenValue(elementPositionRight, POS_RIGHT_DEFAULT, 0.4, (v) => elementPositionRight = v), EasingFunction.EF_EASEOUTBACK
-	//elementWidth = WIDTH_DEFAULT
 }
 
-/* function toCentered() {
-	tweenValue(elementPositionTop, POS_TOP_CENTERED, 0.4, (v) => elementPositionTop = v), EasingFunction.EF_EASECUBIC
-	tweenValue(elementPositionRight, POS_RIGHT_CENTERED, 0.4, (v) => elementPositionRight = v), EasingFunction.EF_EASECUBIC
-	elementWidth = WIDTH_CENTERED
-}
- */
-function toHidden() {
+function HideUI() {
 	tweenValue(elementPositionTop, POS_TOP_HIDDEN, 0.4, (v) => elementPositionTop = v), EasingFunction.EF_EASEOUTBACK
-	//tweenValue(elementPositionRight, POS_RIGHT_DEFAULT, 0.4, (v) => elementPositionRight = v), EasingFunction.EF_EASEOUTBACK
-	//elementWidth = WIDTH_DEFAULT
 }
-
-//const POS_HIDDEN  = -310
-//const POS_VISIBLE = 160
-
-const POS_RIGHT_DEFAULT  = 160
-//const POS_RIGHT_CENTERED = vwAsPixels(50) - 128 // half the width
 
 const POS_TOP_DEFAULT    = 10
-//const POS_TOP_CENTERED   = vhAsPixels(50) - 128 // half the height
 const POS_TOP_HIDDEN     = -310
 
-const WIDTH_DEFAULT = 256
-const WIDTH_CENTERED = 480 // half the width
-
-
-//var elementPositionTop: number = POS_TOP_DEFAULT // DEBUG -REMOVE FOR PROD
-var elementPositionTop: number = POS_TOP_HIDDEN
-var elementPositionRight: number = POS_RIGHT_DEFAULT
-var elementWidth: number = WIDTH_DEFAULT
+var elementPositionTop: number   = POS_TOP_HIDDEN
 
 
 function getScoreboardRows() {
@@ -120,7 +95,7 @@ export function ScoreboardUI() {
 			<UiEntity
 				key={`ui_Scoreboard_outer`}
 				uiTransform={{
-					width         : elementWidth,
+					width         : 256,
 					height        : 256,
 					borderRadius  : 32,
 					overflow      : 'hidden',
@@ -129,7 +104,7 @@ export function ScoreboardUI() {
 					borderWidth   : 5,
 					justifyContent: 'flex-start',
 					padding       : { bottom: 10 },
-					position      : { right: elementPositionRight, top: elementPositionTop },
+					position      : { right: 160, top: elementPositionTop },
 					positionType  : 'absolute',
 					
 				}}

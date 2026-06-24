@@ -22,7 +22,7 @@ import { DiscordWebhooks } from 'src/shared/utils/discord-webhooks'
 import { GameStateManager } from './gameStateManager'
 import { UILeaderboard } from './ui-leaderboard'
 import { BeaconManager } from './beaconManager'
-import { BirdSpawner } from './birdSpawner'
+import { BirdSpawner } from './spawners/birdSpawner'
 import { Light } from './light'
 import { BounceSpawner } from './spawners/bounceSpawner'
 

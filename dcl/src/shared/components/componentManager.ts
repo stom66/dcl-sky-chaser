@@ -17,6 +17,9 @@ export * as C_Combo from "src/shared/components/combo"
 import * as C_Leaderboards from "src/shared/components/leaderboards"
 export * as C_Leaderboards from "src/shared/components/leaderboards"
 
+import * as C_PigeonCounter from "src/shared/components/pigeonCounter"
+export * as C_PigeonCounter from "src/shared/components/pigeonCounter"
+
 /**
  * Lifecycle-only namespace: creates the synced gameplay entity, registers it
  * with `syncEntity`/`validateBeforeChange`, and exposes lookup + readiness
@@ -121,6 +124,10 @@ export namespace ComponentManager {
 			C_Combo.Combo.createOrReplace(entity, {
 				value: 1,
 				lastUpdatedTime: 0,
+			})
+			C_PigeonCounter.PigeonCounter.createOrReplace(entity, {
+				status: [false, false, false, false, false, false, false, false, false, false],
+				count: 0,
 			})
 		}
 	}

@@ -1,0 +1,79 @@
+import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
+
+import { alpha, darken, theme } from 'src/client/ui/index'
+import { C_PigeonCounter, ComponentStore } from 'src/shared/components/componentStore'
+import { tweenValue } from '../utils/tweens'
+import { EasingFunction } from '@dcl/sdk/ecs'
+import { getUVsForIconAtlasNumber, getUVsForIconAtlasRow, IconAtlasLabel } from '../utils/atlas'
+import * as utils from '@dcl-sdk/utils'
+
+
+let count    = 0
+
+ComponentStore.onComponentChange(C_PigeonCounter.PigeonCounter, (data) => {
+	const newCount = data?.count ?? 0
+	console.log("PigeonCounterUI count changed: newCount", newCount)
+	if (newCount > count) {
+		count = newCount
+		ShowUI()
+
+		utils.timers.setTimeout(() => {
+			HideUI()
+		}, 2500)
+		console.log("PigeonCounterUI: count changed to", count)
+	}
+})
+
+
+function ShowUI() {
+	tweenValue(elementPositionTop, POS_TOP_DEFAULT, 0.4, (v) => elementPositionTop = v), EasingFunction.EF_EASEOUTBACK
+}
+
+function HideUI() {
+	tweenValue(elementPositionTop, POS_TOP_HIDDEN, 0.4, (v) => elementPositionTop = v), EasingFunction.EF_EASEOUTBACK
+}
+
+const POS_TOP_DEFAULT    = 10
+const POS_TOP_HIDDEN     = -310
+
+var elementPositionTop: number   = POS_TOP_HIDDEN
+
+// MARK: FuelUI
+export function PigeonCounterUI() {
+	return (
+		<UiEntity
+			key={`ui_Counter_root`}
+			uiTransform={{
+				width         : '256',
+				height        : '128',
+				flexDirection : 'column',
+				position      : { right: 10, bottom: 10 },
+				positionType  : 'absolute',
+				justifyContent: 'center',
+			}}
+			uiBackground={{
+				texture: { src: "assets/images/ui/counter.png" },
+				textureMode: 'stretch',
+			}}
+		>
+			<UiEntity
+				key={`ui_Counter_outer`}
+				uiTransform={{
+					width         : 31,
+					height        : 64,
+					borderRadius  : 64,
+					overflow      : 'hidden',
+					positionType  : 'absolute',
+					position      : { top:44, left: 26 },
+				}}
+
+				uiBackground={{
+					texture    : { src: "assets/images/ui/atlas-numbers.png" },
+					textureMode: 'stretch',
+					uvs        : getUVsForIconAtlasNumber(count),
+				}}
+			/>
+				
+		</UiEntity>
+	)
+}

@@ -10,6 +10,7 @@ import { HowToPlayUI } from './ui/layouts/ui.howToPlay'
 import { CountdownUI } from './ui/layouts/ui.countdown'
 import { LeaderboardWinnerUI } from './ui/layouts/ui.leaderboardWinner'
 import { ResultsUI } from './ui/layouts/ui.results'
+import { PigeonCounterUI } from './ui/layouts/ui.pigeonCounter'
 
 
 // MARK: Vars
@@ -40,6 +41,7 @@ const uiComponent = () => (
 		{CountdownUI()}
 		{LeaderboardWinnerUI()}
 		{ResultsUI()}
+		{PigeonCounterUI()}
 	</UiEntity>
 )
 
