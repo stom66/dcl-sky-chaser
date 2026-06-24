@@ -7,7 +7,7 @@ import { alpha, theme } from 'src/client/ui/index'
 export function VersionUI() {
 	return (
 		<UiEntity
-			key={`ui_Version`}
+			key={`ui_Version_root`}
 			uiTransform={{
 				width       : 'auto',
 				height      : '22',

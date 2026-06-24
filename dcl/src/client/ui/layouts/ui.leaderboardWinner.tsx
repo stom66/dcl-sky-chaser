@@ -1,8 +1,8 @@
-import ReactEcs, { Button, Label, UiEntity, UiFontType} from '@dcl/sdk/react-ecs'
+import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
 
-import { tweenValue } from "../utils/tweens"
-import { IS_DEV } from 'src/shared/settings'
 import { Color4 } from '@dcl/sdk/math'
+
+import { tweenValue } from 'src/client/ui/utils/tweens'
 
 const PANEL_HIDDEN  = -1200
 const PANEL_VISIBLE = 8
@@ -27,7 +27,7 @@ export function LeaderboardWinnerUI() {
 
 	return (
 		<UiEntity
-			key="ui_debug_root"
+			key="ui_leaderboard_winner_root"
 			uiTransform={{
 				width          : '100%',
 				height         : '100%',
@@ -38,6 +38,7 @@ export function LeaderboardWinnerUI() {
 			}}
 		>
 			<UiEntity
+				key="ui_leaderboard_winner_panel"
 				uiTransform={{
 					width: '1200',
 					height: '800',
@@ -50,6 +51,7 @@ export function LeaderboardWinnerUI() {
 				}}
 			>
 				<UiEntity
+					key="ui_leaderboard_winner_close"
 					uiTransform={{
 						width: '80',
 						height: '80',
@@ -60,6 +62,7 @@ export function LeaderboardWinnerUI() {
 					//uiBackground={{ color: Color4.fromHexString('#ffffffaa') }}
 				/>
 				<UiEntity
+					key="ui_leaderboard_winner_message"
 					uiTransform={{
 						width: '100%',
 						height: '80',

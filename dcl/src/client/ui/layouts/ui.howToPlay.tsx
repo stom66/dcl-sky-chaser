@@ -1,32 +1,33 @@
-import ReactEcs, { Button, Label, UiEntity, UiFontType} from '@dcl/sdk/react-ecs'
+import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
 
-import { tweenValue } from "../utils/tweens"
-import { Color4 } from '@dcl/sdk/math'
-import { IS_DEV } from 'src/shared/settings'
-import { vhAsPixels } from '../utils/sizing'
+import { vhAsPixels } from 'src/client/ui/utils/sizing'
+import { tweenValue } from 'src/client/ui/utils/tweens'
 
 const PANEL_HIDDEN  = -1200
 const PANEL_VISIBLE = 8
-//var panelBottom     : number        = IS_DEV ? PANEL_HIDDEN : PANEL_VISIBLE
-var panelBottom     : number        = PANEL_VISIBLE
+var panelBottom     : number = PANEL_VISIBLE
 
+
+// MARK: ShowUI
+/** Shows the How To Play panel. */
 export function ShowUI() {
 	tweenValue(panelBottom, PANEL_VISIBLE, 0.5, (v) => panelBottom = v)
 }
 
+
+// MARK: HideUI
+/** Hides the How To Play panel. */
 export function HideUI() {
 	tweenValue(panelBottom, PANEL_HIDDEN, 0.5, (v) => panelBottom = v)
 }
 
 
+// MARK: HowToPlayUI
+/** Renders the How To Play panel and its launcher button. */
 export function HowToPlayUI() {
-
-	//if (!isVisible()) return (<UiEntity />)
-
-
 	return (
 		<UiEntity
-			key="ui_debug_root"
+			key="ui_how_to_play_root"
 			uiTransform={{
 				width          : '100%',
 				height         : '100%',
@@ -37,6 +38,7 @@ export function HowToPlayUI() {
 			}}
 		>
 			<UiEntity
+				key="ui_how_to_play_button"
 				uiTransform={{
 					width: '128',
 					height: '128',
@@ -51,26 +53,27 @@ export function HowToPlayUI() {
 			/>
 
 			<UiEntity
+				key="ui_how_to_play_panel"
 				uiTransform={{
-					width: '1200',
-					height: '800',
+					width       : '1200',
+					height      : '800',
 					positionType: 'relative',
-					position: { bottom: panelBottom },
+					position    : { bottom: panelBottom },
 				}}
-				uiBackground={{ 
-					texture: { src: 'assets/images/ui/howToPlay.png' },
+				uiBackground={{
+					texture    : { src: 'assets/images/ui/howToPlay.png' },
 					textureMode: 'stretch',
 				}}
 			>
 				<UiEntity
+					key="ui_how_to_play_close"
 					uiTransform={{
-						width: '90',
-						height: '90',
+						width       : '90',
+						height      : '90',
 						positionType: 'absolute',
-						position: { top: '24', right: '24' },
+						position    : { top: '24', right: '24' },
 					}}
 					onMouseDown={HideUI}
-					//uiBackground={{ color: Color4.fromHexString('#ffffffaa') }}
 				/>
 			</UiEntity>
 		</UiEntity>

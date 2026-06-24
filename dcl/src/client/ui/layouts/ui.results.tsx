@@ -123,6 +123,7 @@ export function ResultsUI() {
 		>
 
 			<UiEntity
+				key="ui_results_panel"
 				uiTransform={{
 					width: '1200',
 					height: '800',
@@ -135,6 +136,7 @@ export function ResultsUI() {
 				}}
 			>
 				<UiEntity
+					key="ui_results_close"
 					uiTransform={{
 						width: '90',
 						height: '90',
@@ -145,6 +147,7 @@ export function ResultsUI() {
 					//uiBackground={{ color: Color4.fromHexString('#ffffffaa') }}
 				/>
 				<UiEntity
+					key="ui_results_scoreboard_rows"
 					uiTransform={{
 						width: '690',
 						height: '400',

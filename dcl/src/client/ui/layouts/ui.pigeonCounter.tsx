@@ -61,7 +61,7 @@ var elementPositionTop: number   = POS_HIDDEN
 export function PigeonCounterUI() {
 	return (
 		<UiEntity
-			key={`ui_Counter_root`}
+			key={`ui_PigeonCounter_root`}
 			uiTransform={{
 				width         : '256',
 				height        : '128',
@@ -76,7 +76,7 @@ export function PigeonCounterUI() {
 			}}
 		>
 			<UiEntity
-				key={`ui_Counter_outer`}
+				key={`ui_PigeonCounter_inner_count`}
 				uiTransform={{
 					width         : 31,
 					height        : 64,

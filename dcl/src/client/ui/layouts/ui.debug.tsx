@@ -42,7 +42,10 @@ export function DebugUI() {
 			}}
 		>
 
-			<UiEntity uiTransform={{ width: '100%', flexDirection: 'column' }}>
+			<UiEntity
+				key="ui_debug_actions"
+				uiTransform={{ width: '100%', flexDirection: 'column' }}
+			>
 				<SectionHeader title="Debug Menu" />
 
 				<ButtonAction textLabel="toSpawn" callback={() => PlayerMover.movePlayerToSpawn() } />
@@ -65,7 +68,10 @@ export function DebugUI() {
 
 			<Divider />
 
-			<UiEntity uiTransform={{ width: '100%', flexDirection: 'column' }}>
+			<UiEntity
+				key="ui_debug_vars"
+				uiTransform={{ width: '100%', flexDirection: 'column' }}
+			>
 				<SectionHeader title="Vars" />
 
 				<InfoRow

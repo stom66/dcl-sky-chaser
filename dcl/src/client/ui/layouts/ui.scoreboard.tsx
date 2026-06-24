@@ -126,7 +126,7 @@ export function ScoreboardUI() {
 					}}
 				>	
 					<UiEntity
-						key={`ui_Combo_inner_image`}
+						key={`ui_Scoreboard_inner_image`}
 						uiTransform={{
 							width       : 256,
 							height      : 64,
