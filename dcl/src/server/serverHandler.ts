@@ -142,6 +142,6 @@ export namespace serverHandler {
 	// MARK: On Game Reset
 	function OnGameReset() {
 		ComponentStore.setGameStatus(GameStatus.IDLE)
-		ComponentStore.resetAfterRound()
+		//ComponentStore.resetAfterRound()
 	}
 }
