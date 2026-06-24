@@ -9573,7 +9573,7 @@
         "0": {
           "json": {
             "name": "Sky Chaser",
-            "description": "Sky game prototype",
+            "description": "Collect escaping balloons, earn points, and climb the leaderboard! Zoom around the skies with a jetpack! Bounce on things! Pigeons!",
             "thumbnail": "assets/scene/Images/scene-thumbnail.png",
             "ageRating": "T",
             "categories": [],
