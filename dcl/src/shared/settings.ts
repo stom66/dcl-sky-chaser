@@ -8,9 +8,6 @@ declare var process: {
 
 const env = process.env.NODE_ENV
 export const IS_DEV = env == "development"
-export const FORCE_DEBUG = false
-
-
 
 export const SceneSettings = {
 	SCENE_TRANSFORM: {
@@ -32,9 +29,9 @@ export const GameSettings = {
 	
 	LOADING_SCREEN_DELAY       : 1000 * 2,
 
-	COUNTDOWN_DURATION         : FORCE_DEBUG ? 1000 * 1 : 1000 * 5,
-	GAME_DURATION              : FORCE_DEBUG ? 1000 * 10 : 1000 * 90, 
-	END_GAME_DURATION          : 1000 * 3,
+	COUNTDOWN_DURATION         : IS_DEV ? 1000 * 1 : 1000 * 5,
+	GAME_DURATION              : IS_DEV ? 1000 * 10 : 1000 * 90, 
+	END_GAME_DURATION          : IS_DEV ? 1000 * 3 : 1000 * 10,
 
 	COMBO_COOLDOWN_TIME        : 1000 * 10,
 	COMBO_MAX_VALUE            : 12,

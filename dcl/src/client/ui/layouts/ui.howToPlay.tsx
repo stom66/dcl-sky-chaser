@@ -41,7 +41,7 @@ export function HowToPlayUI() {
 					width: '128',
 					height: '128',
 					positionType: 'absolute',
-					position: { top: vhAsPixels(50)-400, right: '24' },
+					position: { top: vhAsPixels(50)-400, right: '10' },
 				}}
 				onMouseDown={ShowUI}
 				uiBackground={{ 

@@ -104,9 +104,9 @@ export namespace BalloonSpawner {
 		const x        = origin.x + distance * Math.cos(angle)
 		const y        = origin.y + height
 		const z        = origin.z + distance * Math.sin(angle)
-		const value    = Math.ceil(Math.random()*3) * 10
+		const value    = Math.ceil(rng()*3) * 10
 
-		const pickup   = new BalloonPickup(Vector3.create(x, y, z), getRandomPackageColor(), getRandomBalloonColor(), value)
+		const pickup   = new BalloonPickup(Vector3.create(x, y, z), getRandomPackageColor(), getRandomBalloonColor())
 
 		return pickup
 	}

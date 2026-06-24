@@ -82,7 +82,9 @@ export function FuelUI() {
 					//	textAlign: 'middle-center',
 					//}}
 					uiBackground={{
-						color: theme.colors.success,
+						//color: theme.colors.success,
+						texture: { src: "assets/images/ui/bg-fuel.png" },
+						textureMode: 'center',
 					}}
 				/>
 				<UiEntity

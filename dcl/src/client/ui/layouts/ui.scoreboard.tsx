@@ -25,33 +25,46 @@ ComponentStore.onComponentChange(C_GameData.ScoreBoard, (data) => {
 })
 
 
-eventBus.on(ClientEvents.GAME_ACTIVE, (data) => {
+eventBus.on(ClientEvents.GAME_ACTIVE, (data) => { toDefault() })
+eventBus.on(ClientEvents.GAME_END,    (data) => { toHidden() })
+//eventBus.on(ClientEvents.GAME_IDLE,   (data) => { toHidden() })
+
+function toDefault() {
 	tweenValue(elementPositionTop, POS_TOP_DEFAULT, 0.4, (v) => elementPositionTop = v), EasingFunction.EF_EASEOUTBACK
-	tweenValue(elementPositionRight, POS_RIGHT_DEFAULT, 0.4, (v) => elementPositionRight = v), EasingFunction.EF_EASEOUTBACK
-})
-eventBus.on(ClientEvents.GAME_END, (data) => {
+	//tweenValue(elementPositionRight, POS_RIGHT_DEFAULT, 0.4, (v) => elementPositionRight = v), EasingFunction.EF_EASEOUTBACK
+	//elementWidth = WIDTH_DEFAULT
+}
+
+/* function toCentered() {
 	tweenValue(elementPositionTop, POS_TOP_CENTERED, 0.4, (v) => elementPositionTop = v), EasingFunction.EF_EASECUBIC
 	tweenValue(elementPositionRight, POS_RIGHT_CENTERED, 0.4, (v) => elementPositionRight = v), EasingFunction.EF_EASECUBIC
-})
-eventBus.on(ClientEvents.GAME_IDLE, (data) => {
+	elementWidth = WIDTH_CENTERED
+}
+ */
+function toHidden() {
 	tweenValue(elementPositionTop, POS_TOP_HIDDEN, 0.4, (v) => elementPositionTop = v), EasingFunction.EF_EASEOUTBACK
-	tweenValue(elementPositionRight, POS_RIGHT_DEFAULT, 0.4, (v) => elementPositionRight = v), EasingFunction.EF_EASEOUTBACK
-})
+	//tweenValue(elementPositionRight, POS_RIGHT_DEFAULT, 0.4, (v) => elementPositionRight = v), EasingFunction.EF_EASEOUTBACK
+	//elementWidth = WIDTH_DEFAULT
+}
 
 //const POS_HIDDEN  = -310
 //const POS_VISIBLE = 160
 
 const POS_RIGHT_DEFAULT  = 160
-const POS_RIGHT_CENTERED = vwAsPixels(50) - 128 // half the width
+//const POS_RIGHT_CENTERED = vwAsPixels(50) - 128 // half the width
 
 const POS_TOP_DEFAULT    = 10
-const POS_TOP_CENTERED   = vhAsPixels(50) - 128 // half the height
+//const POS_TOP_CENTERED   = vhAsPixels(50) - 128 // half the height
 const POS_TOP_HIDDEN     = -310
+
+const WIDTH_DEFAULT = 256
+const WIDTH_CENTERED = 480 // half the width
 
 
 //var elementPositionTop: number = POS_TOP_DEFAULT // DEBUG -REMOVE FOR PROD
 var elementPositionTop: number = POS_TOP_HIDDEN
 var elementPositionRight: number = POS_RIGHT_DEFAULT
+var elementWidth: number = WIDTH_DEFAULT
 
 
 function getScoreboardRows() {
@@ -107,7 +120,7 @@ export function ScoreboardUI() {
 			<UiEntity
 				key={`ui_Scoreboard_outer`}
 				uiTransform={{
-					width         : 256,
+					width         : elementWidth,
 					height        : 256,
 					borderRadius  : 32,
 					overflow      : 'hidden',
@@ -133,12 +146,6 @@ export function ScoreboardUI() {
 						justifyContent: 'center',
 						padding       : { top: 10, bottom: 4 },
 					}}
-					//uiText={{
-					//	value: 'Scoreboard',
-					//	textAlign: 'middle-center',
-					//	fontSize: 26,
-					//	color: theme.colors.light,
-					//}}
 					uiBackground={{
 						color: alpha(theme.colors.info, 0.7),
 					}}

@@ -27,7 +27,7 @@ export function DebugUI() {
 			key         = "ui_debug_root"
 			uiTransform = {{
 				width         : 240,
-				height        : 420,
+				height        : 500,
 				flexDirection : 'column',
 				alignItems    : 'flex-start',
 				justifyContent: 'space-between',
@@ -51,6 +51,10 @@ export function DebugUI() {
 				<ButtonAction textLabel="triggerDustSpurt" callback={() => ParticleSpawner.TriggerDustSpurt(Transform.getOrNull(engine.PlayerEntity)?.position ?? Vector3.create(256, 63.2, 256)) } />
 				<ButtonAction textLabel="triggerLeaderboardWinner" callback={() => ClientHandler.handleNotifyLeaderboardWinner("ALL TIME") } />
 				<ButtonAction textLabel="incrementCombo" callback={() => ComponentStore.incrementComboValue() } />
+					
+				<ButtonAction textLabel="eventBus:GAME_ACTIVE" callback={() => eventBus.emit(ClientEvents.GAME_ACTIVE, {  }) } />
+				<ButtonAction textLabel="eventBus:GAME_END" callback={() => eventBus.emit(ClientEvents.GAME_END, {  }) } />
+				<ButtonAction textLabel="eventBus:GAME_IDLE" callback={() => eventBus.emit(ClientEvents.GAME_IDLE, { }) } />
 					
 				{/* 
 				<ButtonAction textLabel="incrementScore" callback={() => ClientMessaging.RequestScoreUpdate() } /> 
