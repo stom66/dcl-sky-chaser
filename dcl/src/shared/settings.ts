@@ -25,20 +25,23 @@ export const SceneSettings = {
 
 
 export const GameSettings = {
-	GAME_NAME                  : "SkyChaser",
+	GAME_NAME           : "SkyChaser",
 	
-	LOADING_SCREEN_DELAY       : 1000 * 2,
+	LOADING_SCREEN_DELAY: 1000 * 2,
 
-	COUNTDOWN_DURATION         : IS_DEV ? 1000 * 1 : 1000 * 5,
-	GAME_DURATION              : IS_DEV ? 1000 * 30 : 1000 * 90, 
-	END_GAME_DURATION          : IS_DEV ? 1000 * 3 : 1000 * 10,
+	COUNTDOWN_DURATION  : IS_DEV ? 1000 * 1 : 1000 * 5,
+	GAME_DURATION       : IS_DEV ? 1000 * 30 : 1000 * 90, 
+	END_GAME_DURATION   : IS_DEV ? 1000 * 3 : 1000 * 10,
 
-	COMBO_COOLDOWN_TIME        : 1000 * 10,
-	COMBO_MAX_VALUE            : 12,
+	COMBO_COOLDOWN_TIME : 1000 * 10,
+	COMBO_MAX_VALUE     : 12,
 	
-	FUEL_DRAIN_RATE            : 15, // units per second
-	FUEL_REFUEL_RATE            : 1, // units per second
+	FUEL_DRAIN_RATE     : 15, // units per second
+	FUEL_REFUEL_RATE    : 1, // units per second
 
+	PROJECTILE_SPEED    : 30, // units per second
+	PROJECTILE_COOLDOWN : 1000 * 1,
+	PROJECTILE_LIFETIME : 3 // seconds, not ms,
 } as const
 
 export const ServerSettings = {

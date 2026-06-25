@@ -1,13 +1,10 @@
 import { engine, Entity, Transform } from "@dcl/sdk/ecs"
 import { Quaternion, Vector3 } from "@dcl/sdk/math"
 
-import { BalloonPickup as BalloonPickupComponent } from "src/shared/components/balloonPickup"
-
-import { FuelPickup } from "src/client/gameComponents/fuelPickup"
-import { BalloonPickup } from "src/client/gameComponents/balloonPickup"
+import { BalloonPickup, BalloonPickupComponent } from "src/client/gameComponents/balloonPickup"
 
 import { createRng } from "src/shared/utils/mulberry"
-import { C_GameData, ComponentStore } from "src/shared/components/componentStore"
+import { ComponentStore } from "src/shared/components/componentStore"
 import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
 
 

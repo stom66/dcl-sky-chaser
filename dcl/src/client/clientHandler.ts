@@ -14,6 +14,7 @@ export namespace ClientHandler {
 		room.onMessage(MessageType.NOTIFY_LEADERBOARD_WINNER_WEEKLY, (data) => { handleNotifyLeaderboardWinner("WEEKLY") })
 		room.onMessage(MessageType.NOTIFY_LEADERBOARD_WINNER_ALL_TIME, (data) => { handleNotifyLeaderboardWinner("ALL TIME") })
 		room.onMessage(MessageType.NOTIFY_TRIGGER_EFFECT, (data) => { handleNotifyTriggerEffect(data) })
+		room.onMessage(MessageType.NOTIFY_PROJECTILE, (data) => { handleNotifyProjectile(data) })
 	}
 
 
@@ -33,5 +34,11 @@ export namespace ClientHandler {
 	function handleNotifyTriggerEffect(data: { effect: ClientEvents, position: Vector3, direction: Vector3 }) {
 		console.log('ClientHandler: handleNotifyTriggerEffect: data', data)
 		eventBus.emit(ClientEvents.NOTIFY_TRIGGER, {effect: data.effect,  position: data.position, direction: data.direction })
+	}
+
+	// MARK: Projectile
+	function handleNotifyProjectile(data: { position: Vector3, direction: Vector3 }) {
+		console.log('ClientHandler: handleNotifyProjectile: data', data)
+		eventBus.emit(ClientEvents.TRIGGER_PROJECTILE, {position: data.position, direction: data.direction })
 	}
 }

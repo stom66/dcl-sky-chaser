@@ -25,6 +25,7 @@ import { BeaconManager } from './beaconManager'
 import { BirdSpawner } from './spawners/birdSpawner'
 import { Light } from './light'
 import { BounceSpawner } from './spawners/bounceSpawner'
+import { ProjectileManager } from './projectileManager'
 
 
 export function initClient() {
@@ -99,6 +100,8 @@ export function initClient() {
 		Light.init()
 
 		BounceSpawner.init()
+
+		ProjectileManager.init()
 
 		const { SetupUI } = await import('src/client/ui-screen')
 		SetupUI()

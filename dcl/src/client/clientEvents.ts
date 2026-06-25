@@ -15,4 +15,7 @@ export enum ClientEvents {
 	TRIGGER_AWNING     = "triggerAwning",
 	TRIGGER_UMBRELLA   = "triggerUmbrella",
 	TRIGGER_TRAMPOLINE = "triggerTrampoline",
+
+	TRIGGER_PROJECTILE = "triggerProjectile",
+	TRIGGER_EXPLOSION  = "triggerExplosion",
 }

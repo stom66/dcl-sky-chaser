@@ -44,6 +44,10 @@ export namespace ParticleSpawner {
 			triggerEffect(ClientEvents.TRIGGER_BALLOON, data?.position ?? Vector3.create(256, 63.2, 256), data?.direction ?? Vector3.Zero())
 		})
 
+		eventBus.on(ClientEvents.TRIGGER_EXPLOSION, (data) => {
+			triggerEffect(ClientEvents.TRIGGER_EXPLOSION, data?.position ?? Vector3.create(256, 63.2, 256), Vector3.Zero())
+		})
+
 		eventBus.on(ClientEvents.FOUND_ALL_PIGEONS, (data) => {
 			TriggerPigeonSpurt(Transform.getOrNull(engine.PlayerEntity)?.position ?? Vector3.create(256, 63.2, 256))
 		})
@@ -69,6 +73,9 @@ export namespace ParticleSpawner {
 				break
 			case ClientEvents.TRIGGER_BALLOON:
 				TriggerPickupBalloon(position)
+				break
+			case ClientEvents.TRIGGER_EXPLOSION:
+				TriggerExplosion(position)
 				break
 		}
 	} 
@@ -148,6 +155,43 @@ export namespace ParticleSpawner {
 				setActive(false)
 			}
 		}
+	}
+
+	// MARK: Explosion
+	export function TriggerExplosion(
+		position: Vector3
+	) {
+		const entity = engine.addEntity()
+		Transform.create(entity, { position: position, rotation: Quaternion.fromEulerDegrees(-90, 0, 0) })
+		ParticleSystem.create(entity, {
+			active              : true,
+			loop                : false,
+			prewarm             : false,
+			faceTravelDirection : false,
+			rate                : 0,
+			lifetime            : 1,
+			maxParticles        : 300,
+			gravity             : 2,
+			blendMode           : PBParticleSystem_BlendMode.PSB_ALPHA,
+			shape               : ParticleSystem.Shape.Point({}),
+			initialVelocitySpeed: { start: 15, end: 40 },
+			initialSize         : { start: 0.25, end: 0.75 },
+			sizeOverTime        : { start: 1, end: 0 },
+			initialColor        : { start: Color4.fromHexString("#ffffff"), end: Color4.fromHexString("#cccccc") },
+			//colorOverTime       : { start: Color4.create(1.000, 0.800, 0.500, 1.000), end: Color4.create(0.800, 0.200, 0.000, 0.000) },
+			bursts              : { values: [
+				{ time: 0, count: 64, cycles: 1, interval: 0.01, probability: 1 },
+			] },
+			billboard           : true,
+			texture             : { src: 'assets/tex/particles-explosion.png' },
+			spriteSheet         : { tilesX: 2, tilesY: 2, framesPerSecond: 10},
+		})
+
+		utils.timers.setTimeout(() => {
+			ParticleSystem.deleteFrom(entity)
+			engine.removeEntity(entity)
+		}, 2000)
+
 	}
 
 	// MARK: Dust

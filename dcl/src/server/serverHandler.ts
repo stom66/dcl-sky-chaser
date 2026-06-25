@@ -13,6 +13,7 @@ import { PlayerStats } from "./metrics/playerStats"
 
 export namespace serverHandler {
 
+	const projectileCooldowns: Map<string, number> = new Map()
 
 	// MARK: Init
 	export function init() {
@@ -21,6 +22,7 @@ export namespace serverHandler {
 		room.onMessage(MessageType.REQUEST_STATS_UPDATE, (data, context) => handleRequestStatsUpdate(data, context))
 		room.onMessage(MessageType.REQUEST_FOUND_ALL_PIGEONS, (data, context) => handleRequestFoundAllPigeons(data, context))
 		room.onMessage(MessageType.REQUEST_TRIGGER_EFFECT, (data, context) => handleRequestTriggerEffect(data, context))
+		room.onMessage(MessageType.REQUEST_PROJECTILE, (data, context) => handleRequestProjectile(data, context))
 	}
 
 
@@ -175,5 +177,34 @@ export namespace serverHandler {
 
 
 		Metrics.trackFoundAllPigeons(userId)
+	}
+
+
+
+	// MARK: On Projectile
+	function handleRequestProjectile(data: any, context: any) {
+		const userId = getUserId(context)
+		console.log('handleRequestProjectile: userId', userId, 'position', data.position, 'direction', data.direction)
+
+		const lastProjectileTime = projectileCooldowns.get(userId) ?? 0
+		const timeSinceLastProjectile = Date.now() - lastProjectileTime
+
+		if (timeSinceLastProjectile > GameSettings.PROJECTILE_COOLDOWN) {
+			projectileCooldowns.set(userId, Date.now())
+
+			const sendTo = ComponentStore.getPlayers().filter(player => player.toLowerCase() !== userId)
+			if (sendTo.length === 0) {
+				console.log('handleRequestProjectile: no players to send to, skipping')
+				return
+			}
+
+			room.send(MessageType.NOTIFY_PROJECTILE, {
+				position : data.position,
+				direction: data.direction,
+				owner    : userId
+			}, { to: sendTo })
+		} else {
+			console.log('handleRequestProjectile: cooldown not ready, skipping')
+		}
 	}
 }

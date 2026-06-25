@@ -11,11 +11,13 @@ export enum MessageType {
 	REQUEST_STATS_UPDATE               = 'requestStatsUpdate',
 	REQUEST_FOUND_ALL_PIGEONS          = 'requestFoundAllPigeons',
 	REQUEST_TRIGGER_EFFECT             = 'requestTriggerEffect',
+	REQUEST_PROJECTILE                 = 'requestProjectile',
 
 	NOTIFY_SERVER_TIME                 = "notifyServerTime",
 	NOTIFY_LEADERBOARD_WINNER_WEEKLY   = "notifyLeaderboardWinnerWeekly",
 	NOTIFY_LEADERBOARD_WINNER_ALL_TIME = "notifyLeaderboardWinnerAllTime",
 	NOTIFY_TRIGGER_EFFECT              = "notifyTriggerEffect",
+	NOTIFY_PROJECTILE                  = "notifyProjectile",
 }
 
 // MARK: Schema constant
@@ -39,6 +41,10 @@ const Messages = {
 		position : Schemas.Vector3,
 		direction: Schemas.Vector3,
 	}),
+	[MessageType.REQUEST_PROJECTILE]: Schemas.Map({
+		position : Schemas.Vector3,
+		direction: Schemas.Vector3
+	}),
 
 
 	// Sent by server
@@ -55,6 +61,11 @@ const Messages = {
 		effect   : Schemas.EnumString(ClientEvents, ClientEvents.TRIGGER_FUEL),
 		position : Schemas.Vector3,
 		direction: Schemas.Vector3,
+	}),
+	[MessageType.NOTIFY_PROJECTILE]: Schemas.Map({
+		position : Schemas.Vector3,
+		direction: Schemas.Vector3,
+		owner    : Schemas.String,
 	}),
 }
 

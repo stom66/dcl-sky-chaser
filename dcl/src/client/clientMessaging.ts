@@ -70,4 +70,10 @@ export namespace ClientMessaging {
 		RequestTriggerEffect(ClientEvents.TRIGGER_BALLOON, data?.position ?? Vector3.Zero(), data?.direction ?? Vector3.Zero())
 		room.send(MessageType.REQUEST_TRIGGER_EFFECT, { effect: ClientEvents.TRIGGER_BALLOON, position: data?.position ?? Vector3.Zero(), direction: data?.direction ?? Vector3.Zero() })
 	})
+
+
+	export function RequestProjectile(position: Vector3, direction: Vector3) {
+		console.log('ClientMessaging: RequestProjectile')
+		room.send(MessageType.REQUEST_PROJECTILE, { position, direction })
+	}
 }
