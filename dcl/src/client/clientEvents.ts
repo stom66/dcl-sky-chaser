@@ -17,6 +17,10 @@ export enum ClientEvents {
 	TRIGGER_TRAMPOLINE = "triggerTrampoline",
 
 	TRIGGER_PROJECTILE = "triggerProjectile",
-	DISABLE_PROJECTILE = "disableProjectile",
 	TRIGGER_EXPLOSION  = "triggerExplosion",
+
+	PROJECTILE_HIT_FUEL    = "projectileHitFuel",
+	PROJECTILE_HIT_BALLOON = "projectileHitBalloon",
+	//PROJECTILE_HIT_RING    = "projectileHitRing",
+	PROJECTILE_HIT_PLAYER  = "projectileHitPlayer",
 }

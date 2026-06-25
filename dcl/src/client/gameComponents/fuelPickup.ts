@@ -14,7 +14,7 @@ import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
 import { PlayerStats } from "src/server/metrics/playerStats"
 import { ParticleSpawner } from "../particleSpawner"
 
-const EXPLOSION_RADIUS_SQUARED = 100
+const EXPLOSION_RADIUS_SQUARED = 1600
 
 export class FuelPickup {
 	private rootEntity         : Entity
@@ -103,7 +103,11 @@ export class FuelPickup {
 	) : void {
 		if (this.isDestroyed) return
 
-		eventBus.emit(ClientEvents.DISABLE_PROJECTILE, { entity })
+		eventBus.emit(ClientEvents.PROJECTILE_HIT_FUEL, { 
+			fuelPosition    : this.position, 
+			projectileEntity: entity, 
+			projectileOwner : ProjectileComponent.getOrNull(entity)?.owner ?? "" 
+		})
 		eventBus.emit(ClientEvents.TRIGGER_EXPLOSION, { position: this.position })
 
 		SoundManager.playSound(sfx.boom, this.rootEntity)

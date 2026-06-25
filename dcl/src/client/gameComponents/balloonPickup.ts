@@ -152,7 +152,12 @@ export class BalloonPickup {
 	) : void {
 		if (this.isDestroyed) return
 
-		eventBus.emit(ClientEvents.DISABLE_PROJECTILE, { entity })
+		eventBus.emit(ClientEvents.PROJECTILE_HIT_BALLOON, { 
+			fuelPosition    : this.position, 
+			projectileEntity: entity, 
+			projectileOwner : ProjectileComponent.getOrNull(entity)?.owner ?? "" 
+		})
+
 		eventBus.emit(ClientEvents.NOTIFY_TRIGGER, { effect: ClientEvents.TRIGGER_BALLOON, position: this.position })
 	}
 
@@ -163,7 +168,6 @@ export class BalloonPickup {
 		Tween.setScale(this.entity, Vector3.One(), Vector3.Zero(), 200, EasingFunction.EF_LINEAR)
 		
 		if (!muteSound) SoundManager.playSound(sfx.balloonPickup, this.entity)
-		if (!muteSound) SoundManager.playSound(sfx.coo, this.entity)
 
 		utils.timers.setTimeout(() => {
 			GltfNodeModifiers.createOrReplace(this.entity, {modifiers: []})

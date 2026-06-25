@@ -6,9 +6,11 @@ import { Projectile } from "./gameComponents/projectile"
 import { GameSettings } from "src/shared/settings"
 import { getUserData } from "~system/UserIdentity"
 import { userProfileCache } from "src/shared/utils/userProfileCache"
+import { sfx, SoundManager } from "./soundManager"
 
 export namespace ProjectileManager {
 	const ProjectilePool: Projectile[] = []
+	const ProjectileEntityMap: Map<Entity, Projectile> = new Map()
 
 	var isFPressed      : Boolean      = false
 	var gameIsActive    : Boolean      = true
@@ -20,8 +22,14 @@ export namespace ProjectileManager {
 		eventBus.on(ClientEvents.TRIGGER_PROJECTILE, (data) => { 
 			fireProjectile(data.position, data.direction, data.owner) 
 		})
-		eventBus.on(ClientEvents.DISABLE_PROJECTILE, (data) => { 
-			disableProjectile(data.entity)
+
+		eventBus.on(ClientEvents.PROJECTILE_HIT_FUEL, (data) => { 
+			SoundManager.playSound(sfx.coo, data.projectileEntity)
+			disableProjectile(data.projectileEntity)
+		})
+		eventBus.on(ClientEvents.PROJECTILE_HIT_BALLOON, (data) => { 
+			SoundManager.playSound(sfx.coo, data.projectileEntity)
+			disableProjectile(data.projectileEntity)
 		})
 
 /* 		eventBus.on(ClientEvents.GAME_ACTIVE, () => {
@@ -48,13 +56,14 @@ export namespace ProjectileManager {
 		direction: Vector3,
 		owner    : string = ""
 	) : void {
-		let entity = getIdleProjectile()
-		if (entity === null) {
-			entity = new Projectile(HIDE_LOCATION)
-			ProjectilePool.push(entity)
+		let projectile = getIdleProjectile()
+		if (projectile === null) {
+			projectile = new Projectile(HIDE_LOCATION)
+			ProjectilePool.push(projectile)
+			ProjectileEntityMap.set(projectile.entity, projectile)
 		}
 
-		entity.Fire(origin, direction, owner)
+		projectile.Fire(origin, direction, owner)
 
 	}
 
@@ -70,11 +79,9 @@ export namespace ProjectileManager {
 	function disableProjectile(
 		entity: Entity
 	) : void {
-		for (const projectile of ProjectilePool) {
-			if (projectile.entity === entity) {
-				projectile.Disable()
-				return
-			}
+		const projectile = ProjectileEntityMap.get(entity)
+		if (projectile) {
+			projectile.Disable()
 		}
 	}
 
