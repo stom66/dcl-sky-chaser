@@ -4,20 +4,20 @@ import { SpeedRing } from "../gameComponents/speedRing"
 import { createRng } from "src/shared/utils/mulberry"
 import { C_GameData, ComponentStore } from "src/shared/components/componentStore"
 import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
-
+import * as utils from '@dcl-sdk/utils'
 
 export namespace RingSpawner {
 
 	var speedRings: SpeedRing[] = []
 
 	const origin     = Vector3.create(256, 1, 256)
-	const maxSpawns  = 64
+	const maxSpawns  = 128
 	const minRadius  = 32
-	const maxRadius  = 120
+	const maxRadius  = 80
 	const minHeight  = 18
 	const maxHeight  = 160
 
-	const angleSpacing = 1
+	const angleSpacing = 360 / maxSpawns
 	var rng: () => number
 	var gameStartTime: number = 0
 
@@ -55,8 +55,10 @@ export namespace RingSpawner {
 			const y        = origin.y + height
 			const z        = origin.z + distance * Math.sin(a)
 
-			const ring = new SpeedRing(Vector3.create(x, y, z), a)
-			speedRings.push(ring)
+			utils.timers.setTimeout(() => {
+				const ring = new SpeedRing(Vector3.create(x, y, z), a)
+				speedRings.push(ring)
+			}, a * (2 / 360))
 		}
     }
 

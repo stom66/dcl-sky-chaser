@@ -10,6 +10,7 @@ import { createRng } from "src/shared/utils/mulberry"
 import { C_GameData, ComponentStore } from "src/shared/components/componentStore"
 import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
 import { darken, lighten, theme } from "../ui"
+import * as utils from '@dcl-sdk/utils'
 
 
 export namespace BalloonSpawner {
@@ -17,7 +18,7 @@ export namespace BalloonSpawner {
 	const ballonInstances: Map<Entity, BalloonPickup> = new Map()
 
 	const origin     = Vector3.create(256, 1, 256)
-	const maxSpawns  = 128
+	const maxSpawns  = 96
 	const minRadius  = 32
 	const maxRadius  = 120
 	const minHeight  = 16
@@ -86,8 +87,10 @@ export namespace BalloonSpawner {
 		rng = createRng(ComponentStore.getGameStartTime())
 
 		for (let i = 0; i < maxSpawns; i++) {
-			const balloonInstance = spawnRandomPickup()
-			ballonInstances.set(balloonInstance.entity, balloonInstance)
+			utils.timers.setTimeout(() => {
+				const balloonInstance = spawnRandomPickup()
+				ballonInstances.set(balloonInstance.entity, balloonInstance)
+			}, i * (2 / maxSpawns))
 		}
 
 		if (!systemsAdded) {

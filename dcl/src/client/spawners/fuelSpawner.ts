@@ -7,14 +7,14 @@ import { FuelPickup } from "src/client/gameComponents/fuelPickup"
 import { createRng } from "src/shared/utils/mulberry"
 import { C_GameData, ComponentStore } from "src/shared/components/componentStore"
 import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
-
+import * as utils from '@dcl-sdk/utils'
 
 export namespace FuelSpawner {
 
 	const fuelPickups: FuelPickup[] = []
 
 	const origin     = Vector3.create(256, 1, 256)
-	const maxSpawns  = 128
+	const maxSpawns  = 96
 	const minRadius  = 32
 	const maxRadius  = 120
 	const minHeight  = 20
@@ -51,7 +51,9 @@ export namespace FuelSpawner {
 		rng = createRng(ComponentStore.getGameStartTime())
 
 		for (let i = 0; i < maxSpawns; i++) {
-			spawnRandomPickup()
+			utils.timers.setTimeout(() => {
+				spawnRandomPickup()
+			}, i * (2 / maxSpawns))
 		}
 
 		engine.addSystem(system_Spawner)
