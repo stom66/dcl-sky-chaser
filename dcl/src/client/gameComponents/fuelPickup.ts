@@ -57,7 +57,7 @@ export class FuelPickup {
 			src: "assets/models/fuelTop.gltf", 
 			visibleMeshesCollisionMask: ColliderLayer.CL_POINTER
 		})
-
+		FuelPickupChildComponent.create(this.childEntity, {})
 		
 		// Trigger entity - for player interaction
 		this.triggerEntity = engine.addEntity()

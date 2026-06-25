@@ -25,6 +25,7 @@ export namespace FuelSpawner {
 	var gameStartTime: number = 0
 
 
+	// MARK: init
 	export function init() {
 		eventBus.on(ClientEvents.GAME_ACTIVE, (data) => {
 			onGameStart(data?.startTime ?? 0)
@@ -35,6 +36,7 @@ export namespace FuelSpawner {
 		})
 	}
 
+	// MARK: onGameStart
 	export function onGameStart(startTime: number) {
 		if (startTime === gameStartTime) return
 		gameStartTime = startTime
@@ -42,10 +44,12 @@ export namespace FuelSpawner {
 		spawnPickups()
 	}
 
+	// MARK: onGameEnd
 	export function onGameEnd() {
 		removePickups()
 	}
 
+	// MARK: spawnPickups
 	export function spawnPickups() {
 		rng = createRng(ComponentStore.getGameStartTime())
 
@@ -59,6 +63,7 @@ export namespace FuelSpawner {
 		engine.addSystem(system_Mover)
 	}
 
+	// MARK: spawnRandomPickup
 	function spawnRandomPickup() {
 		const angle    = rng() * 2 * Math.PI
 		const distance = rng() * (maxRadius - minRadius) + minRadius
@@ -71,6 +76,7 @@ export namespace FuelSpawner {
 		fuelPickups.push(pickup)
 	}
 
+	// MARK: removePickups
 	export function removePickups() {
 		engine.removeSystem(system_Mover)
 		engine.removeSystem(system_Spawner)
@@ -81,6 +87,7 @@ export namespace FuelSpawner {
 		fuelPickups.length = 0
 	}
 
+	// MARK: system_Spawner
 	function system_Spawner(dt: number) {
 		var count = 0
 		for (const [entity] of engine.getEntitiesWith(FuelPickupComponent)) {
@@ -93,6 +100,7 @@ export namespace FuelSpawner {
 		}
 	}
 
+	// MARK: system_Mover
 	function system_Mover(dt: number) {
 		for (const [entity] of engine.getEntitiesWith(FuelPickupChildComponent)) {
 			const transform = Transform.getMutableOrNull(entity)
