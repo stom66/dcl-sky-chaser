@@ -1,9 +1,10 @@
-import { EasingFunction, engine, Entity, GltfContainer, GltfNodeModifiers, Material, MeshRenderer, PBMaterial, Transform, TriggerArea, triggerAreaEventsSystem, Tween } from "@dcl/sdk/ecs"
+import { ColliderLayer, EasingFunction, engine, Entity, GltfContainer, GltfNodeModifiers, Material, MeshCollider, MeshRenderer, PBMaterial, Transform, TriggerArea, triggerAreaEventsSystem, Tween } from "@dcl/sdk/ecs"
 import { Color4, Quaternion, Vector3 } from "@dcl/sdk/math"
 import * as utils from '@dcl-sdk/utils'
 
 import { ComponentStore } from "src/shared/components/componentStore"
 import { BalloonPickup as BalloonPickupComponent } from "src/shared/components/balloonPickup"
+import { ProjectileComponent } from "src/shared/components/projectile"
 export { BalloonPickupComponent as BalloonPickupComponent }
 
 import { darken, lighten, theme } from "../ui"
@@ -15,6 +16,7 @@ import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
 
 export class BalloonPickup {
 	public entity: Entity
+	private triggerEntity2: Entity
 	private triggerEntity: Entity
 	private startPosition: Vector3
 
@@ -55,60 +57,57 @@ export class BalloonPickup {
 			//src: `assets/models/balloon_0${this.randomIndex}.gltf`
 			src: `assets/models/balloon_new.gltf`
 		})
+		MeshCollider.setSphere(this.entity, ColliderLayer.CL_CUSTOM2)
 
-		// Define materials
-/* 		const materialBalloonOverRide = {
-			$case: "pbr",
-			pbr: {
-				albedoColor: this.balloonColor,
-				emissiveColor: this.balloonColor,
-				emissiveIntensity: 0.1,
-				texture: Material.Texture.Common({ src: 'assets/tex/balloon_01.png' })
-			}
-		} as PBMaterial["material"]
 
-		const materialPackageOverRide = {
-			$case: "pbr",
-			pbr: {
-				albedoColor: this.packageColor,
-				emissiveColor: this.packageColor,
-				emissiveIntensity: 0.2
-			}
-		} as PBMaterial["material"] */
 
-		// Each balloon_0X model contains exactly one balloon node and one package
-		// node, both numbered to match the model index (e.g. balloon_03 has
-		// balloon.003 and package.003). Modifiers must only target nodes that
-		// exist in the loaded model, otherwise the Explorer's ResetMaterialSystem
-		// crashes when the entity is destroyed.
-/* 		const nodeSuffix = String(this.randomIndex).padStart(3, "0")
-		GltfNodeModifiers.create(this.entity, {
-			modifiers: [
-				{
-					path: `balloon.${nodeSuffix}`,
-					material: {
-						material: materialBalloonOverRide
-					}
-				},
-				{
-					path: `package.${nodeSuffix}`,
-					material: {
-						material: materialPackageOverRide
-					}
-				}
-			]
-		}) */
 
 		this.triggerEntity = engine.addEntity()
 		Transform.create(this.triggerEntity, { parent: this.entity, scale: Vector3.create(this.triggerScale, this.triggerScale, this.triggerScale) })
 
-		TriggerArea.setSphere(this.triggerEntity)
+		TriggerArea.setSphere(this.triggerEntity, ColliderLayer.CL_PLAYER | ColliderLayer.CL_CUSTOM1)
 		triggerAreaEventsSystem.onTriggerEnter(this.triggerEntity, (e) => {
-			if (e.trigger?.entity === engine.PlayerEntity) {
-				this.onTriggerEnter()
+			const triggerEntity = e.trigger?.entity as Entity | undefined
+
+			if (triggerEntity === engine.PlayerEntity) {
+				this.onHitByPlayer()
+				this.Destroy()
+				return
 			}
-			this.Destroy()
+
+			if (triggerEntity !== undefined && ProjectileComponent.has(triggerEntity)) {
+				this.onHitByProjectile(triggerEntity)
+				this.Destroy()
+				return
+			}
 		})
+
+		
+		// Need another second smaller collider for the hanging package
+		this.triggerEntity2 = engine.addEntity()
+		Transform.create(this.triggerEntity2, { 
+			parent: this.entity, 
+			position: Vector3.create(0, -3, 0),
+			scale: Vector3.create(this.triggerScale * 0.65, this.triggerScale * 0.65, this.triggerScale * 0.65) 
+		})
+
+		TriggerArea.setSphere(this.triggerEntity2, ColliderLayer.CL_PLAYER | ColliderLayer.CL_CUSTOM1)
+		triggerAreaEventsSystem.onTriggerEnter(this.triggerEntity2, (e) => {
+			const triggerEntity2 = e.trigger?.entity as Entity | undefined
+
+			if (triggerEntity2 === engine.PlayerEntity) {
+				this.onHitByPlayer()
+				this.Destroy()
+				return
+			}
+
+			if (triggerEntity2 !== undefined && ProjectileComponent.has(triggerEntity2)) {
+				this.onHitByProjectile(triggerEntity2)
+				this.Destroy()
+				return
+			}
+		})
+
 
 		if (this.SHOW_TRIGGER) {
 			MeshRenderer.setSphere(this.triggerEntity)
@@ -117,6 +116,13 @@ export class BalloonPickup {
 				emissiveColor    : theme.colors.warning,
 				emissiveIntensity: 0.2
 			})
+			MeshRenderer.setSphere(this.triggerEntity2)
+			Material.setPbrMaterial(this.triggerEntity2, { 
+				albedoColor      : theme.colors.warning,
+				emissiveColor    : theme.colors.warning,
+				emissiveIntensity: 0.2
+			})
+
 		}
     }
 
@@ -125,7 +131,8 @@ export class BalloonPickup {
 		return c?.value ?? this.defaultValue
 	}
 
-	onTriggerEnter() {
+	// MARK: onHitByPlayer
+	onHitByPlayer() {
 		if (this.pickupTriggered) return
 		this.pickupTriggered = true
 
@@ -136,6 +143,17 @@ export class BalloonPickup {
 		if (!t) return
 
 		eventBus.emit(ClientEvents.TRIGGER_BALLOON, {position: t.position, points: this.getValue() * combo})
+	}
+
+
+	// MARK: onHitByProjectile
+	onHitByProjectile(
+		entity: Entity
+	) : void {
+		if (this.isDestroyed) return
+
+		eventBus.emit(ClientEvents.DISABLE_PROJECTILE, { entity })
+		eventBus.emit(ClientEvents.NOTIFY_TRIGGER, { effect: ClientEvents.TRIGGER_BALLOON, position: this.position })
 	}
 
 	Destroy(muteSound: boolean = false) {

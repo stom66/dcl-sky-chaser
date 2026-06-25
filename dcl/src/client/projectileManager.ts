@@ -20,6 +20,9 @@ export namespace ProjectileManager {
 		eventBus.on(ClientEvents.TRIGGER_PROJECTILE, (data) => { 
 			fireProjectile(data.position, data.direction, data.owner) 
 		})
+		eventBus.on(ClientEvents.DISABLE_PROJECTILE, (data) => { 
+			disableProjectile(data.entity)
+		})
 
 /* 		eventBus.on(ClientEvents.GAME_ACTIVE, () => {
 			gameIsActive = true
@@ -33,7 +36,7 @@ export namespace ProjectileManager {
 	}
 
 	// Triggered when local or server players request a projectile
-	export function requestProjectile(data: { position: Vector3, direction: Vector3 }) {
+	export function requestProjectile(data: { position: Vector3, direction: Vector3, owner?: string }) {
 		console.log('ProjectileManager: requestProjectile: data', data)
 		ClientMessaging.RequestProjectile(data.position, data.direction)
 		eventBus.emit(ClientEvents.TRIGGER_PROJECTILE, data) // indirectly call the spawnProjectile function below
@@ -43,7 +46,7 @@ export namespace ProjectileManager {
 	function fireProjectile(
 		origin   : Vector3, 
 		direction: Vector3,
-		owner    : string
+		owner    : string = ""
 	) : void {
 		let entity = getIdleProjectile()
 		if (entity === null) {
@@ -62,6 +65,17 @@ export namespace ProjectileManager {
 			}
 		}
 		return null
+	}
+
+	function disableProjectile(
+		entity: Entity
+	) : void {
+		for (const projectile of ProjectilePool) {
+			if (projectile.entity === entity) {
+				projectile.Disable()
+				return
+			}
+		}
 	}
 
 	function sys_UpdateProjectiles(dt: number) : void {

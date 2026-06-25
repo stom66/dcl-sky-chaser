@@ -1,12 +1,10 @@
-import { engine, Entity, Material, MeshRenderer, Physics, Transform, TriggerArea, triggerAreaEventsSystem } from "@dcl/sdk/ecs"
+import { ColliderLayer, engine, Entity, GltfContainer, Material, MeshCollider, MeshRenderer, Physics, Transform, TriggerArea, triggerAreaEventsSystem } from "@dcl/sdk/ecs"
 import { Color4, Quaternion, Vector3 } from "@dcl/sdk/math"
 import { GameSettings } from "src/shared/settings"
-import { FuelPickupComponent } from "./fuelPickup"
-import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
 import { ProjectileComponent } from "src/shared/components/projectile"
 
 const HIDE_LOCATION = Vector3.create(128, -100, 128)
-const EXPLOSION_RADIUS_SQUARED = 100
+const PLAYER_HIT_IMPULSE = 50
 
 export class Projectile {
 	entity: Entity
@@ -16,6 +14,7 @@ export class Projectile {
 	speed    : number
 	active   : boolean
 	age      : number
+	owner    : string
 
 	constructor(origin: Vector3) {
 		this.origin    = origin
@@ -23,6 +22,7 @@ export class Projectile {
 		this.speed     = GameSettings.PROJECTILE_SPEED
 		this.active    = false
 		this.age       = 0
+		this.owner     = ""
 
 		this.entity = engine.addEntity()
 
@@ -34,39 +34,32 @@ export class Projectile {
 
 		ProjectileComponent.create(this.entity, { owner: "" })
 
-		MeshRenderer.setSphere(this.entity)
-		Material.setPbrMaterial(this.entity, { albedoColor: Color4.Yellow() })
+		MeshCollider.setSphere(this.entity, ColliderLayer.CL_CUSTOM1)
 
-		TriggerArea.setSphere(this.entity)
+		GltfContainer.create(this.entity, {
+			src: "assets/models/projectile01.gltf"
+		})
+
+		//MeshRenderer.setSphere(this.entity)
+		//Material.setPbrMaterial(this.entity, { albedoColor: Color4.Yellow() })
+
+		TriggerArea.setSphere(this.entity, ColliderLayer.CL_PLAYER | ColliderLayer.CL_CUSTOM2)
 		triggerAreaEventsSystem.onTriggerEnter(this.entity, (e) => {
-			if (e.trigger?.entity !== engine.PlayerEntity) {
-				this.onTriggerEnter(e.trigger?.entity as Entity)
-			}
+			this.onTriggerEnter(e.trigger?.entity as Entity | undefined)
 		})
 	}
 
 	onTriggerEnter(triggerEntity: Entity | undefined) : void {
 		console.log("Projectile: onTriggerEnter")
 		
-		// Is the  thing we hit a fuel tank?
-		if (triggerEntity) {
-			// Is it fuel?	
-			if (FuelPickupComponent.has(triggerEntity)) {
-				const t = Transform.getOrNull(this.entity)
-				if (t === null) return
+		if (triggerEntity === engine.PlayerEntity && this.owner === "") {
+			// Hit self with own projectile
+			return
+		}
 
-				eventBus.emit(ClientEvents.TRIGGER_EXPLOSION, {position: t.position})
-
-				// Are we close to the explosion? Should we knockback the player?
-				const playerPosition = Transform.getOrNull(engine.PlayerEntity)?.position
-				if (playerPosition) {
-					const distanceSquared = Vector3.distanceSquared(t.position, playerPosition)
-					if (distanceSquared < EXPLOSION_RADIUS_SQUARED) {
-						const ratio = distanceSquared / EXPLOSION_RADIUS_SQUARED;
-						Physics.applyImpulseToPlayer(Vector3.subtract(playerPosition, t.position), ratio * 50)
-					}
-				}
-			}
+		if (triggerEntity === engine.PlayerEntity) {
+			// Someone else hit us
+			this.onHitPlayer()
 		}
 
 		this.Disable()
@@ -81,9 +74,16 @@ export class Projectile {
 		direction: Vector3,
 		owner   : string
 	): void {
+		const normalizedOwner = owner ?? ""
+
 		this.age       = 0
 		this.origin    = origin
 		this.direction = direction
+		this.owner     = normalizedOwner
+		
+		const p = ProjectileComponent.getMutableOrNull(this.entity)
+		if (p === null) return
+		p.owner = normalizedOwner
 		
 		const t = Transform.getMutableOrNull(this.entity)
 		if (t === null) return
@@ -91,10 +91,6 @@ export class Projectile {
 		t.rotation = Quaternion.lookRotation(direction)
 
 		this.active    = true
-
-		const p = ProjectileComponent.getMutableOrNull(this.entity)
-		if (p === null) return
-		p.owner = owner
 	}
 
 	public MoveForward(dt: number) : void {
@@ -117,9 +113,24 @@ export class Projectile {
 		if (t === null) return
 		t.position = HIDE_LOCATION
 		this.active = false
+		this.owner = ""
 
 		const p = ProjectileComponent.getMutableOrNull(this.entity)
 		if (p === null) return
 		p.owner = ""
+	}
+
+
+	onHitPlayer() : void {
+		const projectileComponent = ProjectileComponent.getOrNull(this.entity)
+		if (projectileComponent === null) return
+		if (projectileComponent.owner === "") return
+		
+		const playerPosition = Transform.getOrNull(engine.PlayerEntity)?.position
+		const t = Transform.getOrNull(this.entity)
+		if (!playerPosition || t === null) return
+
+		const impulseDirection = Vector3.normalize(Vector3.subtract(playerPosition, t.position))
+		Physics.applyImpulseToPlayer(impulseDirection, PLAYER_HIT_IMPULSE)
 	}
 }

@@ -1,9 +1,10 @@
-import { ColliderLayer, EasingFunction, engine, Entity, GltfContainer, GltfNodeModifiers, Material, MeshRenderer, Transform, TriggerArea, triggerAreaEventsSystem, Tween } from "@dcl/sdk/ecs"
+import { ColliderLayer, EasingFunction, engine, Entity, GltfContainer, GltfNodeModifiers, Material, MeshCollider, MeshRenderer, Physics, Transform, TriggerArea, triggerAreaEventsSystem, Tween } from "@dcl/sdk/ecs"
 import { Quaternion, Vector3 } from "@dcl/sdk/math"
 import * as utils from '@dcl-sdk/utils'
 
 import { ComponentStore } from "src/shared/components/componentStore"
 import { FuelPickupComponent, FuelPickupChildComponent } from "src/shared/components/fuelPickup"
+import { ProjectileComponent } from "src/shared/components/projectile"
 export { FuelPickupComponent, FuelPickupChildComponent }
 
 import { theme } from "../ui"
@@ -12,6 +13,8 @@ import { ClientMessaging } from "../clientMessaging"
 import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
 import { PlayerStats } from "src/server/metrics/playerStats"
 import { ParticleSpawner } from "../particleSpawner"
+
+const EXPLOSION_RADIUS_SQUARED = 100
 
 export class FuelPickup {
 	private rootEntity         : Entity
@@ -43,34 +46,46 @@ export class FuelPickup {
 			src: "assets/models/fuel.gltf", 
 			visibleMeshesCollisionMask: ColliderLayer.CL_POINTER
 		})
+		MeshCollider.setSphere(this.rootEntity, ColliderLayer.CL_CUSTOM2)
 		Tween.setScale(this.rootEntity, Vector3.Zero(), this.meshScaleVector3, 200, EasingFunction.EF_EASEOUTBACK)
+
 
 		// Child entity - top fan model
 		this.childEntity = engine.addEntity()
 		Transform.create(this.childEntity, { parent: this.rootEntity })
-		FuelPickupChildComponent.create(this.childEntity)
 		GltfContainer.create(this.childEntity, {
 			src: "assets/models/fuelTop.gltf", 
 			visibleMeshesCollisionMask: ColliderLayer.CL_POINTER
 		})
 
+		
 		// Trigger entity - for player interaction
 		this.triggerEntity = engine.addEntity()
 		Transform.create(this.triggerEntity, { 
 			parent: this.rootEntity, 
 			scale : this.triggerScaleVector3
 		})
-		TriggerArea.setSphere(this.triggerEntity)
+		TriggerArea.setSphere(this.triggerEntity, ColliderLayer.CL_PLAYER | ColliderLayer.CL_CUSTOM1)
 		triggerAreaEventsSystem.onTriggerEnter(this.triggerEntity, (e) => {
-			if (e.trigger?.entity === engine.PlayerEntity) {
-				this.onTriggerEnter()
+			const triggerEntity = e.trigger?.entity as Entity | undefined
+
+			if (triggerEntity === engine.PlayerEntity) {
+				this.onHitByPlayer()
+				this.Destroy()
+				return
 			}
-			this.Destroy()
+
+			if (triggerEntity !== undefined && ProjectileComponent.has(triggerEntity)) {
+				this.onHitByProjectile(triggerEntity)
+				this.Destroy()
+				return
+			}
 		})
 
     }
 
-	onTriggerEnter() {
+	// MARK: onHitByPlayer
+	onHitByPlayer() {
 		if (this.pickupTriggered) return
 		this.pickupTriggered = true
 
@@ -79,6 +94,28 @@ export class FuelPickup {
 		SoundManager.playSound(sfx.fuelPickup)
 		
 		eventBus.emit(ClientEvents.TRIGGER_FUEL, {position: this.position, amount: this.amount})
+	}
+
+
+	// MARK: onHitByProjectile
+	onHitByProjectile(
+		entity: Entity
+	) : void {
+		if (this.isDestroyed) return
+
+		eventBus.emit(ClientEvents.DISABLE_PROJECTILE, { entity })
+		eventBus.emit(ClientEvents.TRIGGER_EXPLOSION, { position: this.position })
+
+		SoundManager.playSound(sfx.boom, this.rootEntity)
+
+		const playerPosition = Transform.getOrNull(engine.PlayerEntity)?.position
+		if (playerPosition) {
+			const distanceSquared = Vector3.distanceSquared(this.position, playerPosition)
+			if (distanceSquared < EXPLOSION_RADIUS_SQUARED) {
+				const ratio = distanceSquared / EXPLOSION_RADIUS_SQUARED
+				Physics.applyImpulseToPlayer(Vector3.subtract(playerPosition, this.position), ratio * 50)
+			}
+		}
 	}
 
 	Destroy() {

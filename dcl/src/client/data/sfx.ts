@@ -14,6 +14,13 @@ export const sfx = {
 		"assets/sfx/woosh.wav",
 	],
 
+
+	boom: [
+		"assets/sfx/boom_1.mp3",
+		"assets/sfx/boom_2.mp3",
+		"assets/sfx/boom_3.mp3",
+	],
+
 	swish: [
 		"assets/sfx/fast woosh 5.wav",
 		"assets/sfx/classic-short-swoosh-02.wav",
