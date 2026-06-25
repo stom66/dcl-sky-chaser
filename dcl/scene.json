@@ -1081,7 +1081,9 @@
     "0xCEC7e38e088A87D77F2B60Fcae6840D00E018155"
   ],
   "creator": "0xCEC7e38e088A87D77F2B60Fcae6840D00E018155",
-  "skyboxConfig": {},
+  "skyboxConfig": {
+    "fixedTime": 51600
+  },
   "source": {
     "origin": "creator-hub",
     "projectId": "e07770ee-e8a8-42b0-af0b-ec05d2b79494"

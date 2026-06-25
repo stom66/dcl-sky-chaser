@@ -24,7 +24,7 @@ export namespace BalloonSpawner {
 	const maxHeight  = 48
 	const despawnHeight = 180
 
-	const randomBalloonColors = [
+/* 	const randomBalloonColors = [
 		theme.colors.warning,
 		darken(theme.colors.balloon, 0.05),
 		darken(theme.colors.balloon, 0.1),
@@ -45,15 +45,15 @@ export namespace BalloonSpawner {
 		theme.colors.danger,
 		theme.colors.primary,
 		theme.colors.secondary,
-	]
+	] */
 
-	function getRandomBalloonColor() {
+/* 	function getRandomBalloonColor() {
 		return randomBalloonColors[Math.floor(Math.random() * randomBalloonColors.length)]
 	}
 
 	function getRandomPackageColor() {
 		return randomPackageColors[Math.floor(Math.random() * randomPackageColors.length)]
-	}
+	} */
 
 	var rng: () => number
 	var gameStartTime: number = 0
@@ -106,7 +106,7 @@ export namespace BalloonSpawner {
 		const z        = origin.z + distance * Math.sin(angle)
 		const value    = Math.ceil(rng()*3) * 10
 
-		const pickup   = new BalloonPickup(Vector3.create(x, y, z), getRandomPackageColor(), getRandomBalloonColor())
+		const pickup   = new BalloonPickup(Vector3.create(x, y, z))
 
 		return pickup
 	}

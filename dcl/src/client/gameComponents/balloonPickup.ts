@@ -24,12 +24,12 @@ export class BalloonPickup {
 	private pickupTriggered: boolean = false
 	private isDestroyed    : boolean = false
 
-	private randomIndex: number = Math.floor(Math.random() * 4) + 1
+	//private randomIndex: number = Math.floor(Math.random() * 4) + 1
 
     constructor(
 		public position : Vector3, 
-		public packageColor: Color4 = theme.colors.warning,
-		public balloonColor: Color4 = theme.colors.warning,
+		//public packageColor: Color4 = theme.colors.warning,
+		//public balloonColor: Color4 = theme.colors.warning,
 		public value    : number = this.defaultValue,
 		public maxHeight: number = 200,
 		public riseSpeed: number = Math.random() * 4 + 0.1,
@@ -50,16 +50,18 @@ export class BalloonPickup {
 		})
 
 		GltfContainer.create(this.entity, {
-			src: `assets/models/balloon_0${this.randomIndex}.gltf`
+			//src: `assets/models/balloon_0${this.randomIndex}.gltf`
+			src: `assets/models/balloon_new.gltf`
 		})
 
 		// Define materials
-		const materialBalloonOverRide = {
+/* 		const materialBalloonOverRide = {
 			$case: "pbr",
 			pbr: {
 				albedoColor: this.balloonColor,
 				emissiveColor: this.balloonColor,
-				emissiveIntensity: 0.1
+				emissiveIntensity: 0.1,
+				texture: Material.Texture.Common({ src: 'assets/tex/balloon_01.png' })
 			}
 		} as PBMaterial["material"]
 
@@ -70,14 +72,14 @@ export class BalloonPickup {
 				emissiveColor: this.packageColor,
 				emissiveIntensity: 0.2
 			}
-		} as PBMaterial["material"]
+		} as PBMaterial["material"] */
 
 		// Each balloon_0X model contains exactly one balloon node and one package
 		// node, both numbered to match the model index (e.g. balloon_03 has
 		// balloon.003 and package.003). Modifiers must only target nodes that
 		// exist in the loaded model, otherwise the Explorer's ResetMaterialSystem
 		// crashes when the entity is destroyed.
-		const nodeSuffix = String(this.randomIndex).padStart(3, "0")
+/* 		const nodeSuffix = String(this.randomIndex).padStart(3, "0")
 		GltfNodeModifiers.create(this.entity, {
 			modifiers: [
 				{
@@ -93,7 +95,7 @@ export class BalloonPickup {
 					}
 				}
 			]
-		})
+		}) */
 
 		this.triggerEntity = engine.addEntity()
 		Transform.create(this.triggerEntity, { parent: this.entity, scale: Vector3.create(this.triggerScale, this.triggerScale, this.triggerScale) })

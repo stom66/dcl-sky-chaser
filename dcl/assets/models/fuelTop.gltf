@@ -15,58 +15,47 @@
 	"nodes":[
 		{
 			"mesh":0,
-			"name":"Cube"
+			"name":"rotor.blades.001"
 		}
 	],
 	"materials":[
 		{
-			"name":"Wood.Wavy.Brown.001",
-			"normalTexture":{
+			"emissiveFactor":[
+				1,
+				1,
+				1
+			],
+			"emissiveTexture":{
 				"index":0
 			},
-			"pbrMetallicRoughness":{
-				"baseColorTexture":{
-					"index":1
-				},
-				"metallicFactor":0,
-				"roughnessFactor":0.5
-			}
-		},
-		{
-			"name":"ClockTower_Metal_v01_Mat",
+			"name":"Barrel",
 			"normalTexture":{
-				"index":2
+				"index":1
 			},
 			"pbrMetallicRoughness":{
 				"baseColorTexture":{
-					"index":3
+					"index":2
 				},
-				"metallicFactor":0,
-				"roughnessFactor":0.5833333134651184
+				"metallicRoughnessTexture":{
+					"index":3
+				}
 			}
 		}
 	],
 	"meshes":[
 		{
-			"name":"Cube",
+			"name":"Cube.003",
 			"primitives":[
 				{
 					"attributes":{
 						"POSITION":0,
 						"NORMAL":1,
-						"TEXCOORD_0":2
+						"TEXCOORD_0":2,
+						"COLOR_0":3,
+						"COLOR_1":4
 					},
-					"indices":3,
+					"indices":5,
 					"material":0
-				},
-				{
-					"attributes":{
-						"POSITION":4,
-						"NORMAL":5,
-						"TEXCOORD_0":6
-					},
-					"indices":7,
-					"material":1
 				}
 			]
 		}
@@ -92,142 +81,110 @@
 	"images":[
 		{
 			"mimeType":"image/png",
-			"name":"stylizedWood_v01_normal",
-			"uri":"tex/stylizedWood_v01_normal.png"
+			"name":"fuel_v2_Barrel_Emissive",
+			"uri":"tex/fuel_v2_Barrel_Emissive.png"
 		},
 		{
 			"mimeType":"image/png",
-			"name":"stylizedWood_v01_basecolor_brown",
-			"uri":"tex/stylizedWood_v01_basecolor_brown.png"
+			"name":"fuel_v2_Barrel_Normal",
+			"uri":"tex/fuel_v2_Barrel_Normal.png"
 		},
 		{
 			"mimeType":"image/png",
-			"name":"clockTower_metal01_hrm",
-			"uri":"tex/clockTower_metal01_hrm.png"
+			"name":"fuel_v2_Barrel_BaseColor",
+			"uri":"tex/fuel_v2_Barrel_BaseColor.png"
 		},
 		{
 			"mimeType":"image/png",
-			"name":"clockTower_metal01_basecolor_1",
-			"uri":"tex/clockTower_metal01_basecolor_1.png"
+			"name":"fuel_v2_Barrel_Metallic-fuel_v2_Barrel_Roughness",
+			"uri":"tex/fuel_v2_Barrel_Metallic-fuel_v2_Barrel_Roughness.png"
 		}
 	],
 	"accessors":[
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":368,
+			"count":373,
 			"max":[
-				0.5290313959121704,
-				0.6003679633140564,
-				0.5290313959121704
+				0.43591442704200745,
+				0.5296775698661804,
+				0.4908667802810669
 			],
 			"min":[
-				-0.5290313959121704,
-				0.48369768261909485,
-				-0.5290313959121704
+				-0.435914546251297,
+				0.43369588255882263,
+				-0.28528687357902527
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":368,
+			"count":373,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":368,
+			"count":373,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":3,
-			"componentType":5123,
-			"count":1200,
-			"type":"SCALAR"
+			"componentType":5121,
+			"count":373,
+			"normalized":true,
+			"type":"VEC4"
 		},
 		{
 			"bufferView":4,
-			"componentType":5126,
-			"count":32,
-			"max":[
-				0.21058501303195953,
-				0.5561751127243042,
-				0.21058501303195953
-			],
-			"min":[
-				-0.21058501303195953,
-				0.5278905630111694,
-				-0.21058501303195953
-			],
-			"type":"VEC3"
+			"componentType":5123,
+			"count":373,
+			"normalized":true,
+			"type":"VEC4"
 		},
 		{
 			"bufferView":5,
-			"componentType":5126,
-			"count":32,
-			"type":"VEC3"
-		},
-		{
-			"bufferView":6,
-			"componentType":5126,
-			"count":32,
-			"type":"VEC2"
-		},
-		{
-			"bufferView":7,
 			"componentType":5123,
-			"count":96,
+			"count":936,
 			"type":"SCALAR"
 		}
 	],
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":4416,
+			"byteLength":4476,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":4416,
-			"byteOffset":4416,
+			"byteLength":4476,
+			"byteOffset":4476,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":2944,
-			"byteOffset":8832,
+			"byteLength":2984,
+			"byteOffset":8952,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":2400,
-			"byteOffset":11776,
-			"target":34963
-		},
-		{
-			"buffer":0,
-			"byteLength":384,
-			"byteOffset":14176,
+			"byteLength":1492,
+			"byteOffset":11936,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":384,
-			"byteOffset":14560,
+			"byteLength":2984,
+			"byteOffset":13428,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":256,
-			"byteOffset":14944,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":192,
-			"byteOffset":15200,
+			"byteLength":1872,
+			"byteOffset":16412,
 			"target":34963
 		}
 	],
@@ -239,7 +196,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":15392,
+			"byteLength":18284,
 			"uri":"fuelTop.bin"
 		}
 	]
