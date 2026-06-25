@@ -1,13 +1,12 @@
 import { engine, Transform } from "@dcl/sdk/ecs"
 import { Quaternion, Vector3 } from "@dcl/sdk/math"
-
-import { FuelPickupComponent, FuelPickupChildComponent } from "src/shared/components/fuelPickup"
-
-import { FuelPickup } from "src/client/gameComponents/fuelPickup"
-import { createRng } from "src/shared/utils/mulberry"
-import { C_GameData, ComponentStore } from "src/shared/components/componentStore"
-import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
 import * as utils from '@dcl-sdk/utils'
+
+import { ComponentStore } from "src/shared/components/componentStore"
+import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
+import { createRng } from "src/shared/utils/mulberry"
+
+import { FuelPickup, FuelPickupComponent, FuelPickupChildComponent } from "src/client/gameComponents/fuelPickup"
 
 export namespace FuelSpawner {
 

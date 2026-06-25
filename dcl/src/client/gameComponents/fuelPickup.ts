@@ -4,6 +4,7 @@ import * as utils from '@dcl-sdk/utils'
 
 import { ComponentStore } from "src/shared/components/componentStore"
 import { FuelPickupComponent, FuelPickupChildComponent } from "src/shared/components/fuelPickup"
+export { FuelPickupComponent, FuelPickupChildComponent }
 
 import { theme } from "../ui"
 import { sfx, SoundManager } from "../soundManager"

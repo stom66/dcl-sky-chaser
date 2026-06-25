@@ -2,13 +2,10 @@ import { EasingFunction, engine, Entity, GltfContainer, Material, MeshRenderer, 
 import { Quaternion, Vector3 } from "@dcl/sdk/math"
 import * as utils from '@dcl-sdk/utils'
 
-import { alpha, theme } from "src/client/ui"
-import { IS_DEV } from "src/shared/settings"
-import { sfx, SoundManager } from "../soundManager"
 import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
-import { ClientMessaging } from "../clientMessaging"
-import { PlayerStats } from "src/server/metrics/playerStats"
-import { ParticleSpawner } from "../particleSpawner"
+
+import { sfx, SoundManager } from "src/client/soundManager"
+
 
 export class SpeedRing {
 	entity: Entity

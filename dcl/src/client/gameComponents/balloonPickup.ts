@@ -4,6 +4,7 @@ import * as utils from '@dcl-sdk/utils'
 
 import { ComponentStore } from "src/shared/components/componentStore"
 import { BalloonPickup as BalloonPickupComponent } from "src/shared/components/balloonPickup"
+export { BalloonPickupComponent as BalloonPickupComponent }
 
 import { darken, lighten, theme } from "../ui"
 import { sfx, SoundManager } from "../soundManager"
