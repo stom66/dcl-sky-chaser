@@ -23,8 +23,6 @@ export namespace BalloonSpawner {
 	const maxHeight  = 48
 	const despawnHeight = 180
 
-	
-
 
 	var rng: () => number
 	var gameStartTime: number = 0
