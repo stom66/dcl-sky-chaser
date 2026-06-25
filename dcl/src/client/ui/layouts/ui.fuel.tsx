@@ -13,6 +13,7 @@ let maxFuelValue = 100
 let ratio        = fuelValue / maxFuelValue
 
 function getFuelValueDigits(value: number) {
+	value = Math.min(value, maxFuelValue)
 	return [
 		Math.floor(Math.floor(value) / 10),
 		Math.floor(value) % 10
@@ -60,7 +61,7 @@ export function FuelUI() {
 					borderRadius  : 64,
 					overflow      : 'hidden',
 					flexDirection : 'column',
-					justifyContent: 'flex-end',
+					justifyContent: 'flex-start',
 					borderColor   : darken(theme.colors.success, 0.075),
 					borderWidth   : 5,
 				}}
@@ -70,9 +71,25 @@ export function FuelUI() {
 					key={`ui_Fuel_inner_fill`}
 					uiTransform={{
 						width         : '100%',
-						height        : `${ratio}%`,
+						height        : `${100-ratio}%`,
 						alignContent  : 'center',
 						flexDirection : 'column',
+						alignItems    : 'center',
+						flexShrink    : 0,
+						justifyContent: 'center',
+					}}
+					uiBackground={{
+						color: alpha(ratio > 66 ? theme.colors.success :  ratio > 33 ? theme.colors.warning : theme.colors.danger, 0.2),
+					}}
+				/>
+				<UiEntity
+					key={`ui_Fuel_inner_fill`}
+					uiTransform={{
+						width         : '100%',
+						height        : 512,
+						alignContent  : 'center',
+						flexDirection : 'column',
+						flexShrink    : 0,
 						alignItems    : 'center',
 						justifyContent: 'center',
 					}}
@@ -84,7 +101,7 @@ export function FuelUI() {
 					uiBackground={{
 						//color: theme.colors.success,
 						texture: { src: "assets/images/ui/bg-fuel.png" },
-						textureMode: 'center',
+						textureMode: 'stretch',
 					}}
 				/>
 				<UiEntity
