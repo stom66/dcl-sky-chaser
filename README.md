@@ -4,7 +4,7 @@
 
 Built for Decentraland SDK7 with the new Auth-Server, Sky Chaser is a multiplayer game where players compete to catch the most escaping packages per round. Includes Weekly and AllTime leaderboards.
 
-### Play it here: [stom.dcl.eth](https://play.decentraland.org/?realm=stom.dcl.eth)
+### Play it here: [skychaser.dcl.eth](https://play.decentraland.org/?realm=skychaser.dcl.eth)
 
 ![SkyChaser: how to Play](dcl/assets/images/ui/howToPlay.png)
 ---
