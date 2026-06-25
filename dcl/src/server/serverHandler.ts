@@ -4,7 +4,6 @@ import { ComponentStore } from 'src/shared/components/componentStore'
 import { MessageType, room } from 'src/shared/room'
 
 import { ServerMessaging } from 'src/server/serverMessaging'
-import { ServerStore } from 'src/server/serverStore'
 import { GameStatus } from 'src/shared/enums'
 import { GameSettings } from 'src/shared/settings'
 import { LeaderboardManager } from "./leaderboardManager"
@@ -14,9 +13,6 @@ import { PlayerStats } from "./metrics/playerStats"
 
 export namespace serverHandler {
 
-	// MARK: Vars
-	//const store = ServerStore.getInstance()
-
 
 	// MARK: Init
 	export function init() {
@@ -24,6 +20,7 @@ export namespace serverHandler {
 		//room.onMessage(MessageType.REQUEST_SCORE_UPDATE, (data, context) => handleRequestScoreUpdate(data, context))
 		room.onMessage(MessageType.REQUEST_STATS_UPDATE, (data, context) => handleRequestStatsUpdate(data, context))
 		room.onMessage(MessageType.REQUEST_FOUND_ALL_PIGEONS, (data, context) => handleRequestFoundAllPigeons(data, context))
+		room.onMessage(MessageType.REQUEST_TRIGGER_EFFECT, (data, context) => handleRequestTriggerEffect(data, context))
 	}
 
 
@@ -144,6 +141,31 @@ export namespace serverHandler {
 	function OnGameReset() {
 		ComponentStore.setGameStatus(GameStatus.IDLE)
 		//ComponentStore.resetAfterRound()
+	}
+
+
+	// MARK: On Trigger Effect
+	function handleRequestTriggerEffect(data: any, context: any) {
+		const userId = getUserId(context).toLowerCase()
+		console.log('handleRequestTriggerEffect: userId', userId, 'effect', data.effect, 'position', data.position, 'direction', data.direction)
+
+		const players = ComponentStore.getPlayers()
+		console.log('handleRequestTriggerEffect: players in store: ', players.length, players.join(', '))
+
+		const sendTo = ComponentStore.getPlayers().filter(player => player.toLowerCase() !== userId)
+		if (sendTo.length === 0) {
+			console.log('handleRequestTriggerEffect: no players to send to, skipping')
+			return
+		}
+
+		console.log('handleRequestTriggerEffect: sending to', sendTo.length, sendTo.join(', '))
+		room.send(MessageType.NOTIFY_TRIGGER_EFFECT, {
+			effect   : data.effect,
+			position : data.position,
+			direction: data.direction
+		}, { to: sendTo }) 
+
+		//Metrics.trackTriggerEffect(userId, data.effect, data.position, data.direction)
 	}
 
 	// MARK: On Found All Pigeons

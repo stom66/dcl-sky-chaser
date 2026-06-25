@@ -34,13 +34,6 @@ ComponentStore.onComponentChange(C_PigeonCounter.PigeonCounter, (data) => {
 
 eventBus.on(ClientEvents.FOUND_ALL_PIGEONS, (data) => {
 	HideUI()
-	
-	for (let i = 0; i < 8; i++) {
-		utils.timers.setTimeout(() => {
-			SoundManager.playSound(sfx.coo)
-		}, i * 400)
-	}
-	ParticleSpawner.TriggerPigeonSpurt(Transform.getOrNull(engine.PlayerEntity)?.position ?? Vector3.create(256, 63.2, 256))
 })
 
 

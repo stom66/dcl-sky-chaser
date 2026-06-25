@@ -2,6 +2,7 @@ import { engine, Entity, InputAction, inputSystem, ParticleSystem, PBParticleSys
 import { Color4, Quaternion, Vector3 } from "@dcl/sdk/math";
 import { ComponentStore } from "src/shared/components/componentStore";
 import * as utils from '@dcl-sdk/utils'
+import { ClientEvents, eventBus } from "src/shared/utils/eventBus";
 
 
 export namespace ParticleSpawner {
@@ -18,7 +19,59 @@ export namespace ParticleSpawner {
 			rotation: Quaternion.fromEulerDegrees(30, 180, 0)
 		})	
 		engine.addSystem(systemInputWatcher)
+
+		eventBus.on(ClientEvents.NOTIFY_TRIGGER, (data) => {
+			triggerEffect(data?.effect, data?.position ?? Vector3.create(256, 63.2, 256), data?.direction ?? Vector3.Zero())
+		})
+
+		eventBus.on(ClientEvents.TRIGGER_AWNING, (data) => {
+			triggerEffect(ClientEvents.TRIGGER_AWNING, data?.position ?? Vector3.create(256, 63.2, 256), data?.direction ?? Vector3.Zero())
+		})
+		eventBus.on(ClientEvents.TRIGGER_TRAMPOLINE, (data) => {
+			triggerEffect(ClientEvents.TRIGGER_TRAMPOLINE, data?.position ?? Vector3.create(256, 63.2, 256), data?.direction ?? Vector3.Zero())
+		})
+		eventBus.on(ClientEvents.TRIGGER_UMBRELLA, (data) => {
+			triggerEffect(ClientEvents.TRIGGER_UMBRELLA, data?.position ?? Vector3.create(256, 63.2, 256), data?.direction ?? Vector3.Zero())
+		})
+
+		eventBus.on(ClientEvents.TRIGGER_RING, (data) => {
+			triggerEffect(ClientEvents.TRIGGER_RING, data?.position ?? Vector3.create(256, 63.2, 256), Vector3.create(0, data?.yRot ?? 0, 0))
+		})
+		eventBus.on(ClientEvents.TRIGGER_FUEL, (data) => {
+			triggerEffect(ClientEvents.TRIGGER_FUEL, data?.position ?? Vector3.create(256, 63.2, 256), data?.direction ?? Vector3.Zero())
+		})
+		eventBus.on(ClientEvents.TRIGGER_BALLOON, (data) => {
+			triggerEffect(ClientEvents.TRIGGER_BALLOON, data?.position ?? Vector3.create(256, 63.2, 256), data?.direction ?? Vector3.Zero())
+		})
+
+		eventBus.on(ClientEvents.FOUND_ALL_PIGEONS, (data) => {
+			TriggerPigeonSpurt(Transform.getOrNull(engine.PlayerEntity)?.position ?? Vector3.create(256, 63.2, 256))
+		})
 	}
+
+
+	function triggerEffect(effect: ClientEvents, position: Vector3, direction: Vector3) {
+		switch (effect) {
+			case ClientEvents.TRIGGER_AWNING:
+				TriggerDustSpurt(position)
+				break
+			case ClientEvents.TRIGGER_TRAMPOLINE:
+				TriggerDustSpurt(position)
+				break
+			case ClientEvents.TRIGGER_UMBRELLA:
+				TriggerDustSpurt(position)
+				break
+			case ClientEvents.TRIGGER_RING:
+				TriggerPickupSpeedRing(position, direction.y)
+				break
+			case ClientEvents.TRIGGER_FUEL:
+				TriggerPickupFuel(position)
+				break
+			case ClientEvents.TRIGGER_BALLOON:
+				TriggerPickupBalloon(position)
+				break
+		}
+	} 
 
 	function createParticleSystem() {
 		if (!entity) return

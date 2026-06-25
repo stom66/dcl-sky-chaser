@@ -1,4 +1,6 @@
 export enum ClientEvents {
+	NOTIFY_TRIGGER  = "notifyTrigger", // used when server notifies client about a trigger effect
+
 	GAME_IDLE       = "gameIdle",
 	GAME_STARTING   = "gameStarting",
 	GAME_ACTIVE     = "gameStarted",

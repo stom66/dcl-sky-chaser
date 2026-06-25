@@ -76,11 +76,8 @@ export class FuelPickup {
 		console.log("FuelPickup: Player entered")
 		ComponentStore.increaseFuelValue(this.amount)
 		SoundManager.playSound(sfx.fuelPickup)
-		ParticleSpawner.TriggerPickupFuel(this.position)
-
-		ClientMessaging.RequestStatsUpdate(PlayerStats.COLLECTED_FUEL, this.amount)
 		
-		eventBus.emit(ClientEvents.TRIGGER_FUEL, undefined)
+		eventBus.emit(ClientEvents.TRIGGER_FUEL, {position: this.position, amount: this.amount})
 	}
 
 	Destroy() {

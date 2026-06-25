@@ -69,11 +69,9 @@ export class SpeedRing {
 		SoundManager.playSound(sfx.swish)
 		
 		const yRot = Quaternion.toEulerAngles(playerTransform.rotation).y
-		ParticleSpawner.TriggerPickupSpeedRing(playerTransform.position, yRot)
+		//ParticleSpawner.TriggerPickupSpeedRing(playerTransform.position, yRot)
 
-		eventBus.emit(ClientEvents.TRIGGER_RING, undefined)
-		
-		ClientMessaging.RequestStatsUpdate(PlayerStats.TRIGGERED_SPEEDRINGS)
+		eventBus.emit(ClientEvents.TRIGGER_RING, {position: playerTransform.position, yRot: yRot})
 	}
 
 	Destroy() {

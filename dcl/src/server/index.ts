@@ -8,7 +8,6 @@ import { ComponentStore } from "src/shared/components/componentStore"
 
 import { serverHandler } from "src/server/serverHandler"
 import { ServerMessaging } from "src/server/serverMessaging"
-import { ServerStore } from "src/server/serverStore"
 import { LeaderboardManager } from "./leaderboardManager"
 import { Metrics } from "./metrics/client"
 import { Transform } from "@dcl/sdk/ecs"
@@ -24,7 +23,6 @@ export async function initServer(): Promise<void> {
 	ComponentStore.init()
 	
 	serverHandler.init()
-	const serverStore = ServerStore.getInstance() // Initialize the store
 
 	// Initialize the leaderboard manager
 	LeaderboardManager.init()
@@ -41,7 +39,7 @@ export async function initServer(): Promise<void> {
 	// MARK: Event bindings
 	onEnterScene((player) => {
 		ServerMessaging.sendServerTime()
-		serverStore.addPlayer(player.userId, player.name)
+		ComponentStore.addPlayer(player.userId)
 
 		if (!isBlockedPlayer(player.userId)) {
 			const playerPosition = Transform.getOrNull(player.entity)?.position
@@ -52,7 +50,7 @@ export async function initServer(): Promise<void> {
 	})
 
 	onLeaveScene((userId) => {
-		serverStore.removePlayer(userId)
+		ComponentStore.removePlayer(userId)
 		Metrics.endSession(userId)
 	})
 }

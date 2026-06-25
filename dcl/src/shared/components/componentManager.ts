@@ -133,6 +133,32 @@ export namespace ComponentManager {
 		}
 	}
 
+	export function resetComponentAfterRound(): void {
+		const entity = getComponentEntity()
+
+		if (isServer()) {
+			// Server
+			const c_gameData = C_GameData.GameData.getMutableOrNull(entity)
+			if (c_gameData === null) return
+
+			c_gameData.startTime = 0
+			C_GameData.ScoreBoard.createOrReplace(entity, {
+				scores: [],
+			})
+
+		} else {	
+			// Client
+			C_PlayerFuel.PlayerFuel.createOrReplace(entity, {	
+				value: 100,
+				maxValue: 100,
+			})
+			C_Combo.Combo.createOrReplace(entity, {
+				value: 1,
+				lastUpdatedTime: 0,
+			})
+		}
+	}
+
 
 	// MARK: initClient
 	// one-shot system that watches for the synced lane entities and stores them in `laneComponentEntities[]` 

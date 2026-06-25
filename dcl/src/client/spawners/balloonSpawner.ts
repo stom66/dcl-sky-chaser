@@ -9,8 +9,6 @@ import { BalloonPickup } from "src/client/gameComponents/balloonPickup"
 import { createRng } from "src/shared/utils/mulberry"
 import { C_GameData, ComponentStore } from "src/shared/components/componentStore"
 import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
-import { darken, lighten, theme } from "../ui"
-import * as utils from '@dcl-sdk/utils'
 
 
 export namespace BalloonSpawner {
@@ -18,43 +16,15 @@ export namespace BalloonSpawner {
 	const ballonInstances: Map<Entity, BalloonPickup> = new Map()
 
 	const origin     = Vector3.create(256, 1, 256)
-	const maxSpawns  = 96
+	const maxSpawns  = 128
 	const minRadius  = 32
 	const maxRadius  = 120
 	const minHeight  = 16
 	const maxHeight  = 48
 	const despawnHeight = 180
 
-/* 	const randomBalloonColors = [
-		theme.colors.warning,
-		darken(theme.colors.balloon, 0.05),
-		darken(theme.colors.balloon, 0.1),
-		darken(theme.colors.balloon, 0.15),
-		darken(theme.colors.balloon, 0.2),
-		darken(theme.colors.balloon, 0.25),
-		lighten(theme.colors.balloon, 0.05),
-		lighten(theme.colors.balloon, 0.1),
-		lighten(theme.colors.balloon, 0.15),
-		lighten(theme.colors.balloon, 0.2),
-		lighten(theme.colors.balloon, 0.25),
-	]
+	
 
-	const randomPackageColors = [
-		theme.colors.warning,
-		theme.colors.info,
-		theme.colors.success,
-		theme.colors.danger,
-		theme.colors.primary,
-		theme.colors.secondary,
-	] */
-
-/* 	function getRandomBalloonColor() {
-		return randomBalloonColors[Math.floor(Math.random() * randomBalloonColors.length)]
-	}
-
-	function getRandomPackageColor() {
-		return randomPackageColors[Math.floor(Math.random() * randomPackageColors.length)]
-	} */
 
 	var rng: () => number
 	var gameStartTime: number = 0
@@ -87,10 +57,8 @@ export namespace BalloonSpawner {
 		rng = createRng(ComponentStore.getGameStartTime())
 
 		for (let i = 0; i < maxSpawns; i++) {
-			utils.timers.setTimeout(() => {
-				const balloonInstance = spawnRandomPickup()
-				ballonInstances.set(balloonInstance.entity, balloonInstance)
-			}, i * (2 / maxSpawns))
+			const balloonInstance = spawnRandomPickup()
+			ballonInstances.set(balloonInstance.entity, balloonInstance)
 		}
 
 		if (!systemsAdded) {
@@ -107,7 +75,7 @@ export namespace BalloonSpawner {
 		const x        = origin.x + distance * Math.cos(angle)
 		const y        = origin.y + height
 		const z        = origin.z + distance * Math.sin(angle)
-		const value    = Math.ceil(rng()*3) * 10
+		const value    = Math.ceil(Math.random()*3) * 10
 
 		const pickup   = new BalloonPickup(Vector3.create(x, y, z))
 
@@ -115,13 +83,10 @@ export namespace BalloonSpawner {
 	}
 
 	export function removePickups() {
-		engine.removeSystem(spawnerSystem)
-		engine.removeSystem(moverSystem)
-		systemsAdded = false
-
 		for (const [entity] of ballonInstances.entries()) {
 			removePickup(entity, true)
 		}
+		engine.removeSystem(spawnerSystem)
 	}
 
 	function removePickup(entity: Entity, muteSound: boolean = false) {

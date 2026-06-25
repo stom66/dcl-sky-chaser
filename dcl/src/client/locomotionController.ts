@@ -3,7 +3,11 @@ import { Quaternion, Vector3 } from "@dcl/sdk/math";
 
 export namespace LocomotionController {
 
-	export function applyLocomotionSettings() {
+	export function init() {
+		applyLocomotionSettings()
+	}
+
+	function applyLocomotionSettings() {
 		AvatarLocomotionSettings.create(engine.PlayerEntity, {
 			runSpeed: 10,
 			jumpHeight: 2,

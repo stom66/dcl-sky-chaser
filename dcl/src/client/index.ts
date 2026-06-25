@@ -81,7 +81,7 @@ export function initClient() {
 		ComponentStore.init()
 		GameStateManager.init()
 
-		LocomotionController.applyLocomotionSettings()
+		LocomotionController.init()
 		ComboManager.init()
 		SoundManager.init()
 		BoosterInput.init()

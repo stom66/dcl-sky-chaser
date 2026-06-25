@@ -33,9 +33,7 @@ export class BounceTriggerTrampoline extends BounceTrigger {
 		position: Vector3, 
 		normal  : Vector3
 	) {
-		ClientMessaging.RequestStatsUpdate(PlayerStats.TRIGGERED_TRAMPOLINES)
 		SoundManager.playSound(sfx.boing)
-		ParticleSpawner.TriggerDustSpurt(Transform.getOrNull(engine.PlayerEntity)?.position ?? Vector3.create(256, 63.2, 256))
 		
 		eventBus.emit(ClientEvents.TRIGGER_TRAMPOLINE, { position, normal })
 	}

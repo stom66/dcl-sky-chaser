@@ -10,6 +10,7 @@ import { sfx, SoundManager } from "../soundManager"
 import { ClientMessaging } from "../clientMessaging"
 import { PlayerStats } from "src/server/metrics/playerStats"
 import { ParticleSpawner } from "../particleSpawner"
+import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
 
 export class BalloonPickup {
 	public entity: Entity
@@ -130,10 +131,10 @@ export class BalloonPickup {
 		console.log("BalloonPickup: Player entered")
 		const combo = ComponentStore.getComboValue()
 
-		ParticleSpawner.TriggerPickupBalloon(this.position)
+		const t = Transform.getOrNull(engine.PlayerEntity)
+		if (!t) return
 
-		ClientMessaging.RequestStatsUpdate(PlayerStats.COLLECTED_POINTS, this.getValue() * combo)
-		ClientMessaging.RequestStatsUpdate(PlayerStats.COLLECTED_BALLOONS)
+		eventBus.emit(ClientEvents.TRIGGER_BALLOON, {position: t.position, points: this.getValue() * combo})
 	}
 
 	Destroy(muteSound: boolean = false) {

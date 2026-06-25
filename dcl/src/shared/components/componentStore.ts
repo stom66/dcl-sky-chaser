@@ -128,7 +128,7 @@ export namespace ComponentStore {
 	export function resetAfterRound(): void {
 		if (!isServer()) return
 
-		ComponentManager.seedComponentDefaults()
+		ComponentManager.resetComponentAfterRound()
 	}
 
 

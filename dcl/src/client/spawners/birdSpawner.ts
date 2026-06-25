@@ -4,6 +4,8 @@ import { Quaternion, Vector3 } from "@dcl/sdk/math"
 import { sfx, SoundManager } from "src/client/soundManager"
 import { ComponentStore } from "src/shared/components/componentStore"
 import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
+import * as utils from '@dcl-sdk/utils'
+
 
 export namespace BirdSpawner {
 
@@ -71,6 +73,16 @@ export namespace BirdSpawner {
 		}
 
 		ComponentStore.setPigeonMaxCount(transforms.length)
+
+		
+		eventBus.on(ClientEvents.FOUND_ALL_PIGEONS, (data) => {			
+			for (let i = 0; i < 8; i++) {
+				utils.timers.setTimeout(() => {
+					SoundManager.playSound(sfx.coo)
+				}, i * 400)
+			}
+			
+		})
 	}
 
 	function createBird(
