@@ -634,47 +634,47 @@
 		{
 			"mimeType":"image/png",
 			"name":"stylizedWood_v01_normal",
-			"uri":"stylizedWood_v01_normal.png"
+			"uri":"tex/stylizedWood_v01_normal.png"
 		},
 		{
 			"mimeType":"image/png",
 			"name":"stylizedWood_v01_basecolor_brown",
-			"uri":"stylizedWood_v01_basecolor_brown.png"
+			"uri":"tex/stylizedWood_v01_basecolor_brown.png"
 		},
 		{
 			"mimeType":"image/png",
 			"name":"stylizedWood_v01_basecolor",
-			"uri":"stylizedWood_v01_basecolor.png"
+			"uri":"tex/stylizedWood_v01_basecolor.png"
 		},
 		{
 			"mimeType":"image/png",
 			"name":"clockTower_metal01_hrm",
-			"uri":"clockTower_metal01_hrm.png"
+			"uri":"tex/clockTower_metal01_hrm.png"
 		},
 		{
 			"mimeType":"image/png",
 			"name":"clockTower_metal01_basecolor_1",
-			"uri":"clockTower_metal01_basecolor_1.png"
+			"uri":"tex/clockTower_metal01_basecolor_1.png"
 		},
 		{
 			"mimeType":"image/png",
 			"name":"toggle-leaderboard",
-			"uri":"toggle-leaderboard.png"
+			"uri":"tex/toggle-leaderboard.png"
 		},
 		{
 			"mimeType":"image/jpeg",
 			"name":"Rope_001_normal",
-			"uri":"Rope_001_normal.jpg"
+			"uri":"tex/Rope_001_normal.jpg"
 		},
 		{
 			"mimeType":"image/png",
 			"name":"Rope_001_ambientOcclusion-Rope_001_roughness",
-			"uri":"Rope_001_ambientOcclusion-Rope_001_roughness.png"
+			"uri":"tex/Rope_001_ambientOcclusion-Rope_001_roughness.png"
 		},
 		{
 			"mimeType":"image/jpeg",
 			"name":"Rope_001_basecolor",
-			"uri":"Rope_001_basecolor.jpg"
+			"uri":"tex/Rope_001_basecolor.jpg"
 		}
 	],
 	"accessors":[

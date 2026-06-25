@@ -2460,17 +2460,17 @@
 		{
 			"mimeType":"image/png",
 			"name":"stylizedWood_v01_normal",
-			"uri":"stylizedWood_v01_normal.png"
+			"uri":"tex/stylizedWood_v01_normal.png"
 		},
 		{
 			"mimeType":"image/png",
 			"name":"stylizedWood_v01_basecolor",
-			"uri":"stylizedWood_v01_basecolor.png"
+			"uri":"tex/stylizedWood_v01_basecolor.png"
 		},
 		{
 			"mimeType":"image/png",
-			"name":"AtlasGradient_mat_baseColor_512x512_512x512",
-			"uri":"AtlasGradient_mat_baseColor_512x512_512x512.png"
+			"name":"AtlasGradient_mat_baseColor_512x512_512x512.png",
+			"uri":"tex/AtlasGradient_mat_baseColor_512x512_512x512.png"
 		}
 	],
 	"skins":[

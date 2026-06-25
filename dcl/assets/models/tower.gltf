@@ -61900,7 +61900,7 @@
 		},
 		{
 			"mimeType":"image/png",
-			"name":"AtlasGradient_mat_baseColor_512x512_512x512",
+			"name":"AtlasGradient_mat_baseColor_512x512_512x512.png",
 			"uri":"tex/AtlasGradient_mat_baseColor_512x512_512x512.png"
 		},
 		{
@@ -62136,7 +62136,7 @@
 		{
 			"mimeType":"image/png",
 			"name":"CT-Pallete",
-			"uri":"tex/CT-Pallete.png"
+			"uri":"tex/AtlasGradient_mat_baseColor_512x512_512x512.png"
 		},
 		{
 			"mimeType":"image/png",
@@ -62176,12 +62176,12 @@
 		{
 			"mimeType":"image/png",
 			"name":"clockTower_metal01_hrm",
-			"uri":"tex/clockTower_metal01_hrm-1.png"
+			"uri":"tex/clockTower_metal01_hrm.png"
 		},
 		{
 			"mimeType":"image/png",
 			"name":"clockTower_metal01_basecolor_1",
-			"uri":"tex/clockTower_metal01_basecolor_1-1.png"
+			"uri":"tex/clockTower_metal01_basecolor_1.png"
 		},
 		{
 			"mimeType":"image/png",

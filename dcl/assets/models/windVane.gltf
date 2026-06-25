@@ -805,19 +805,18 @@
 				"baseColorTexture":{
 					"index":3
 				},
-				"metallicRoughnessTexture":{
-					"index":4
-				}
+				"metallicFactor":0,
+				"roughnessFactor":0.5833333134651184
 			}
 		},
 		{
 			"name":"SkyChaserLogosOnBlue",
 			"normalTexture":{
-				"index":5
+				"index":4
 			},
 			"pbrMetallicRoughness":{
 				"baseColorTexture":{
-					"index":6
+					"index":5
 				},
 				"metallicFactor":0,
 				"roughnessFactor":0.8451327085494995
@@ -915,10 +914,6 @@
 		},
 		{
 			"sampler":0,
-			"source":2
-		},
-		{
-			"sampler":0,
 			"source":4
 		},
 		{
@@ -930,32 +925,32 @@
 		{
 			"mimeType":"image/png",
 			"name":"stylizedWood_v01_normal",
-			"uri":"stylizedWood_v01_normal.png"
+			"uri":"tex/stylizedWood_v01_normal.png"
 		},
 		{
 			"mimeType":"image/png",
 			"name":"stylizedWood_v01_basecolor_brown",
-			"uri":"stylizedWood_v01_basecolor_brown.png"
+			"uri":"tex/stylizedWood_v01_basecolor_brown.png"
 		},
 		{
 			"mimeType":"image/png",
 			"name":"clockTower_metal01_hrm",
-			"uri":"clockTower_metal01_hrm.png"
+			"uri":"tex/clockTower_metal01_hrm.png"
 		},
 		{
 			"mimeType":"image/png",
 			"name":"clockTower_metal01_basecolor_1",
-			"uri":"clockTower_metal01_basecolor_1.png"
+			"uri":"tex/clockTower_metal01_basecolor_1.png"
 		},
 		{
 			"mimeType":"image/jpeg",
 			"name":"Fabric_Tarp_002_normal",
-			"uri":"Fabric_Tarp_002_normal.jpg"
+			"uri":"tex/Fabric_Tarp_002_normal.jpg"
 		},
 		{
 			"mimeType":"image/png",
 			"name":"decal-sky-chaser-logo-blue",
-			"uri":"decal-sky-chaser-logo-blue.png"
+			"uri":"tex/decal-sky-chaser-logo-blue.png"
 		}
 	],
 	"accessors":[
