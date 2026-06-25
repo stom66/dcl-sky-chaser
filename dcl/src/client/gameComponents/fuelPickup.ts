@@ -107,6 +107,7 @@ export class FuelPickup {
 		eventBus.emit(ClientEvents.TRIGGER_EXPLOSION, { position: this.position })
 
 		SoundManager.playSound(sfx.boom, this.rootEntity)
+		SoundManager.playSound(sfx.coo, this.rootEntity)
 
 		const playerPosition = Transform.getOrNull(engine.PlayerEntity)?.position
 		if (playerPosition) {

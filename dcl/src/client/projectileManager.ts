@@ -97,7 +97,7 @@ export namespace ProjectileManager {
 
 				if (!position || !cameraRotation) return
 
-				const origin = Vector3.add(position, Vector3.create(0, 1, 0))
+				const origin = Vector3.add(position, Vector3.create(0, 1.4, 0))
 				const direction = Vector3.rotate(Vector3.Forward(), cameraRotation)
 				timeOfLastFire = Date.now()
 				requestProjectile({position: origin, direction})

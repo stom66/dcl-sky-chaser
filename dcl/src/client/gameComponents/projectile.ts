@@ -1,7 +1,8 @@
-import { ColliderLayer, engine, Entity, GltfContainer, Material, MeshCollider, MeshRenderer, Physics, Transform, TriggerArea, triggerAreaEventsSystem } from "@dcl/sdk/ecs"
+import { ColliderLayer, engine, Entity, GltfContainer, Material, MeshCollider, MeshRenderer, ParticleSystem, PBParticleSystem_BlendMode, Physics, Transform, TriggerArea, triggerAreaEventsSystem } from "@dcl/sdk/ecs"
 import { Color4, Quaternion, Vector3 } from "@dcl/sdk/math"
 import { GameSettings } from "src/shared/settings"
 import { ProjectileComponent } from "src/shared/components/projectile"
+import { sfx, SoundManager } from "../soundManager"
 
 const HIDE_LOCATION = Vector3.create(128, -100, 128)
 const PLAYER_HIT_IMPULSE = 50
@@ -49,6 +50,49 @@ export class Projectile {
 		})
 	}
 
+	createParticleSystem() {
+		if (!this.entity) return
+
+		console.log("ParticleSpawner: creating particle system")
+
+		ParticleSystem.create(this.entity, {
+			active              : true,
+			loop                : true,
+			prewarm             : false,
+			faceTravelDirection : false,
+			rate                : 50,
+			lifetime            : 2,
+			maxParticles        : 400,
+			gravity             : 0,
+			blendMode           : PBParticleSystem_BlendMode.PSB_ADD,
+			shape               : ParticleSystem.Shape.Cone({ 
+				angle : 15, 
+				radius: 0.05 
+			}),
+			initialVelocitySpeed: { 
+				start: -3, 
+				end  : -9 
+			},
+			initialSize: { 
+				start: 0.08, 
+				end  : 0.10 
+			},
+			sizeOverTime: { 
+				start: 1, 
+				end  : 0 
+			},
+			initialColor: { 
+				start: Color4.create(0.827, 0.604, 0.125, 1.000), 
+				end  : Color4.create(0.800, 0.800, 0.800, 1.000) 
+			},
+			colorOverTime: { 
+				start: Color4.create(1.000, 0.800, 0.500, 1.000), 
+				end  : Color4.create(0.200, 0.200, 0.200, 1.000) 
+			},
+		})
+	}
+
+	// MARK: onTriggerEnter
 	onTriggerEnter(triggerEntity: Entity | undefined) : void {
 		console.log("Projectile: onTriggerEnter")
 		
@@ -65,10 +109,13 @@ export class Projectile {
 		this.Disable()
 	}
 
+	// MARK: isActive
 	public isActive() : boolean {
 		return this.active
 	}
 
+
+	// MARK: Fire
 	public Fire(
 		origin   : Vector3, 
 		direction: Vector3,
@@ -91,8 +138,13 @@ export class Projectile {
 		t.rotation = Quaternion.lookRotation(direction)
 
 		this.active    = true
+
+		SoundManager.playSound(sfx.coo, this.entity)
+
+		this.createParticleSystem()
 	}
 
+	// MARK: MoveForward
 	public MoveForward(dt: number) : void {
 		this.age += dt
 		if (this.age > GameSettings.PROJECTILE_LIFETIME) {
@@ -108,6 +160,7 @@ export class Projectile {
 		t.position = newPosition
 	}
 
+	// MARK: Disable
 	Disable() : void {
 		const t = Transform.getMutableOrNull(this.entity)
 		if (t === null) return
@@ -118,9 +171,11 @@ export class Projectile {
 		const p = ProjectileComponent.getMutableOrNull(this.entity)
 		if (p === null) return
 		p.owner = ""
+
+		ParticleSystem.deleteFrom(this.entity)
 	}
 
-
+	// MARK: onHitPlayer
 	onHitPlayer() : void {
 		const projectileComponent = ProjectileComponent.getOrNull(this.entity)
 		if (projectileComponent === null) return

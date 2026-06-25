@@ -162,7 +162,8 @@ export class BalloonPickup {
 
 		Tween.setScale(this.entity, Vector3.One(), Vector3.Zero(), 200, EasingFunction.EF_LINEAR)
 		
-		if (!muteSound) SoundManager.playSound(sfx.balloonPickup, this.entity, 64)
+		if (!muteSound) SoundManager.playSound(sfx.balloonPickup, this.entity)
+		if (!muteSound) SoundManager.playSound(sfx.coo, this.entity)
 
 		utils.timers.setTimeout(() => {
 			GltfNodeModifiers.createOrReplace(this.entity, {modifiers: []})
