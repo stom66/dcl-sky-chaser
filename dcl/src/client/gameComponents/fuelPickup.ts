@@ -118,7 +118,7 @@ export class FuelPickup {
 			const distanceSquared = Vector3.distanceSquared(this.position, playerPosition)
 			if (distanceSquared < EXPLOSION_RADIUS_SQUARED) {
 				const ratio = distanceSquared / EXPLOSION_RADIUS_SQUARED
-				Physics.applyImpulseToPlayer(Vector3.subtract(playerPosition, this.position), ratio * 50)
+				Physics.applyImpulseToPlayer(Vector3.subtract(playerPosition, this.position), 1-ratio * 200)
 			}
 		}
 	}
