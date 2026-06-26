@@ -126,7 +126,7 @@ export function ComboUI() {
 							alignContent: 'center',
 						}}
 						uiBackground={{
-							texture    : { src: "assets/images/ui/atlas-numbers.png" },
+							texture    : { src: "assets/images/ui/atlas-numbers-default.png" },
 							textureMode: 'stretch',
 							uvs        : getUVsForIconAtlasNumber(comboValue),
 						}}

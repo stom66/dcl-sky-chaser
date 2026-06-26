@@ -64,7 +64,7 @@ export function PigeonCounterUI() {
 				justifyContent: 'center',
 			}}
 			uiBackground={{
-				texture: { src: "assets/images/ui/counter.png" },
+				texture: { src: "assets/images/ui/bg-counter.png" },
 				textureMode: 'stretch',
 			}}
 		>
@@ -80,7 +80,7 @@ export function PigeonCounterUI() {
 				}}
 
 				uiBackground={{
-					texture    : { src: "assets/images/ui/atlas-numbers.png" },
+					texture    : { src: "assets/images/ui/atlas-numbers-default.png" },
 					textureMode: 'stretch',
 					uvs        : getUVsForIconAtlasNumber(count),
 				}}

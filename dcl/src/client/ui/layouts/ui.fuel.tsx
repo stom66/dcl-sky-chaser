@@ -160,7 +160,7 @@ export function FuelUI() {
 								height      : 64,
 							}}
 							uiBackground={{
-								texture    : { src: "assets/images/ui/atlas-numbers-green.png" },
+								texture    : { src: "assets/images/ui/atlas-numbers-fuel.png" },
 								textureMode: 'stretch',
 								uvs        : getUVsForIconAtlasNumber(getFuelValueDigits(fuelValue)[0]),
 							}}
@@ -172,7 +172,7 @@ export function FuelUI() {
 								height      : 64,
 							}}
 							uiBackground={{
-								texture    : { src: "assets/images/ui/atlas-numbers-green.png" },
+								texture    : { src: "assets/images/ui/atlas-numbers-fuel.png" },
 								textureMode: 'stretch',
 								uvs        : getUVsForIconAtlasNumber(getFuelValueDigits(fuelValue)[1]),
 							}}
@@ -184,7 +184,7 @@ export function FuelUI() {
 								height      : 64,
 							}}
 							uiBackground={{
-								texture    : { src: "assets/images/ui/atlas-numbers-green.png" },
+								texture    : { src: "assets/images/ui/atlas-numbers-fuel.png" },
 								textureMode: 'stretch',
 								uvs        : getUVsForIconAtlasNumber(14),
 							}}
