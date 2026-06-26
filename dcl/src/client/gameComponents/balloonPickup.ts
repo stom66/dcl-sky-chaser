@@ -61,29 +61,21 @@ export class BalloonPickup {
 
 
 
-
+		// First Trigger - top - larger, covers the ballooon
 		this.triggerEntity = engine.addEntity()
-		Transform.create(this.triggerEntity, { parent: this.entity, scale: Vector3.create(this.triggerScale, this.triggerScale, this.triggerScale) })
+		Transform.create(this.triggerEntity, { 
+			parent: this.entity, 
+			scale: Vector3.create(this.triggerScale, this.triggerScale, this.triggerScale) 
+		})
 
 		TriggerArea.setSphere(this.triggerEntity, ColliderLayer.CL_PLAYER | ColliderLayer.CL_CUSTOM1)
 		triggerAreaEventsSystem.onTriggerEnter(this.triggerEntity, (e) => {
-			const triggerEntity = e.trigger?.entity as Entity | undefined
-
-			if (triggerEntity === engine.PlayerEntity) {
-				this.onHitByPlayer()
-				this.Destroy()
-				return
-			}
-
-			if (triggerEntity !== undefined && ProjectileComponent.has(triggerEntity)) {
-				this.onHitByProjectile(triggerEntity)
-				this.Destroy()
-				return
-			}
+			if (!e.trigger?.entity) return
+			this.onTriggerEnter(e.trigger?.entity as Entity)
 		})
 
 		
-		// Need another second smaller collider for the hanging package
+		// Second Trigger - bottom - covers the package
 		this.triggerEntity2 = engine.addEntity()
 		Transform.create(this.triggerEntity2, { 
 			parent: this.entity, 
@@ -93,22 +85,14 @@ export class BalloonPickup {
 
 		TriggerArea.setSphere(this.triggerEntity2, ColliderLayer.CL_PLAYER | ColliderLayer.CL_CUSTOM1)
 		triggerAreaEventsSystem.onTriggerEnter(this.triggerEntity2, (e) => {
-			const triggerEntity2 = e.trigger?.entity as Entity | undefined
+			if (!e.trigger?.entity) return
+			this.onTriggerEnter(e.trigger?.entity as Entity)
+	})
 
-			if (triggerEntity2 === engine.PlayerEntity) {
-				this.onHitByPlayer()
-				this.Destroy()
-				return
-			}
-
-			if (triggerEntity2 !== undefined && ProjectileComponent.has(triggerEntity2)) {
-				this.onHitByProjectile(triggerEntity2)
-				this.Destroy()
-				return
-			}
-		})
+		
 
 
+		// Debug visibility
 		if (this.SHOW_TRIGGER) {
 			MeshRenderer.setSphere(this.triggerEntity)
 			Material.setPbrMaterial(this.triggerEntity, { 
@@ -126,6 +110,20 @@ export class BalloonPickup {
 		}
     }
 
+	onTriggerEnter(triggerEntity: Entity) {
+		if (triggerEntity === engine.PlayerEntity) {
+			this.onHitByPlayer()
+			this.Destroy()
+			return
+		}
+
+		if (triggerEntity !== undefined && ProjectileComponent.has(triggerEntity)) {
+			this.onHitByProjectile(triggerEntity)
+			this.Destroy()
+			return
+		}
+	}
+
 	getValue() {
 		const c = BalloonPickupComponent.get(this.entity)
 		return c?.value ?? this.defaultValue
@@ -139,7 +137,7 @@ export class BalloonPickup {
 		console.log("BalloonPickup: Player entered")
 		const combo = ComponentStore.getComboValue()
 
-		const t = Transform.getOrNull(engine.PlayerEntity)
+		const t = Transform.getOrNull(this.entity)
 		if (!t) return
 
 		eventBus.emit(ClientEvents.TRIGGER_BALLOON, {position: t.position, points: this.getValue() * combo})
@@ -152,13 +150,23 @@ export class BalloonPickup {
 	) : void {
 		if (this.isDestroyed) return
 
+		const owner = ProjectileComponent.getOrNull(entity)?.owner ?? ""
+		const t = Transform.getOrNull(this.entity)
+		if (!t) return
+
 		eventBus.emit(ClientEvents.PROJECTILE_HIT_BALLOON, { 
-			fuelPosition    : this.position, 
+			position        : t.position, 
 			projectileEntity: entity, 
-			projectileOwner : ProjectileComponent.getOrNull(entity)?.owner ?? "" 
+			projectileOwner : owner 
 		})
 
-		eventBus.emit(ClientEvents.NOTIFY_TRIGGER, { effect: ClientEvents.TRIGGER_BALLOON, position: this.position })
+		// Allow players to get points from SHOOTING balloons as well
+		if (owner === "") {
+			this.onHitByPlayer() // If it was our own projectile, get the point for it
+		} else {
+			eventBus.emit(ClientEvents.NOTIFY_TRIGGER, { effect: ClientEvents.TRIGGER_BALLOON, position: this.position })
+		}
+
 	}
 
 	Destroy(muteSound: boolean = false) {
