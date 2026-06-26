@@ -274,18 +274,19 @@ export namespace ParticleSpawner {
 	export function TriggerPickupFuel(
 		position: Vector3
 	) {
-		TriggerPickup(position, Color4.fromHexString("#55dd55"), "assets/tex/particles-fuel.png")
+		TriggerPickup(position, "assets/tex/particles-fuel.png", Color4.fromHexString("#55dd55"), Color4.fromHexString("#ffffff"))
 	}
 	export function TriggerPickupBalloon(
 		position: Vector3
 	) {
-		TriggerPickup(position, Color4.fromHexString("#dddd55"), "assets/tex/particles-fuel.png")
+		TriggerPickup(position, "assets/tex/particles-dust.png", Color4.fromHexString("#FFFC00"), Color4.fromHexString("#FF7800"))
 	}
 
 	export function TriggerPickup(
-		position: Vector3,
-		startColor: Color4,
-		texture: string,
+		position   : Vector3,
+		texture    : string,
+		startColor: Color4 = Color4.fromHexString("#FFFFFF"),
+		endColor  : Color4 = Color4.fromHexString("#FFFFFF"),
 	) {
 		const entity = engine.addEntity()
 		Transform.create(entity, { position: position, rotation: Quaternion.fromEulerDegrees(-90, 0, 0) })
@@ -295,22 +296,23 @@ export namespace ParticleSpawner {
 			prewarm             : false,
 			faceTravelDirection : false,
 			rate                : 0,
-			lifetime            : 2,
+			lifetime            : 0.75,
+			
 			maxParticles        : 300,
-			gravity             : 6,
-			blendMode           : PBParticleSystem_BlendMode.PSB_ADD,
-			shape               : ParticleSystem.Shape.Cone({ angle: 30, radius: 0.2 }),
-			initialVelocitySpeed: { start: 12.5, end: 17.5 },
-			initialSize         : { start: 0.25, end: 0.75 },
+			gravity             : 2,
+			blendMode           : PBParticleSystem_BlendMode.PSB_ALPHA,
+			shape               : ParticleSystem.Shape.Point({}),
+			initialVelocitySpeed: { start: 7.5, end: 15 },
+			initialSize         : { start: 0.125, end: 1 },
 			sizeOverTime        : { start: 1, end: 0 },
 			//rotationOverTime    : { x: 0, y: 0, z: 0, w: 1 },
-			initialColor        : { start: Color4.fromHexString("#ffffff"), end: Color4.fromHexString("#cccccc") },
+			initialColor        : { start: startColor, end: endColor },
 			//colorOverTime       : { start: Color4.create(1.000, 0.800, 0.500, 1.000), end: Color4.create(0.800, 0.200, 0.000, 0.000) },
 			bursts              : { values: [
 				{ time: 0, count: 64, cycles: 1, interval: 0.01, probability: 1 },
 			] },
 			billboard           : true,
-			texture             : { src: 'assets/tex/particles-dust.png' },
+			texture             : { src: texture },
 			spriteSheet         : { tilesX: 2, tilesY: 2, framesPerSecond: 10},
 		})
 
@@ -318,7 +320,6 @@ export namespace ParticleSpawner {
 			ParticleSystem.deleteFrom(entity)
 			engine.removeEntity(entity)
 		}, 2000)
-
 	}
 
 	// MARK: Speed Rings
