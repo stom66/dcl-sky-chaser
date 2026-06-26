@@ -14,7 +14,7 @@ import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
 import { PlayerStats } from "src/server/metrics/playerStats"
 import { ParticleSpawner } from "../particleSpawner"
 
-const EXPLOSION_RADIUS_SQUARED = 1600
+const EXPLOSION_RADIUS_SQUARED = 30 * 30
 
 export class FuelPickup {
 	private rootEntity         : Entity
@@ -113,12 +113,14 @@ export class FuelPickup {
 		SoundManager.playSound(sfx.boom, this.rootEntity)
 		SoundManager.playSound(sfx.coo, this.rootEntity)
 
+		// Knock back the player, if nearby
 		const playerPosition = Transform.getOrNull(engine.PlayerEntity)?.position
 		if (playerPosition) {
 			const distanceSquared = Vector3.distanceSquared(this.position, playerPosition)
 			if (distanceSquared < EXPLOSION_RADIUS_SQUARED) {
-				const ratio = distanceSquared / EXPLOSION_RADIUS_SQUARED
-				Physics.applyImpulseToPlayer(Vector3.subtract(playerPosition, this.position), 1-ratio * 200)
+				let ratio = distanceSquared / EXPLOSION_RADIUS_SQUARED
+				ratio = Math.min(1, Math.max(0, ratio))
+				Physics.applyImpulseToPlayer(Vector3.subtract(playerPosition, this.position), (1-ratio) * 200)
 			}
 		}
 	}
