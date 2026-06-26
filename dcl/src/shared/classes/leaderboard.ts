@@ -13,6 +13,7 @@ export type LeaderboardEntry = {
 export class Leaderboard {
 	protected storeName  : string
 	protected recordLimit: number = 10
+	private submissionQueue: Promise<void> = Promise.resolve()
 
 	constructor(storeName: string) {
 		this.storeName = storeName
@@ -49,6 +50,22 @@ export class Leaderboard {
 	 * the cleaned result back so storage never grows beyond recordLimit or keeps dead entries.
 	 */
 	public async submitScore(
+		userId: string,
+		score : number
+	): Promise<void> {
+		const submission = this.submissionQueue.then(() => this.submitScoreQueued(userId, score))
+		this.submissionQueue = submission.catch(() => undefined)
+
+		return submission
+	}
+
+
+	// MARK: submitScoreQueued
+	/**
+	 * Applies one score update after any previous update for this leaderboard has
+	 * finished, preventing overlapping storage reads from overwriting each other.
+	 */
+	private async submitScoreQueued(
 		userId: string,
 		score : number
 	): Promise<void> {

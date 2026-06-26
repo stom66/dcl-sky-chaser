@@ -41,8 +41,9 @@ const uiComponent = () => (
 		{ComboUI()}
 		{HowToPlayUI()}
 		{CountdownUI()}
-		{LeaderboardWinnerUI()}
 		{ResultsUI()}
+		
+		{LeaderboardWinnerUI()}
 		{PigeonCounterUI()}
 
 		{HintsUI()}

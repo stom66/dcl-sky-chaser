@@ -11,12 +11,12 @@ export namespace LeaderboardManager {
 		leaderboards.weekly  = new LeaderboardWeekly()
 	}
 
-	export function submitScore(
+	export async function submitScore(
 		boardName: string,
 		userId   : string,
 		score    : number
-	) {
-		leaderboards[boardName].submitScore(userId, score)
+	): Promise<void> {
+		await leaderboards[boardName].submitScore(userId, score)
 	}
 
 

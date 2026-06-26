@@ -100,7 +100,7 @@ export namespace serverHandler {
 	}
 
 	// MARK: On Game End
-	function OnGameEnd() {
+	async function OnGameEnd() {
 		// Submit scores to leaderboards
 		const scores = ComponentStore.getPlayerScores()
 
@@ -118,7 +118,7 @@ export namespace serverHandler {
 			}
 
 			// All time scores
-			LeaderboardManager.submitScore('alltime', score.userId, score.score)
+			await LeaderboardManager.submitScore('alltime', score.userId, score.score)
 			if (score.score > lbAlltimeHighestScore) {
 				room.send(MessageType.NOTIFY_LEADERBOARD_WINNER_ALL_TIME, {
 					sentAt: Date.now()
@@ -126,7 +126,7 @@ export namespace serverHandler {
 			}
 
 			// Weekly scores
-			LeaderboardManager.submitScore('weekly', score.userId, score.score)
+			await LeaderboardManager.submitScore('weekly', score.userId, score.score)
 			if (score.score > lbWeeklyHighestScore) {
 				room.send(MessageType.NOTIFY_LEADERBOARD_WINNER_WEEKLY, {
 					sentAt: Date.now()
