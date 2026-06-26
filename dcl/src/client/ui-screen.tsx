@@ -1,4 +1,5 @@
 import ReactEcs, { ReactEcsRenderer, UiEntity } from '@dcl/sdk/react-ecs'
+import * as utils from '@dcl-sdk/utils'
 
 import { DebugUI } from 'src/client/ui/layouts/ui.debug'
 
@@ -11,6 +12,7 @@ import { CountdownUI } from './ui/layouts/ui.countdown'
 import { LeaderboardWinnerUI } from './ui/layouts/ui.leaderboardWinner'
 import { ResultsUI } from './ui/layouts/ui.results'
 import { PigeonCounterUI } from './ui/layouts/ui.pigeonCounter'
+import { EnableHints, HintsUI } from './ui/layouts/ui.hints'
 
 
 // MARK: Vars
@@ -42,12 +44,18 @@ const uiComponent = () => (
 		{LeaderboardWinnerUI()}
 		{ResultsUI()}
 		{PigeonCounterUI()}
+
+		{HintsUI()}
 	</UiEntity>
 )
 
 
 // MARK: SetupUI
 export function SetupUI() {
+	utils.timers.setTimeout(() => {
+		EnableHints()
+	}, 1000 * 30) // 30 seconds
+
 	ReactEcsRenderer.setUiRenderer(uiComponent, {
 		virtualWidth: 1920,
 		virtualHeight: 1080,
