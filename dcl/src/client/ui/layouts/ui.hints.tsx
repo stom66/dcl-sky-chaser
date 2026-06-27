@@ -4,6 +4,7 @@ import { tweenValue } from '../utils/tweens'
 import { EasingFunction, engine } from '@dcl/sdk/ecs'
 import { getUVsForIconAtlasRow } from '../utils/atlas'
 import * as utils from '@dcl-sdk/utils'
+import { vwAsPixels } from '../utils/sizing'
 
 let currentHintIndex     = 0
 let isVisible            = false
@@ -11,7 +12,7 @@ let isEnabled            = false
 let lastHitnShowTime     = 0
 
 const TIME_BETWEEN_HINTS = 1000 * 30 // ms
-const TIME_TO_SHOW_HINT = 1000 * 5 // ms
+const TIME_TO_SHOW_HINT = 1000 * 7.5 // ms
 const MAX_HINTS_IN_ATLAS = 10
 
 const SHOW_HINTS_AGAIN_AFTER = 1000 * 60 * 5 // 5 minutes
@@ -22,7 +23,7 @@ export function EnableHints() {
 	if (isEnabled) return
 
 	isEnabled        = true
-	currentHintIndex = MAX_HINTS_IN_ATLAS - 1
+	currentHintIndex = MAX_HINTS_IN_ATLAS // not -1, because the system will decrement it
 	ShowUI()
 	engine.addSystem(sys_UpdateHints)
 }
@@ -50,6 +51,7 @@ function sys_UpdateHints() {
 				EnableHints()
 			}, SHOW_HINTS_AGAIN_AFTER) // 5 minutes
 			DisableHints()
+			return
 		}
 			// break the loop
 			
@@ -68,6 +70,7 @@ function sys_UpdateHints() {
 function ShowUI() {
 	if (isVisible) return
 
+	console.log("ShowHint: currentHintIndex", currentHintIndex)
 	isVisible = true
 	tweenValue(elementPosition, POS_DEFAULT, UI_ANIMATION_DURATION, (v) => elementPosition = v), EasingFunction.EF_EASEOUTBACK
 }
@@ -81,7 +84,7 @@ function HideUI() {
 const HINT_WIDTH = 512
 const HINT_HEIGHT = 104
 
-const POS_DEFAULT    = (1920 / 2) - (HINT_WIDTH / 2)
+const POS_DEFAULT    = vwAsPixels(50) - (HINT_WIDTH / 2)
 const POS_HIDDEN     = -HINT_WIDTH-64
 
 var elementPosition: number   = POS_HIDDEN
@@ -111,6 +114,22 @@ export function HintsUI() {
 			}}
 		>
 			<UiEntity
+				key={`ui_Hints_image`}
+				uiTransform={{
+					width         : '100%',
+					height        : '100%',
+					overflow      : 'hidden',
+				}}
+				onMouseDown  = {() => {buttonIndex = ButtonIndex.PRESS; HideUI()}}
+
+				uiBackground={{
+					texture    : { src: "assets/images/ui/atlas-hints.png" },
+					textureMode: 'stretch',
+					uvs        : getUVsForIconAtlasRow(currentHintIndex, MAX_HINTS_IN_ATLAS),
+				}}
+			/>
+			
+			<UiEntity
 				key={`ui_Hints_closeButton`}
 				uiTransform={{
 					width         : '64',
@@ -130,21 +149,6 @@ export function HintsUI() {
 				onMouseLeave = {() => { if (buttonIndex === ButtonIndex.HOVER) buttonIndex = ButtonIndex.DEFAULT }}
 				onMouseDown  = {() => {buttonIndex = ButtonIndex.PRESS; HideUI()}}
 				onMouseUp    = {() => { if (buttonIndex === ButtonIndex.PRESS) buttonIndex = ButtonIndex.DEFAULT }}
-			/>
-			<UiEntity
-				key={`ui_Hints_image`}
-				uiTransform={{
-					width         : '100%',
-					height        : '100%',
-					overflow      : 'hidden',
-				}}
-				onMouseDown  = {() => {buttonIndex = ButtonIndex.PRESS; HideUI()}}
-
-				uiBackground={{
-					texture    : { src: "assets/images/ui/atlas-hints.png" },
-					textureMode: 'stretch',
-					uvs        : getUVsForIconAtlasRow(currentHintIndex, MAX_HINTS_IN_ATLAS),
-				}}
 			/>
 				
 		</UiEntity>
