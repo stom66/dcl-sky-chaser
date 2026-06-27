@@ -34,6 +34,11 @@ export const sfx = {
 		"assets/sfx/pickup_02.wav",
 	],
 
+	toilet: [
+		"assets/sfx/toilet_1.mp3",
+		"assets/sfx/toilet_2.mp3",
+	],
+
 	balloonPickup: [
 		"assets/sfx/pop_1.wav",
 		"assets/sfx/pop_2.wav",

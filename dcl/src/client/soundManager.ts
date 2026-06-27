@@ -1,5 +1,5 @@
 import * as utils from '@dcl-sdk/utils'
-import { AudioSource, engine, Entity, Transform } from '@dcl/sdk/ecs'
+import { AudioSource, engine, Entity, MeshRenderer, Transform, TriggerArea, triggerAreaEventsSystem } from '@dcl/sdk/ecs'
 
 import { eventBus, ClientEvents } from 'src/shared/utils/eventBus'
 
@@ -55,6 +55,8 @@ export namespace SoundManager {
 		// Add the sound effect entities
 		preloadSfx()
 
+		createToiletSfx()
+
 		engine.addSystem(systemUpdateSound)
 
 		// Bind the game joined event to start the background music
@@ -75,6 +77,21 @@ export namespace SoundManager {
 		}) */
 	}
 
+	function createToiletSfx() {
+		const toiletSfx = engine.addEntity()
+		Transform.create(toiletSfx, {
+			position: Vector3.create(251.877, 53.65, 280.32),
+			scale: Vector3.create(0.1, 0.1, 0.1),
+		})
+		TriggerArea.setBox(toiletSfx)
+		triggerAreaEventsSystem.onTriggerEnter(toiletSfx, (e) => {
+			if (e.trigger?.entity === engine.PlayerEntity) {
+				SoundManager.playSound(sfx.toilet, toiletSfx)
+			}
+		})
+		MeshRenderer.setBox(toiletSfx)
+		return toiletSfx
+	}
 
 
 	// MARK: getOrCreatePreloadedClipEntity
