@@ -5,7 +5,7 @@ import { C_PlayerFuel, ComponentStore } from 'src/shared/components/componentSto
 import { ClientEvents, eventBus } from 'src/shared/utils/eventBus'
 import { tweenValue } from '../utils/tweens'
 import { EasingFunction } from '@dcl/sdk/ecs'
-import { getUVsForIconAtlasNumber, getUVsForIconAtlasRow, IconAtlasLabel } from '../utils/atlas'
+import { getUVsForIconAtlasNumber, getUVsForIconAtlasRow, AtlasRowIndex_Icons } from '../utils/atlas'
 import { Color4 } from '@dcl/sdk/math'
 
 let fuelValue    = 100
@@ -136,7 +136,7 @@ export function FuelUI() {
 						uiBackground={{
 							texture    : { src: "assets/images/ui/atlas-gui-labels.png" },
 							textureMode: 'stretch',
-							uvs        : getUVsForIconAtlasRow(IconAtlasLabel.FUEL),
+							uvs        : getUVsForIconAtlasRow(AtlasRowIndex_Icons.FUEL),
 						}}
 					/>
 					

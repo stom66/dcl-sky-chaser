@@ -16,7 +16,8 @@ export function getUVsForIconAtlasNumber(number: number): number[] {
 
 }
 
-export enum IconAtlasLabel {
+
+export enum AtlasLabelsRowIndex {
 	FUEL             = 7,
 	POINT            = 6,
 	COMBO            = 5,

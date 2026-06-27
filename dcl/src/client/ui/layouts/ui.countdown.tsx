@@ -9,7 +9,7 @@ import { tweenValue } from '../utils/tweens'
 import { ClientMessaging } from 'src/client/clientMessaging'
 import { clockSync } from 'src/shared/utils/clockSync'
 import { GameStatus } from 'src/shared/enums'
-import { getUVsForIconAtlasRow, IconAtlasLabel } from '../utils/atlas'
+import { getUVsForIconAtlasRow, AtlasRowIndex_Icons } from '../utils/atlas'
 
 
 /* eventBus.on(ClientEvents.GAME_ACTIVE, (data) => {
@@ -94,19 +94,19 @@ function getStatusText() {
 function getStatusIcon() {
 	const gameStatus = ComponentStore.getGameStatus()
 	if (gameStatus === GameStatus.IDLE) {
-		return IconAtlasLabel.START_GAME
+		return AtlasRowIndex_Icons.START_GAME
 	}
 	else if (gameStatus === GameStatus.STARTING) {
-		return IconAtlasLabel.GAME_STARTING
+		return AtlasRowIndex_Icons.GAME_STARTING
 	}
 	else if (gameStatus === GameStatus.ACTIVE) {
-		return IconAtlasLabel.GAME_IN_PROGRESS
+		return AtlasRowIndex_Icons.GAME_IN_PROGRESS
 	}
 	else if (gameStatus === GameStatus.ENDING) {
-		return IconAtlasLabel.UNKNOWN
+		return AtlasRowIndex_Icons.UNKNOWN
 	}
 	else {
-		return IconAtlasLabel.UNKNOWN
+		return AtlasRowIndex_Icons.UNKNOWN
 	}
 }
 
@@ -188,7 +188,7 @@ export function CountdownUI() {
 					uiBackground={{
 						texture: { src: "assets/images/ui/atlas-gui-labels.png" },
 						textureMode: 'stretch',
-						uvs: getUVsForIconAtlasRow(getStatusIcon() ?? IconAtlasLabel.UNKNOWN),
+						uvs: getUVsForIconAtlasRow(getStatusIcon() ?? AtlasRowIndex_Icons.UNKNOWN),
 					}}
 				/>
 			</UiEntity>

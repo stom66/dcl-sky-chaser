@@ -6,7 +6,7 @@ import { C_Combo, ComponentStore } from 'src/shared/components/componentStore'
 import { GameSettings } from 'src/shared/settings'
 import { ClientEvents, eventBus } from 'src/shared/utils/eventBus'
 import { tweenValue } from '../utils/tweens'
-import { getUVsForIconAtlasNumber, getUVsForIconAtlasRow, IconAtlasLabel } from '../utils/atlas'
+import { getUVsForIconAtlasNumber, getUVsForIconAtlasRow, AtlasRowIndex_Icons } from '../utils/atlas'
 
 let comboValue          = 0
 let lastUpdatedTime     = 0
@@ -115,7 +115,7 @@ export function ComboUI() {
 						uiBackground={{
 							texture    : { src: "assets/images/ui/atlas-gui-labels.png" },
 							textureMode: 'stretch',
-							uvs        : getUVsForIconAtlasRow(IconAtlasLabel.COMBO),
+							uvs        : getUVsForIconAtlasRow(AtlasRowIndex_Icons.COMBO),
 						}}
 					/>
 					<UiEntity

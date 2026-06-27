@@ -7,7 +7,7 @@ import { userProfileCache } from 'src/shared/utils/userProfileCache'
 import { EasingFunction, UiText } from '@dcl/sdk/ecs'
 import { ClientEvents, eventBus } from 'src/shared/utils/eventBus'
 import { tweenValue } from '../utils/tweens'
-import { getUVsForIconAtlasRow, IconAtlasLabel } from '../utils/atlas'
+import { getUVsForIconAtlasRow, AtlasLabelsRowIndex } from '../utils/atlas'
 
 
 let scoreboard: Map<string, number> = new Map()
@@ -62,16 +62,16 @@ function getScoreboardRows() {
 				}}
 			>
 				<Label
-					value={displayName}
-					textAlign='middle-left'
-					fontSize={22}
-					color={theme.colors.light}
+					value     = {displayName}
+					textAlign = 'middle-left'
+					fontSize  = {22}
+					color     = {theme.colors.light}
 				/>
 				<Label
-					value={score.toString()}
-					textAlign='middle-right'
-					fontSize={22}
-					color={theme.colors.light}
+					value     = {score.toString()}
+					textAlign = 'middle-right'
+					fontSize  = {22}
+					color     = {theme.colors.light}
 				/>
 			</UiEntity>
 		)
@@ -90,6 +90,9 @@ export function ScoreboardUI() {
 				flexDirection : 'column',
 				justifyContent: 'flex-start',
 				padding       : { top: 8 },
+			}}
+			uiBackground={{
+				color: theme.colors.warning,
 			}}
 		>
 			<UiEntity
@@ -134,7 +137,7 @@ export function ScoreboardUI() {
 						uiBackground={{
 							texture    : { src: "assets/images/ui/atlas-gui-labels.png" },
 							textureMode: 'stretch',
-							uvs        : getUVsForIconAtlasRow(IconAtlasLabel.POINT),
+							uvs        : getUVsForIconAtlasRow(AtlasLabelsRowIndex.POINT),
 						}}
 					/>
 				</UiEntity>
