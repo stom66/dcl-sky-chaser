@@ -1,4 +1,4 @@
-import { engine, Entity, InputAction, inputSystem, ParticleSystem, PBParticleSystem_BlendMode, Transform } from "@dcl/sdk/ecs";
+import { engine, Entity, InputAction, inputSystem, ParticleSystem, PBParticleSystem_BlendMode, PBParticleSystem_SimulationSpace, TextureFilterMode, Transform } from "@dcl/sdk/ecs";
 import { Color4, Quaternion, Vector3 } from "@dcl/sdk/math";
 import { ComponentStore } from "src/shared/components/componentStore";
 import * as utils from '@dcl-sdk/utils'
@@ -7,50 +7,89 @@ import { ClientEvents, eventBus } from "src/shared/utils/eventBus";
 
 export namespace ParticleSpawner {
 
-	var entity: Entity | null = null
+	var entityBooster: Entity | null = null
+	var entityWind: Entity | null = null
 
 	var isEnabled = false
 
 	export function init() {
-		entity = engine.addEntity()
-		Transform.create(entity, { 
+		entityBooster = engine.addEntity()
+		Transform.create(entityBooster, { 
 			parent: engine.PlayerEntity,
 			position: Vector3.create(0,1,-0.1),
 			rotation: Quaternion.fromEulerDegrees(30, 180, 0)
 		})	
-		engine.addSystem(systemInputWatcher)
 
-		eventBus.on(ClientEvents.NOTIFY_TRIGGER, (data) => {
-			triggerEffect(data?.effect, data?.position ?? Vector3.create(256, 63.2, 256), data?.direction ?? Vector3.Zero())
+		entityWind = engine.addEntity()
+		Transform.create(entityWind, { 
+			parent: engine.CameraEntity,
+			position: Vector3.create(0,0,10),
+			rotation: Quaternion.fromEulerDegrees(0, 180, 0),
+			scale: Vector3.create(4, 1, 1)
+		})	
+
+		const zero = Vector3.Zero()
+
+		// Remotely triggered effects
+		eventBus.on(ClientEvents.NOTIFY_TRIGGER, (data)     => {
+			triggerEffect(data?.effect, data?.position ?? zero, data?.direction ?? zero)
 		})
 
-		eventBus.on(ClientEvents.TRIGGER_AWNING, (data) => {
-			triggerEffect(ClientEvents.TRIGGER_AWNING, data?.position ?? Vector3.create(256, 63.2, 256), data?.direction ?? Vector3.Zero())
+		// Locally triggered effects
+		eventBus.on(ClientEvents.TRIGGER_AWNING, (data)     => {
+			triggerEffect(ClientEvents.TRIGGER_AWNING, data?.position ?? zero, data?.direction ?? zero)
 		})
 		eventBus.on(ClientEvents.TRIGGER_TRAMPOLINE, (data) => {
-			triggerEffect(ClientEvents.TRIGGER_TRAMPOLINE, data?.position ?? Vector3.create(256, 63.2, 256), data?.direction ?? Vector3.Zero())
+			triggerEffect(ClientEvents.TRIGGER_TRAMPOLINE, data?.position ?? zero, data?.direction ?? zero)
 		})
-		eventBus.on(ClientEvents.TRIGGER_UMBRELLA, (data) => {
-			triggerEffect(ClientEvents.TRIGGER_UMBRELLA, data?.position ?? Vector3.create(256, 63.2, 256), data?.direction ?? Vector3.Zero())
-		})
-
-		eventBus.on(ClientEvents.TRIGGER_RING, (data) => {
-			triggerEffect(ClientEvents.TRIGGER_RING, data?.position ?? Vector3.create(256, 63.2, 256), Vector3.create(0, data?.yRot ?? 0, 0))
-		})
-		eventBus.on(ClientEvents.TRIGGER_FUEL, (data) => {
-			triggerEffect(ClientEvents.TRIGGER_FUEL, data?.position ?? Vector3.create(256, 63.2, 256), data?.direction ?? Vector3.Zero())
-		})
-		eventBus.on(ClientEvents.TRIGGER_BALLOON, (data) => {
-			triggerEffect(ClientEvents.TRIGGER_BALLOON, data?.position ?? Vector3.create(256, 63.2, 256), data?.direction ?? Vector3.Zero())
+		eventBus.on(ClientEvents.TRIGGER_UMBRELLA, (data)   => {
+			triggerEffect(ClientEvents.TRIGGER_UMBRELLA, data?.position ?? zero, data?.direction ?? zero)
 		})
 
-		eventBus.on(ClientEvents.TRIGGER_EXPLOSION, (data) => {
-			triggerEffect(ClientEvents.TRIGGER_EXPLOSION, data?.position ?? Vector3.create(256, 63.2, 256), Vector3.Zero())
+		eventBus.on(ClientEvents.TRIGGER_RING, (data)       => {
+			triggerEffect(ClientEvents.TRIGGER_RING, data?.position ?? zero, Vector3.create(0, data?.yRot ?? 0, 0))
+		})
+		eventBus.on(ClientEvents.TRIGGER_FUEL, (data)       => {
+			triggerEffect(ClientEvents.TRIGGER_FUEL, data?.position ?? zero, data?.direction ?? zero)
+		})
+		eventBus.on(ClientEvents.TRIGGER_BALLOON, (data)    => {
+			triggerEffect(ClientEvents.TRIGGER_BALLOON, data?.position ?? zero, data?.direction ?? zero)
 		})
 
-		eventBus.on(ClientEvents.FOUND_ALL_PIGEONS, (data) => {
-			TriggerPigeonSpurt(Transform.getOrNull(engine.PlayerEntity)?.position ?? Vector3.create(256, 63.2, 256))
+		eventBus.on(ClientEvents.TRIGGER_EXPLOSION, (data)  => {
+			triggerEffect(ClientEvents.TRIGGER_EXPLOSION, data?.position ?? zero, zero)
 		})
+
+		eventBus.on(ClientEvents.FOUND_ALL_PIGEONS, (data)  => {
+			TriggerPigeonSpurt(Transform.getOrNull(engine.PlayerEntity)?.position ?? zero)
+		})
+
+		engine.addSystem(systemInputWatcher)
+
+		//enableWind() // DEBUG
+	}
+
+	function systemInputWatcher(dt: number) {
+		const isEPressed = inputSystem.isPressed(InputAction.IA_PRIMARY)
+
+		if (isEPressed && !isEnabled) {
+			isEnabled = true
+			console.log("ParticleSpawner: setting active to true")
+			enableBooster()
+			//enableWind()
+		} else if (!isEPressed && isEnabled) {
+			isEnabled = false
+			console.log("ParticleSpawner: setting active to false")
+			disableBooster()
+			//disableWind()
+		}
+		
+		if (isEPressed && isEnabled) {
+			const fuelLevel = ComponentStore.getFuelValue().value
+			if (fuelLevel <= 0) {
+				disableBooster()
+			}
+		}
 	}
 
 
@@ -80,12 +119,14 @@ export namespace ParticleSpawner {
 		}
 	} 
 
-	function createParticleSystem() {
-		if (!entity) return
+
+	// MARK: Booster
+	function enableBooster() {
+		if (!entityBooster) return
 
 		console.log("ParticleSpawner: creating particle system")
 
-		ParticleSystem.create(entity, {
+		ParticleSystem.create(entityBooster, {
 			active              : true,
 			loop                : true,
 			prewarm             : false,
@@ -122,40 +163,74 @@ export namespace ParticleSpawner {
 		})
 	}
 
-	function setActive(active: boolean) {
-		if (!entity) return
+	function disableBooster() {
+		if (!entityBooster) return
+		const p = ParticleSystem.getOrNull(entityBooster)
+		if (!p) return
 
-		if (active) {
-			if (!entity) return
-			createParticleSystem()
-		} else {
-			const p = ParticleSystem.getOrNull(entity)
-			if (!p) return
-			console.log("ParticleSpawner: deleting particle system")
-			ParticleSystem.deleteFrom(entity)
-		}
+		console.log("ParticleSpawner: deleting particle system")
+		ParticleSystem.deleteFrom(entityBooster)
 	}
 
-	function systemInputWatcher(dt: number) {
-		const isEPressed = inputSystem.isPressed(InputAction.IA_PRIMARY)
 
-		if (isEPressed && !isEnabled) {
-			isEnabled = true
-			console.log("ParticleSpawner: setting active to true")
-			setActive(true)
-		} else if (!isEPressed && isEnabled) {
-			isEnabled = false
-			console.log("ParticleSpawner: setting active to false")
-			setActive(false)
-		}
-		
-		if (isEPressed && isEnabled) {
-			const fuelLevel = ComponentStore.getFuelValue().value
-			if (fuelLevel <= 0) {
-				setActive(false)
-			}
-		}
+	// MARK: Wind
+	function enableWind() {
+		if (!entityWind) return
+
+		console.log("ParticleSpawner: creating WIND particle system")
+
+		ParticleSystem.create(entityWind, {
+			active              : true,
+			loop                : true,
+			prewarm             : false,
+			faceTravelDirection : true,
+			rate                : 10,
+			lifetime            : 3,
+			maxParticles        : 50,
+			gravity             : 0,
+			blendMode           : PBParticleSystem_BlendMode.PSB_ADD,
+			shape               : ParticleSystem.Shape.Cone({ 
+				angle : 25, 
+				radius: 0.1 
+			}),
+			initialVelocitySpeed: { 
+				start: 2.5, 
+				end  : 7.5 
+			},
+			initialSize: { 
+				start: 2, 
+				end  : 2 
+			},
+			initialColor: { 
+				start: Color4.White(), 
+				end  : Color4.White() 
+			},
+			sizeOverTime: { 
+				start: 1, 
+				end  : 1 
+			},
+			texture             : { src: 'assets/tex/particles-wind.png',
+				filterMode: TextureFilterMode.TFM_POINT,
+			 },
+			billboard           : true,
+			spriteSheet         : { tilesX: 1, tilesY: 4, framesPerSecond: 2, },
+			initialRotation     : Quaternion.fromEulerDegrees(-90, -90, 0),
+			simulationSpace     : PBParticleSystem_SimulationSpace.PSS_WORLD,
+			
+		})
 	}
+
+	function disableWind() {
+		if (!entityBooster) return
+		const p = ParticleSystem.getOrNull(entityBooster)
+		if (!p) return
+
+		console.log("ParticleSpawner: deleting particle system")
+		ParticleSystem.deleteFrom(entityBooster)
+	}
+
+
+
 
 	// MARK: Explosion
 	export function TriggerExplosion(
