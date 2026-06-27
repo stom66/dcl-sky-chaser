@@ -1,4 +1,4 @@
-import { Animator, engine, Entity, GltfContainer, InputAction, MeshCollider, pointerEventsSystem, PointerEventType, Transform } from "@dcl/sdk/ecs"
+import { Animator, ColliderLayer, engine, Entity, GltfContainer, InputAction, MeshCollider, pointerEventsSystem, PointerEventType, Transform } from "@dcl/sdk/ecs"
 import { Quaternion, Vector3 } from "@dcl/sdk/math"
 
 import { sfx, SoundManager } from "src/client/soundManager"
@@ -40,7 +40,7 @@ export namespace BirdSpawner {
 		},
 		// Pidgeon_01.002
 		{
-			position: Vector3.create(250.814, 53.293, 280.957),
+			position: Vector3.create(251.942, 54.2701, 279.88),
 			rotation: Quaternion.fromEulerDegrees(0, 213.411, 0),
 		},
 		// Pidgeon_03.001
@@ -115,9 +115,9 @@ export namespace BirdSpawner {
 		})
 		// Animator.playSingleAnimation(bird, clip) // needed?
 
-		MeshCollider.setSphere(bird)
+		MeshCollider.setSphere(bird, ColliderLayer.CL_POINTER)
 
-		const isFart = transform.position.y > 53.2 && transform.position.y < 53.4
+		const isFart = transform.position.y > 54.26 && transform.position.y < 54.28
 		const hovertext = isFart ? "Pooo!" : "Cooo!"
 		pointerEventsSystem.onPointerDown({
 			entity: bird,
@@ -144,7 +144,7 @@ export namespace BirdSpawner {
 		ComponentStore.foundPigeon(index)
 
 		if (isFart) {
-			SoundManager.playSound([...sfx.fart, ...sfx.fart, ...sfx.coo], bird, 20)
+			SoundManager.playSound(sfx.fart, bird, 20)
 		} else {	
 			SoundManager.playSound(sfx.coo, bird, 20)
 		}
