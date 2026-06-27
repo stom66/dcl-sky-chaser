@@ -97,16 +97,16 @@ export class Projectile {
 		console.log("Projectile: onTriggerEnter")
 		
 		if (triggerEntity === engine.PlayerEntity && this.owner === "") {
-			// Hit self with own projectile
+			// Hit self with own projectile?
 			return
 		}
 
 		if (triggerEntity === engine.PlayerEntity) {
 			// Someone else hit us
 			this.onHitPlayer()
+			this.Disable()
 		}
 
-		this.Disable()
 	}
 
 	// MARK: isActive
@@ -185,7 +185,7 @@ export class Projectile {
 		const t = Transform.getOrNull(this.entity)
 		if (!playerPosition || t === null) return
 
-		const impulseDirection = Vector3.normalize(Vector3.subtract(playerPosition, t.position))
+		const impulseDirection = Vector3.normalize(Vector3.subtract(t.position, playerPosition))
 		Physics.applyImpulseToPlayer(impulseDirection, PLAYER_HIT_IMPULSE)
 	}
 }
