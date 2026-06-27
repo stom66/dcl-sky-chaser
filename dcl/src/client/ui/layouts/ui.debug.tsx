@@ -33,9 +33,9 @@ export function DebugUI() {
 				justifyContent: 'space-between',
 				margin        : { top : '-220px', right: '50px' },
 				padding       : '10px',
-				position      : { left: 65, top: 350 },
-				positionType  : "absolute",
 				borderRadius  : 8,
+				positionType  : "absolute",
+				position      : { left: 65, top: 350 },
 			}}
 			uiBackground={{ 
 				color: alpha(theme.colors.body, 0.5),

@@ -119,6 +119,7 @@ export function ResultsUI() {
 				alignItems     : 'center',
 				justifyContent : 'center',
 				positionType   : 'absolute',
+				position      : { right: 0, top: 0 },
 			}}
 		>
 

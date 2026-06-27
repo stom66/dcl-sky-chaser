@@ -7,12 +7,14 @@ import { ButtonImageClose } from '../components'
 const PANEL_HIDDEN  = -1200
 const PANEL_VISIBLE = 8
 var panelBottom     : number = PANEL_VISIBLE
+var buttonTop       : number = PANEL_HIDDEN / 8
 
 
 // MARK: ShowUI
 /** Shows the How To Play panel. */
 export function ShowUI() {
 	tweenValue(panelBottom, PANEL_VISIBLE, 0.5, (v) => panelBottom = v)
+	tweenValue(buttonTop, PANEL_HIDDEN / 8, 0.5, (v) => buttonTop = v)
 }
 
 
@@ -20,6 +22,7 @@ export function ShowUI() {
 /** Hides the How To Play panel. */
 export function HideUI() {
 	tweenValue(panelBottom, PANEL_HIDDEN, 0.5, (v) => panelBottom = v)
+	tweenValue(buttonTop, PANEL_VISIBLE, 0.5, (v) => buttonTop = v)
 }
 
 
@@ -35,7 +38,8 @@ export function HowToPlayUI() {
 				flexDirection  : 'column',
 				alignItems     : 'center',
 				justifyContent : 'center',
-				positionType   : 'absolute',
+				positionType  : 'absolute',
+				position      : { right: 0, top: 0 },
 			}}
 		>
 			<UiEntity
@@ -44,7 +48,7 @@ export function HowToPlayUI() {
 					width: '128',
 					height: '128',
 					positionType: 'absolute',
-					position: { top: 512 - 256 - 128, right: '10' }, // minus half the screen height, the half height of the fuel gauge, minus the full height of this
+					position: { top: buttonTop, right: 160 + 256 + 10 }, // Next to where the scoreboard comes in
 				}}
 				onMouseDown={ShowUI}
 				uiBackground={{ 

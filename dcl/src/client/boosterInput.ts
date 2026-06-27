@@ -6,7 +6,7 @@ import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
 
 export namespace BoosterInput {
 
-	var isSpacePressed: Boolean = false
+	//var isSpacePressed: Boolean = false
 	var isEPressed: Boolean = false
 
 	var gameIsActive = true
@@ -21,13 +21,15 @@ export namespace BoosterInput {
 	}
 
 	function systemInputWatcher(dt: number) {
-		isSpacePressed = inputSystem.isPressed(InputAction.IA_JUMP)
+		//isSpacePressed = inputSystem.isPressed(InputAction.IA_JUMP)
 		isEPressed     = inputSystem.isPressed(InputAction.IA_PRIMARY)
 
 		const fuelLevel = ComponentStore.getFuelValue().value
 		if (isEPressed && gameIsActive && fuelLevel > 0) {
 			ComponentStore.decreaseFuelValue(GameSettings.FUEL_DRAIN_RATE * dt)
 			LocomotionController.applyBoostForwardUp(64 * dt, -15)
+		} else if (isEPressed && !gameIsActive) {
+			LocomotionController.applyBoostForwardUp(64 * dt, -15)			
 		}
 
 		// Slowly refill fuel up to max

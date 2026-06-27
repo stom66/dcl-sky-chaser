@@ -5,7 +5,7 @@ import { C_PlayerFuel, ComponentStore } from 'src/shared/components/componentSto
 import { ClientEvents, eventBus } from 'src/shared/utils/eventBus'
 import { tweenValue } from '../utils/tweens'
 import { EasingFunction } from '@dcl/sdk/ecs'
-import { getUVsForIconAtlasNumber, getUVsForIconAtlasRow, AtlasRowIndex_Icons } from '../utils/atlas'
+import { getUVsForIconAtlasNumber, getUVsForIconAtlasRow, AtlasLabelsRowIndex } from '../utils/atlas'
 import { Color4 } from '@dcl/sdk/math'
 
 let fuelValue    = 100
@@ -36,8 +36,8 @@ eventBus.on(ClientEvents.GAME_END, (data) => {
 
 const POS_HIDDEN  = -150
 const POS_VISIBLE = 10
-//var elementPosition     : number = POS_HIDDEN
-var elementPosition     : number = POS_VISIBLE
+var elementPosition     : number = POS_HIDDEN
+//var elementPosition     : number = POS_VISIBLE
 
 // MARK: FuelUI
 export function FuelUI() {
@@ -48,9 +48,9 @@ export function FuelUI() {
 				width         : '128',
 				height        : '100%',
 				flexDirection : 'column',
-				position      : { right: elementPosition },
-				positionType  : 'absolute',
 				justifyContent: 'center',
+				positionType  : 'absolute',
+				position      : { right: elementPosition },
 			}}
 		>
 			<UiEntity
@@ -136,7 +136,7 @@ export function FuelUI() {
 						uiBackground={{
 							texture    : { src: "assets/images/ui/atlas-gui-labels.png" },
 							textureMode: 'stretch',
-							uvs        : getUVsForIconAtlasRow(AtlasRowIndex_Icons.FUEL),
+							uvs        : getUVsForIconAtlasRow(AtlasLabelsRowIndex.FUEL),
 						}}
 					/>
 					

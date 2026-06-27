@@ -34,7 +34,8 @@ export function LeaderboardWinnerUI() {
 				flexDirection  : 'column',
 				alignItems     : 'center',
 				justifyContent : 'center',
-				positionType   : 'absolute',
+				positionType  : 'absolute',
+				position      : { right: 0, top: 0 },
 			}}
 		>
 			<UiEntity

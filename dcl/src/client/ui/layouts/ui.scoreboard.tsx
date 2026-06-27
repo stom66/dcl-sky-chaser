@@ -29,17 +29,18 @@ eventBus.on(ClientEvents.GAME_ACTIVE, (data) => { ShowUI() })
 eventBus.on(ClientEvents.GAME_END,    (data) => { HideUI() })
 
 function ShowUI() {
-	tweenValue(elementPositionTop, POS_TOP_DEFAULT, 0.4, (v) => elementPositionTop = v), EasingFunction.EF_EASEOUTBACK
+	tweenValue(elementPositionTop, POS_LEFT_DEFAULT, 0.4, (v) => elementPositionTop = v), EasingFunction.EF_EASEOUTBACK
 }
 
 function HideUI() {
-	tweenValue(elementPositionTop, POS_TOP_HIDDEN, 0.4, (v) => elementPositionTop = v), EasingFunction.EF_EASEOUTBACK
+	tweenValue(elementPositionTop, POS_LEFT_HIDDEN, 0.4, (v) => elementPositionTop = v), EasingFunction.EF_EASEOUTBACK
 }
 
-const POS_TOP_DEFAULT    = 10
-const POS_TOP_HIDDEN     = -310
+const POS_LEFT_DEFAULT    = 0
+const POS_LEFT_HIDDEN     = -400
 
-var elementPositionTop: number   = POS_TOP_HIDDEN
+var elementPositionTop: number   = POS_LEFT_HIDDEN
+//var elementPositionTop: number   = POS_LEFT_DEFAULT
 
 
 function getScoreboardRows() {
@@ -47,25 +48,41 @@ function getScoreboardRows() {
 
 	//console.log("SCOREBOARD:", scoreboard)
 	
+	var rank = 1
 	for (const [displayName, score] of scoreboard) {
 		result.push(
 			<UiEntity
 				key={`ui_Scoreboard_row_${displayName}`}
 				uiTransform={{
-					width: '100%',
-					flexDirection: 'row',
+					width         : '100%',
+					flexDirection : 'row',
 					justifyContent: 'space-between',
-					padding: { left: 10, right: 10, top: 5, bottom: 5 },
+					padding       : { left: 10, right: 10, top: 5, bottom: 5 },
 				}}
 				uiBackground={{
-					color: alpha(darken(theme.colors.primary, 0.2), 0.5),
+					color: alpha(darken(theme.colors.info, 0.2), 0.5),
 				}}
 			>
+				<Label
+					value     = {rank.toString()}
+					textAlign = 'middle-right'
+					fontSize  = {22}
+					color     = {theme.colors.light}
+					uiTransform={{
+						width: '10%',
+						flexGrow: 0
+					}}
+				/>
 				<Label
 					value     = {displayName}
 					textAlign = 'middle-left'
 					fontSize  = {22}
 					color     = {theme.colors.light}
+					uiTransform={{
+						width: '65%',
+						flexGrow: 0,
+						flexShrink: 0
+					}}
 				/>
 				<Label
 					value     = {score.toString()}
@@ -75,6 +92,7 @@ function getScoreboardRows() {
 				/>
 			</UiEntity>
 		)
+		rank++
 	}
 	return result
 }
@@ -88,18 +106,21 @@ export function ScoreboardUI() {
 				width         : '100%',
 				height        : '100%',
 				flexDirection : 'column',
-				justifyContent: 'flex-start',
-				padding       : { top: 8 },
+				justifyContent: 'center',
+				alignItems    : 'flex-start',
+				padding       : { top: vhAsPixels(23), left: 64, bottom: vhAsPixels(25) },
+				positionType  : 'absolute',
+				position      : { right: 0, top: 0 },
 			}}
-			uiBackground={{
-				color: theme.colors.warning,
-			}}
+			//uiBackground={{
+			//	color: theme.colors.warning,
+			//}}
 		>
 			<UiEntity
 				key={`ui_Scoreboard_outer`}
 				uiTransform={{
 					width         : 256,
-					height        : 256,
+					height        : 'auto',
 					borderRadius  : 32,
 					overflow      : 'hidden',
 					flexDirection : 'column',
@@ -107,16 +128,17 @@ export function ScoreboardUI() {
 					borderWidth   : 5,
 					justifyContent: 'flex-start',
 					padding       : { bottom: 10 },
-					position      : { right: 160, top: elementPositionTop },
-					positionType  : 'absolute',
+					position      : { left: elementPositionTop, top: -vhAsPixels(23) },
+					maxHeight     : vhAsPixels(50),
+					positionType  : 'relative',
 					
 				}}
 				uiBackground={{
-					color: alpha(theme.colors.info, 0.4),
+					color: alpha(theme.colors.info, 0.7),
 				}}
 			>
 				<UiEntity
-					key={`ui_Scoreboard_rows`}
+					key={`ui_Scoreboard_title_rows`}
 					uiTransform={{
 						width: '100%',
 						height: "auto",
@@ -125,11 +147,11 @@ export function ScoreboardUI() {
 						padding       : { top: 10, bottom: 4 },
 					}}
 					uiBackground={{
-						color: alpha(theme.colors.info, 0.7),
+						color: alpha(theme.colors.info, 0.9),
 					}}
 				>	
 					<UiEntity
-						key={`ui_Scoreboard_inner_image`}
+						key={`ui_Scoreboard_title`}
 						uiTransform={{
 							width       : 256,
 							height      : 64,
@@ -141,6 +163,7 @@ export function ScoreboardUI() {
 						}}
 					/>
 				</UiEntity>
+
 				{getScoreboardRows()}
 			</UiEntity>
 		</UiEntity>

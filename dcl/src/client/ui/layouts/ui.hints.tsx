@@ -111,6 +111,8 @@ export function HintsUI() {
 				alignItems    : 'center',
 				flexShrink    : 0,
 				padding       : { bottom: 144 },
+				positionType  : 'absolute',
+				position      : { right: 0, top: 0 },
 			}}
 		>
 			<UiEntity
