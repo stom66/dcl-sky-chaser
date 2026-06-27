@@ -14,18 +14,20 @@ import { eventBus } from "src/shared/utils/eventBus"
 export class BounceTriggerAwning extends BounceTrigger {
 
 	constructor(
-		position: Vector3    = Vector3.create(256, 65, 256),
-		rotation: Quaternion = Quaternion.fromEulerDegrees(-45, 0, 0),
-		scale   : Vector3    = Vector3.create(4, 4, 4),
-		strength: number     = 120
+		position       : Vector3    = Vector3.create(256, 65, 256),
+		triggerRotation: Quaternion = Quaternion.fromEulerDegrees(-45, 0, 0),
+		scale          : Vector3    = Vector3.create(4, 4, 4),
+		strength       : number     = 120,
+		yRotation      : number     = 0,
 	) {
+		const direction = Vector3.rotate(Vector3.Forward(), Quaternion.fromEulerDegrees(-45, yRotation, 0))
 		super({
 			triggerPosition : position,
-			triggerRotation : rotation,
+			triggerRotation : triggerRotation,
 			triggerScale    : scale,
 			triggerShape    : "box",
 			meshName        : "awning",
-			impulseDirection: Vector3.rotate(Vector3.Forward(), Quaternion.fromEulerDegrees(-45, 0, 0)),
+			impulseDirection: direction,
 			impulseStrength : strength,
 		})
 	}

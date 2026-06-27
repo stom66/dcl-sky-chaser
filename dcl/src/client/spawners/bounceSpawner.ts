@@ -16,10 +16,16 @@ export namespace BounceSpawner {
 		const trampoline_1 = new BounceTriggerTrampoline(Vector3.create(263, 64, 247), -135, 120)
 		const trampoline_2 = new BounceTriggerTrampoline(Vector3.create(245, 64, 256.5), -105,  120)
 
-		// Awning
+		// Awning, upper
 		const position = Vector3.create(258.163, 56.5, 278.01)
 		const rotation = Quaternion.fromEulerDegrees(-24, 180, 0)
 		const scale    = Vector3.create(8.6, 5, 6.9)
 		const awning   = new BounceTriggerAwning(position, rotation, scale, 120)
+
+		// Awning, upper
+		const position2 = Vector3.create(245.287, 39.7211, 256.0)
+		const rotation2 = Quaternion.fromEulerDegrees(-24, 270, 0)
+		const scale2    = Vector3.create(8.6, 5, 6.9)
+		const awning2   = new BounceTriggerAwning(position2, rotation2, scale2, 120, -90)
 	}
 }
