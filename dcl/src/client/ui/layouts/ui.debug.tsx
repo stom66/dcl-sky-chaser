@@ -4,7 +4,7 @@ import { ComponentStore, C_GameData } from 'src/shared/components/componentStore
 
 import { ClientMessaging } from 'src/client/clientMessaging'
 import { alpha, theme } from 'src/client/ui/index'
-import { ButtonAction, Divider, InfoRow, SectionHeader } from 'src/client/ui/components'
+import { ButtonText, Divider, InfoRow, SectionHeader } from 'src/client/ui/components/index'
 import { PlayerMover } from 'src/client/playerMover'
 import { ClientEvents, eventBus } from 'src/shared/utils/eventBus'
 import { ParticleSpawner } from 'src/client/particleSpawner'
@@ -27,7 +27,7 @@ export function DebugUI() {
 			key         = "ui_debug_root"
 			uiTransform = {{
 				width         : 240,
-				height        : 500,
+				height        : 600,
 				flexDirection : 'column',
 				alignItems    : 'flex-start',
 				justifyContent: 'space-between',
@@ -48,18 +48,18 @@ export function DebugUI() {
 			>
 				<SectionHeader title="Debug Menu" />
 
-				<ButtonAction textLabel="toSpawn" callback={() => PlayerMover.movePlayerToSpawn() } />
-				<ButtonAction textLabel="newGame" callback={() => ClientMessaging.RequestNewGame() } />
-				<ButtonAction textLabel="addPoints" callback={() => ClientMessaging.RequestStatsUpdate(PlayerStats.COLLECTED_BALLOONS) } />
-				<ButtonAction textLabel="triggerDustSpurt" callback={() => {
+				<ButtonText textLabel="toSpawn" callback={() => PlayerMover.movePlayerToSpawn() } />
+				<ButtonText textLabel="newGame" callback={() => ClientMessaging.RequestNewGame() } />
+				<ButtonText textLabel="addPoints" callback={() => ClientMessaging.RequestStatsUpdate(PlayerStats.COLLECTED_BALLOONS) } />
+				<ButtonText textLabel="triggerDustSpurt" callback={() => {
 					eventBus.emit(ClientEvents.FOUND_ALL_PIGEONS, {  })
 				}} />
-				<ButtonAction textLabel="triggerLeaderboardWinner" callback={() => ClientHandler.handleNotifyLeaderboardWinner("ALL TIME") } />
-				<ButtonAction textLabel="incrementCombo" callback={() => ComponentStore.incrementComboValue() } />
+				<ButtonText textLabel="triggerLeaderboardWinner" callback={() => ClientHandler.handleNotifyLeaderboardWinner("ALL TIME") } />
+				<ButtonText textLabel="incrementCombo" callback={() => ComponentStore.incrementComboValue() } />
 					
-				<ButtonAction textLabel="eventBus:GAME_ACTIVE" callback={() => eventBus.emit(ClientEvents.GAME_ACTIVE, {  }) } />
-				<ButtonAction textLabel="eventBus:GAME_END" callback={() => eventBus.emit(ClientEvents.GAME_END, {  }) } />
-				<ButtonAction textLabel="eventBus:GAME_IDLE" callback={() => eventBus.emit(ClientEvents.GAME_IDLE, { }) } />
+				<ButtonText textLabel="eventBus:GAME_ACTIVE" callback={() => eventBus.emit(ClientEvents.GAME_ACTIVE, {  }) } />
+				<ButtonText textLabel="eventBus:GAME_END" callback={() => eventBus.emit(ClientEvents.GAME_END, {  }) } />
+				<ButtonText textLabel="eventBus:GAME_IDLE" callback={() => eventBus.emit(ClientEvents.GAME_IDLE, { }) } />
 					
 				{/* 
 				<ButtonAction textLabel="incrementScore" callback={() => ClientMessaging.RequestScoreUpdate() } /> 

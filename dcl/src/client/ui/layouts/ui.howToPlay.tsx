@@ -2,6 +2,7 @@ import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
 
 import { vhAsPixels } from 'src/client/ui/utils/sizing'
 import { tweenValue } from 'src/client/ui/utils/tweens'
+import { ButtonImageClose } from '../components'
 
 const PANEL_HIDDEN  = -1200
 const PANEL_VISIBLE = 8
@@ -65,16 +66,13 @@ export function HowToPlayUI() {
 					textureMode: 'stretch',
 				}}
 			>
-				<UiEntity
-					key="ui_how_to_play_close"
-					uiTransform={{
-						width       : '90',
-						height      : '90',
-						positionType: 'absolute',
+				<ButtonImageClose
+					id          = "ui_how_to_play_close"
+					callback    = {HideUI}
+					uiTransform = {{
 						position    : { top: '24', right: '24' },
 					}}
-					onMouseDown={HideUI}
-				/>
+				 />
 			</UiEntity>
 		</UiEntity>
 	)

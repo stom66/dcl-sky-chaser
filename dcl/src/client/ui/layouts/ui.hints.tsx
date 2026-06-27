@@ -5,6 +5,8 @@ import { EasingFunction, engine } from '@dcl/sdk/ecs'
 import { getUVsForIconAtlasRow } from '../utils/atlas'
 import * as utils from '@dcl-sdk/utils'
 import { vwAsPixels } from '../utils/sizing'
+import { ButtonImageClose } from '../components'
+import { Color4 } from '@dcl/sdk/math'
 
 let currentHintIndex     = 0
 let isVisible            = false
@@ -53,16 +55,13 @@ function sys_UpdateHints() {
 			DisableHints()
 			return
 		}
-			// break the loop
-			
 
-		if (isVisible) {
-			HideUI()
-		} 
+		if (isVisible) HideUI()
 		
+		// Show the hint, after a short delay to give an exisitng hint time to get out the way
 		utils.timers.setTimeout(() => {
 			ShowUI()
-		}, UI_ANIMATION_DURATION * 1000)
+		}, UI_ANIMATION_DURATION * 1000 * 2)
 	}
 }
 
@@ -81,13 +80,13 @@ function HideUI() {
 	tweenValue(elementPosition, POS_HIDDEN, UI_ANIMATION_DURATION, (v) => elementPosition = v), EasingFunction.EF_EASEOUTBACK
 }
 
-const HINT_WIDTH = 512
+const HINT_WIDTH  = 512
 const HINT_HEIGHT = 104
 
-const POS_DEFAULT    = vwAsPixels(50) - (HINT_WIDTH / 2)
-const POS_HIDDEN     = -HINT_WIDTH-64
+const POS_DEFAULT = 0
+const POS_HIDDEN  = -1920
 
-var elementPosition: number   = POS_HIDDEN
+var elementPosition: number = POS_HIDDEN
 
 enum ButtonIndex {
 	DEFAULT  = 3,
@@ -99,58 +98,47 @@ enum ButtonIndex {
 let buttonIndex: ButtonIndex = ButtonIndex.DEFAULT
 
 
-// MARK: FuelUI
+// MARK: HintsUI
 export function HintsUI() {
 	return (
 		<UiEntity
 			key={`ui_Hints_root`}
 			uiTransform={{
-				width         : HINT_WIDTH,
-				height        : HINT_HEIGHT,
+				width         : '100%',
+				height        : '100%',
 				flexDirection : 'column',
-				position      : { right: elementPosition, bottom: 144 },
-				positionType  : 'absolute',
-				justifyContent: 'center',
+				justifyContent: 'flex-end',
+				alignItems    : 'center',
+				flexShrink    : 0,
+				padding       : { bottom: 144 },
 			}}
 		>
 			<UiEntity
 				key={`ui_Hints_image`}
 				uiTransform={{
-					width         : '100%',
-					height        : '100%',
-					overflow      : 'hidden',
+					width         : HINT_WIDTH,
+					height        : HINT_HEIGHT,
+					positionType  : 'relative',
+					position      : { right: elementPosition },
 				}}
-				onMouseDown  = {() => {buttonIndex = ButtonIndex.PRESS; HideUI()}}
+				onMouseDown = {() => {buttonIndex = ButtonIndex.PRESS; HideUI()}}
 
 				uiBackground={{
 					texture    : { src: "assets/images/ui/atlas-hints.png" },
 					textureMode: 'stretch',
 					uvs        : getUVsForIconAtlasRow(currentHintIndex, MAX_HINTS_IN_ATLAS),
 				}}
-			/>
-			
-			<UiEntity
-				key={`ui_Hints_closeButton`}
-				uiTransform={{
-					width         : '64',
-					height        : '64',
-					overflow      : 'hidden',
-					positionType  : 'absolute',
-					position      : { top: 20, left: -24 },
-				}}
-
-				uiBackground={{
-					texture    : { src: "assets/images/ui/atlas-btn-close.png" },
-					textureMode: 'stretch',
-					uvs        : getUVsForIconAtlasRow(buttonIndex, 4),
-				}}
-
-				onMouseEnter = {() => buttonIndex = ButtonIndex.HOVER}
-				onMouseLeave = {() => { if (buttonIndex === ButtonIndex.HOVER) buttonIndex = ButtonIndex.DEFAULT }}
-				onMouseDown  = {() => {buttonIndex = ButtonIndex.PRESS; HideUI()}}
-				onMouseUp    = {() => { if (buttonIndex === ButtonIndex.PRESS) buttonIndex = ButtonIndex.DEFAULT }}
-			/>
-				
+			>
+				<ButtonImageClose
+					id          = "ui_hints_close"
+					callback    = {HideUI}
+					uiTransform = {{
+						width   : '64',
+						height  : '64',
+						position: { top: '24', left: '-24' },
+					}}
+				/>
+			</UiEntity>
 		</UiEntity>
 	)
 }
