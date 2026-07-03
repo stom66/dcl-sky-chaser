@@ -21,17 +21,27 @@ Built for Decentraland SDK7 with the new Auth-Server, Sky Chaser is a multiplaye
 
 ## Repository Overview
 
-This repository is split in the following folders:
+This repository is split into the following folders:
 
-- `/assets` - contains all assets and textures before being exported to `glTF`. This includes all `blend` and `FBX` files, as well as full-size source textures.
-  - `/assets/models` - source files for each model in the scene, including full res textures
-  - `/assets/fonts` - any fonts used in the scene and accompanying media
-  - `/assets/tex` - asset agnostic textures used across the scene
-- `/config` - useful info such as import/export settings, UVPackMaster Presets, shader templates
-- `/dcl` - the DCL scene to be deployed. Exported glTF files are in `/dcl/models` along with a `tex` folder of optimised textures
-- `/docs` - extra info on relevant topics, eg asset creation
-- `/reference` - screenshots, previs, reference pictures used during asset creation
-- `/scripts` - various bash/blender/bat utility scripts
+- `/assets` - source assets and textures before being exported for the DCL scene
+  - `/assets/fonts` - fonts used in the scene and accompanying media
+  - `/assets/images` - source image assets, UI artwork, previews, and related media
+  - `/assets/models` - source files for scene models, including `blend` files and full-resolution texture references
+  - `/assets/spp` - Substance Painter project files
+  - `/assets/textures` - source texture atlases and shared texture files used across the scene
+- `/config` - supporting project configuration, such as import/export settings, UVPackMaster presets, and shader templates
+- `/dcl` - the Decentraland SDK7 scene project to preview and deploy
+  - `/dcl/assets` - all the models/textures/sprites/sfx used by the SDK codebase
+    - `/dcl/assets/images` - images used by in-game Code, mostly `/ui` stuff
+    - `/dcl/assets/models` - exported glTF models spawned via code
+    - `/dcl/assets/sfx` - mp3/wav files used by the scene
+    - `/dcl/assets/tex` - textures used for SDK-defined Materials (player beacon, particles)
+  - `/dcl/src` - scene TypeScript source code
+- `/docs` - extra information on relevant topics, eg asset creation
+- `/reference` - screenshots, previs, and reference pictures used during asset creation
+- `/scripts` - utility scripts
+  - `/scripts/bash` - shell scripts for project tasks
+  - `/scripts/blender` - Blender automation scripts
 
 ---
 
