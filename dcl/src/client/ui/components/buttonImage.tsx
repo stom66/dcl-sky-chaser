@@ -40,8 +40,8 @@ export const ButtonImage = ({
 
 	return (
 		<UiEntity
-			key={stateId}
-			uiTransform={{
+			key         = {stateId}
+			uiTransform = {{
 				width         : width,
 				height        : height,
 				overflow      : 'hidden',
@@ -71,17 +71,23 @@ export const ButtonImage = ({
 			}}
 			onMouseUp    = {() => {
 				pressedStates.set(stateId, false)
-				if (hoverStates.get(stateId) === true || isMobile()) {
+				if (isMobile()) {
 					if (callback !== undefined) {
 						callback()
 					}
-					if (isMobile()) {
-						currentIndex.set(stateId, ButtonIndex.DEFAULT)
-					}else {
-						currentIndex.set(stateId, ButtonIndex.HOVER)
-					}
-				} else {
 					currentIndex.set(stateId, ButtonIndex.DEFAULT)
+					return
+				} 
+				
+				if (isDesktop()) {
+					if (hoverStates.get(stateId) === true) {
+						if (callback !== undefined) {
+							callback()
+						}
+						currentIndex.set(stateId, ButtonIndex.HOVER)
+					} else {
+						currentIndex.set(stateId, ButtonIndex.DEFAULT)
+					}
 				}
 
 			}}

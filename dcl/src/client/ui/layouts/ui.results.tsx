@@ -1,17 +1,25 @@
 import ReactEcs, { Button, Label, UiEntity, UiFontType} from '@dcl/sdk/react-ecs'
 
 import { tweenValue } from "../utils/tweens"
-import { Color4 } from '@dcl/sdk/math'
 import { IS_DEV } from 'src/shared/settings'
-import { vhAsPixels } from '../utils/sizing'
 import { C_GameData, ComponentStore } from 'src/shared/components/componentStore'
 import { userProfileCache } from 'src/shared/utils/userProfileCache'
 import { ClientEvents, eventBus } from 'src/shared/utils/eventBus'
 import { theme } from '../vars/theme'
 import { alpha, darken } from '../utils/colors'
+import { ButtonImageClose } from '../components/buttonImage.close'
 
-let scoreboard: Map<string, number> = new Map()
 
+// MARK: Vars
+let scoreboard      : Map<string, number> = new Map()
+
+const PANEL_HIDDEN  = -1200
+const PANEL_VISIBLE = 8
+var panelBottom     : number = PANEL_HIDDEN
+//var panelBottom     : number = IS_DEV ? PANEL_HIDDEN: PANEL_VISIBLE
+
+
+// MARK: Events
 ComponentStore.onComponentChange(C_GameData.ScoreBoard, (data) => {
  	console.log("ui.scoreboard: SCOREBOARD COMPONENT CHANGED")
 	var scores = data?.scores ?? []
@@ -26,11 +34,9 @@ ComponentStore.onComponentChange(C_GameData.ScoreBoard, (data) => {
 
 eventBus.on(ClientEvents.GAME_END, (data) => { ShowUI() })
 
-const PANEL_HIDDEN  = -1200
-const PANEL_VISIBLE = 8
-//var panelBottom     : number        = IS_DEV ? PANEL_HIDDEN : PANEL_VISIBLE
-var panelBottom     : number        = PANEL_HIDDEN
 
+
+// MARK: Utiltiies
 export function ShowUI() {
 	tweenValue(panelBottom, PANEL_VISIBLE, 0.5, (v) => panelBottom = v)
 }
@@ -40,61 +46,59 @@ export function HideUI() {
 }
 
 
+
+// MARK: UI - getRows
 function getScoreboardRows() {
 	const result: ReactEcs.JSX.Element[] = []
 
-	//console.log("SCOREBOARD:", scoreboard)
 	let i = 0
 	for (const [displayName, score] of scoreboard) {
 		i++
 		result.push(
 			<UiEntity
-				key={`ui_Results_row_${displayName}`}
-				uiTransform={{
+				key         = {`ui_Results_row_${displayName}`}
+				uiTransform = {{
 					height        : 'auto',
 					width         : '100%',
 					flexDirection : 'row',
 					justifyContent: 'space-between',
-					padding       : { left: 10, right: 10 },
+					padding       : { left  : 10, right: 10 },
 					margin        : { bottom: 10 - (i*0.5) },
 					borderRadius  : 12,
 				}}
-				uiBackground={{
+				uiBackground = {{
 					color: alpha(darken(theme.colors.primary, 0.2), i % 2 == 0 ? 0.1 : 0),
 				}}
 			>
 				<Label
-					value     = {i.toString()}
-					textAlign = 'middle-left'
-					fontSize  = {22-(i*0.75)}
-					color     = {theme.colors.light}
-					uiTransform={{
-						width: '18%',
+					value       = {i.toString()}
+					textAlign   = 'middle-left'
+					fontSize    = {22-(i*0.75)}
+					color       = {theme.colors.light}
+					uiTransform = {{
+						width : '18%',
 						height: 'auto',
 					}}
 				/>
 				<Label
-					value     = {displayName}
-					textAlign = 'middle-left'
-					fontSize  = {22-(i*0.5)}
-					color     = {theme.colors.light}
-					uiTransform={{
-						width: '65%',
+					value       = {displayName}
+					textAlign   = 'middle-left'
+					fontSize    = {22-(i*0.5)}
+					color       = {theme.colors.light}
+					uiTransform = {{
+						width : '65%',
 						height: 'auto',
 					}}
 				/>
 				<Label
-					value     = {score.toString()}
-					textAlign = 'middle-right'
-					fontSize  = {22-(i*0.75)}
-					color     = {theme.colors.light}
-					uiTransform={{
-						width       : '17%',
-						height      : 'auto',
+					value       = {score.toString()}
+					textAlign   = 'middle-right'
+					fontSize    = {22-(i*0.75)}
+					color       = {theme.colors.light}
+					uiTransform = {{
+						width         : '17%',
+						height        : 'auto',
 						justifyContent: 'flex-end',
-					}}
-					uiBackground={{
-						//color: theme.colors.warning
 					}}
 				/>
 			</UiEntity>
@@ -104,6 +108,7 @@ function getScoreboardRows() {
 }
 
 
+// MARK: UI - Main
 export function ResultsUI() {
 
 	//if (!isVisible()) return (<UiEntity />)
@@ -111,56 +116,50 @@ export function ResultsUI() {
 
 	return (
 		<UiEntity
-			key="ui_results_root"
-			uiTransform={{
-				width          : '100%',
-				height         : '100%',
-				flexDirection  : 'column',
-				alignItems     : 'center',
-				justifyContent : 'center',
-				positionType   : 'absolute',
-				position      : { right: 0, top: 0 },
+			key         = "ui_results_root"
+			uiTransform = {{
+				width         : '100%',
+				height        : '100%',
+				flexDirection : 'column',
+				alignItems    : 'center',
+				justifyContent: 'center',
+				positionType  : 'absolute',
+				position      : { right:  0, top: 0 },
 			}}
 		>
 
 			<UiEntity
-				key="ui_results_panel"
-				uiTransform={{
-					width: '1200',
-					height: '800',
+				key         = "ui_results_panel"
+				uiTransform = {{
+					width       : '1200',
+					height      : '800',
 					positionType: 'relative',
-					position: { bottom: panelBottom },
+					position    : { bottom: panelBottom },
 				}}
 				uiBackground={{ 
-					texture: { src: 'assets/images/ui/results.png' },
+					texture    : { src: 'assets/images/ui/results.png' },
 					textureMode: 'stretch',
 				}}
 			>
-				<UiEntity
-					key="ui_results_close"
-					uiTransform={{
-						width: '90',
-						height: '90',
-						positionType: 'absolute',
-						position: { top: '24', right: '24' },
+
+				<ButtonImageClose
+					id          = "ui_results_close"
+					callback    = {HideUI}
+					uiTransform = {{
+						position    : { top: '24', right: '24' },
 					}}
-					onMouseDown={HideUI}
-					//uiBackground={{ color: Color4.fromHexString('#ffffffaa') }}
-				/>
+				 />
 				<UiEntity
-					key="ui_results_scoreboard_rows"
-					uiTransform={{
-						width: '690',
-						height: '400',
-						positionType: 'absolute',
-						position: { bottom: '48', right: '95' },
-						flexDirection: 'column',
+					key         = "ui_results_scoreboard_rows"
+					uiTransform = {{
+						width         : '690',
+						height        : '400',
+						positionType  : 'absolute',
+						position      : { bottom: '48', right: '95' },
+						flexDirection : 'column',
 						justifyContent: 'flex-start',
-						alignItems: 'center',
+						alignItems    : 'center',
 					}}
-					//uiBackground={{ 
-						//color: Color4.fromHexString('#ffffffaa') 
-					//}}
 				>
 					{getScoreboardRows()}
 				</UiEntity>

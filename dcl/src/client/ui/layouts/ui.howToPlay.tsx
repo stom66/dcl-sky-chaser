@@ -31,35 +31,36 @@ export function HideUI() {
 export function HowToPlayUI() {
 	return (
 		<UiEntity
-			key="ui_how_to_play_root"
-			uiTransform={{
-				width          : '100%',
-				height         : '100%',
-				flexDirection  : 'column',
-				alignItems     : 'center',
-				justifyContent : 'center',
+			key         = "ui_how_to_play_root"
+			uiTransform = {{
+				width         : '100%',
+				height        : '100%',
+				flexDirection : 'column',
+				alignItems    : 'center',
+				justifyContent: 'center',
 				positionType  : 'absolute',
-				position      : { right: 0, top: 0 },
+				position      : { right:  0, top: 0 },
 			}}
 		>
 			<UiEntity
-				key="ui_how_to_play_button"
-				uiTransform={{
-					width: '128',
-					height: '128',
+				key         = "ui_how_to_play_button"
+				uiTransform = {{
+					width       : '128',
+					height      : '128',
 					positionType: 'absolute',
-					position: { top: buttonTop, right: 160 + 256 + 10 }, // Next to where the scoreboard comes in
+					position    : { top: buttonTop, right: 160 + 256 + 10 }, // Next to where the scoreboard comes in
+					zIndex      : 9999,
 				}}
-				onMouseDown={ShowUI}
-				uiBackground={{ 
-					texture: { src: 'assets/images/ui/btn-howToPlay.png' },
+				onMouseDown  = {ShowUI}
+				uiBackground = {{ 
+					texture    : { src: 'assets/images/ui/btn-howToPlay.png' },
 					textureMode: 'stretch',
 				}}
 			/>
 
 			<UiEntity
-				key="ui_how_to_play_panel"
-				uiTransform={{
+				key         = "ui_how_to_play_panel"
+				uiTransform = {{
 					width       : '1200',
 					height      : '800',
 					positionType: 'relative',
