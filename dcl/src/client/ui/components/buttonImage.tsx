@@ -1,5 +1,7 @@
 import { Color4 } from '@dcl/sdk/math'
 import ReactEcs, { UiEntity, UiTransformProps} from '@dcl/sdk/react-ecs'
+import { getPlatform, isMobile, isDesktop, isWeb } from '@dcl/sdk/platform'
+
 
 import { getUVsForIconAtlasRow } from 'src/client/ui/utils/atlas'
 
@@ -69,11 +71,15 @@ export const ButtonImage = ({
 			}}
 			onMouseUp    = {() => {
 				pressedStates.set(stateId, false)
-				if (hoverStates.get(stateId) === true) {
+				if (hoverStates.get(stateId) === true || isMobile()) {
 					if (callback !== undefined) {
 						callback()
 					}
-					currentIndex.set(stateId, ButtonIndex.HOVER)
+					if (isMobile()) {
+						currentIndex.set(stateId, ButtonIndex.DEFAULT)
+					}else {
+						currentIndex.set(stateId, ButtonIndex.HOVER)
+					}
 				} else {
 					currentIndex.set(stateId, ButtonIndex.DEFAULT)
 				}

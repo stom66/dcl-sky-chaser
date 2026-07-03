@@ -16,12 +16,12 @@ export const ButtonImageClose = ({
 	uiTransform?: UiTransformProps,
 }) => {
 	return ButtonImage({
-		id        : id,
-		width     : 90,
-		height    : 90,
-		textureSrc: "assets/images/ui/atlas-btn-close.png",
+		id         : id,
+		width      : 90,
+		height     : 90,
+		textureSrc : "assets/images/ui/atlas-btn-close.png",
 		uiTransform: uiTransform,
-		callback  : () => {
+		callback   : () => {
 			if (callback !== undefined) {
 				callback()
 			}
