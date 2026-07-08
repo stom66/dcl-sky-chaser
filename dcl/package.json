@@ -23,8 +23,8 @@
   },
   "dependencies": {
     "@dcl-sdk/utils": "^1.4.0",
-    "@dcl/js-runtime": "7.24.3-28199504206.commit-1a6c780",
-    "@dcl/sdk": "7.24.3-28199504206.commit-1a6c780"
+    "@dcl/js-runtime": "^7.24.4-28592331167.commit-697ce9e",
+    "@dcl/sdk": "^7.24.4-28592331167.commit-697ce9e"
   },
   "bundleDependencies": [],
   "engines": {
