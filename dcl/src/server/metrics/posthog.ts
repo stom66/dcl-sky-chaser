@@ -3,14 +3,17 @@ import { signedFetch } from '~system/SignedFetch'
 
 export namespace Posthog {
 	
-	const POSTHOG_HOST = 'https://eu.i.posthog.com'
-
-	let apiKey: string | null = null
+	let apiKey : string | null = null
+	let apiHost: string        = 'https://eu.i.posthog.com'
 
 	// MARK: Init
 	export function init() {
-		EnvVar.get('POSTHOG_API_KEY').then((key) => {
-			apiKey = key
+		Promise.all([
+			EnvVar.get('POSTHOG_API_KEY'),
+			EnvVar.get('POSTHOG_HOST').catch(() => 'https://eu.i.posthog.com'),
+		]).then(([key, host]) => {
+			apiKey  = key
+			apiHost = host
 			console.log('Metrics: PostHog initialized')
 		}).catch((err) => {
 			console.error('Metrics: failed to initialize PostHog', err)
@@ -31,7 +34,7 @@ export namespace Posthog {
 		})
 
 		signedFetch({
-			url: `${POSTHOG_HOST}/capture/`,
+			url: `${apiHost}/capture/`,
 			init: {
 				method : 'POST',
 				headers: { 'Content-Type': 'application/json' },
@@ -55,7 +58,7 @@ export namespace Posthog {
 		})
 	
 		signedFetch({
-			url: `${POSTHOG_HOST}/capture/`,
+			url: `${apiHost}/capture/`,
 			init: {
 				method : 'POST',
 				headers: { 'Content-Type': 'application/json' },

@@ -95,8 +95,15 @@ export namespace serverHandler {
 	// MARK: On Game Start
 	function OnGameStart() {
 		ComponentStore.setGameStatus(GameStatus.ACTIVE)
-		
-		Metrics.trackGameStarted(ComponentStore.getGameStartTime(), ComponentStore.getPlayers())
+
+		const gameStartTime = ComponentStore.getGameStartTime()
+		const players       = ComponentStore.getPlayers()
+
+		Metrics.trackGameStarted(gameStartTime, players)
+
+		for (const playerId of players) {
+			Metrics.trackGameJoined(playerId, gameStartTime)
+		}
 	}
 
 	// MARK: On Game End

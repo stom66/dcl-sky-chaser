@@ -2,6 +2,7 @@ import { onEnterScene, onLeaveScene } from "@dcl/sdk/players"
 import * as utils from "@dcl-sdk/utils"
 
 import { ServerSettings } from "src/shared/settings"
+import { GameStatus } from "src/shared/enums"
 
 import { ComponentManager } from "src/shared/components/componentManager"
 import { ComponentStore } from "src/shared/components/componentStore"
@@ -46,12 +47,19 @@ export async function initServer(): Promise<void> {
 			DiscordWebhooks.newPlayer(player.name, player.userId, playerPosition)
 		}
 
-		Metrics.startSession(player.userId, player.name)
+		Metrics.sessionStart(player.userId, player.name)
 	})
 
 	onLeaveScene((userId) => {
+		const gameStatus    = ComponentStore.getGameStatus()
+		const gameStartTime = ComponentStore.getGameStartTime()
+
 		ComponentStore.removePlayer(userId)
-		Metrics.endSession(userId)
+		Metrics.sessionEnd(userId)
+
+		if (gameStatus === GameStatus.ACTIVE && ComponentStore.getPlayers().length === 0) {
+			Metrics.trackGameAborted(gameStartTime, [])
+		}
 	})
 }
  

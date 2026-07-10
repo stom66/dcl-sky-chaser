@@ -49,8 +49,8 @@ export namespace Metrics {
 	}
 
 
-	// MARK: Player: Session
-	export function startSession(
+	// MARK: SessionStart
+	export function sessionStart(
 		userId     : string, 
 		displayName: string
 	) {
@@ -63,7 +63,9 @@ export namespace Metrics {
 		trackSceneJoined(userId, displayName)
 	}
 
-	export function endSession(userId: string): void {
+
+	// MARK: SessionEnded
+	export function sessionEnd(userId: string): void {
 		if (isBlockedPlayer(userId)) return
 
 		const startTimestamp = sessions.get(userId)
@@ -81,7 +83,7 @@ export namespace Metrics {
 	}
 
 
-	// MARK: Player: Scene
+	// MARK: SceneJoined
 	export function trackSceneJoined(
 		userId     : string, 
 		displayName: string
@@ -105,6 +107,8 @@ export namespace Metrics {
 		console.log('Metrics: trackSceneJoined: userId', userId, 'displayName', displayName)
 	}
 
+
+	// MARK: SceneLeft
 	export function trackSceneLeft(
 		userId      : string, 
 		durationMs  : number, 
@@ -124,7 +128,7 @@ export namespace Metrics {
 
 
 
-	// MARK: Player: Game
+	// MARK: GameJoined
 	export function trackGameJoined(
 		userId       : string, 
 		gameStartTime: number
@@ -142,6 +146,8 @@ export namespace Metrics {
 		console.log('Metrics: trackGameJoined: userId', userId, 'gameStartTime', gameStartTime)
 	}
 
+
+	// MARK: GameWon
 	export function trackGameWon(
 		userId       : string, 
 		gameStartTime: number
@@ -159,12 +165,14 @@ export namespace Metrics {
 		console.log('Metrics: trackGameWon: userId', userId, 'gameStartTime', gameStartTime)
 	}
 
+
+	// MARK: GameNotWon
 	export function trackGameNotWon(
-		userId       : string, 
+		userId       : string,
 		gameStartTime: number
 	) {
 		if (isBlockedPlayer(userId)) return
-		
+
 		Posthog.capture(userDistinctId(userId), MetricEvents.PLAYER_GAME_NOT_WON, {
 			version              : VERSION,
 			gameId               : gameDistinctId(gameStartTime),
@@ -175,7 +183,23 @@ export namespace Metrics {
 	}
 
 
-	// MARK: Game
+	// MARK: GameAborted
+	export function trackGameAborted(
+		gameStartTime: number,
+		playerIds    : string[]
+	) {
+		const gameId = gameDistinctId(gameStartTime)
+		Posthog.capture(gameId, MetricEvents.GAME_ABORTED, {
+			version    : VERSION,
+			playerCount: playerIds.length,
+			playerIds  : playerIds
+		})
+
+		console.log('Metrics: trackGameAborted: gameId', gameId, 'gameStartTime', gameStartTime, 'playerCount', playerIds.length)
+	}
+
+
+	// MARK: GameCreated
 	export function trackGameCreated(
 		userId       : string, 
 		gameStartTime: number,
@@ -198,6 +222,8 @@ export namespace Metrics {
 		console.log('Metrics: trackGameCreated: gameId', gameId, 'gameStartTime', gameStartTime, 'userId', userId)
 	}
 
+
+	// MARK: GameStarted
 	export function trackGameStarted(
 		gameStartTime: number, 
 		playerIds    : string[]
@@ -212,6 +238,8 @@ export namespace Metrics {
 		console.log('Metrics: trackGameStarted: gameId', gameId, 'gameStartTime', gameStartTime, 'playerCount', playerIds.length)
 	}
 
+
+	// MARK: GameEnded
 	export function trackGameEnded(
 		gameStartTime: number, 
 		playerIds    : string[], 
@@ -228,6 +256,8 @@ export namespace Metrics {
 		console.log('Metrics: trackGameEnded: gameId', gameId, 'gameStartTime', gameStartTime, 'playerCount', playerIds.length, 'winnerUserId', winnerUserId)
 	}
 
+
+	// MARK: FoundAllPigeons
 	export function trackFoundAllPigeons(
 		userId: string
 	) {
