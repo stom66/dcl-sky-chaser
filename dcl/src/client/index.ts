@@ -10,12 +10,9 @@ import { GameSettings, IS_DEV, SceneSettings } from "src/shared/settings"
 import { ClientHandler } from 'src/client/clientHandler'
 import { ClientStore } from 'src/client/clientStore'
 import { TriggerSpawner } from './spawners/triggerSpawner'
-import { RingSpawner } from './spawners/ringSpawner'
 import { LocomotionController } from './locomotionController'
 import { SoundManager } from './soundManager'
-import { FuelSpawner } from './spawners/fuelSpawner'
 import { BoosterInput } from './boosterInput'
-import { BalloonSpawner } from './spawners/balloonSpawner'
 import { ComboManager } from './comboManager'
 import { ParticleSpawner } from './particleSpawner'
 import { DiscordWebhooks } from 'src/shared/utils/discord-webhooks'
@@ -26,6 +23,8 @@ import { BirdSpawner } from './spawners/birdSpawner'
 import { Light } from './light'
 import { BounceSpawner } from './spawners/bounceSpawner'
 import { ProjectileManager } from './projectileManager'
+import { spawn } from '~system/PortableExperiences'
+import { SpawnManager } from './spawnManager'
 
 
 export function initClient() {
@@ -87,10 +86,9 @@ export function initClient() {
 		SoundManager.init()
 		BoosterInput.init()
 		
-		BalloonSpawner.init()
-		FuelSpawner.init()
+		SpawnManager.init()
+		
 		ParticleSpawner.init()
-		RingSpawner.init()
 		TriggerSpawner.spawnTriggers()
 		
 		UILeaderboard.init()

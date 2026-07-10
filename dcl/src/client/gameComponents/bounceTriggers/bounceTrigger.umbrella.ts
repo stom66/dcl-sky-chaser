@@ -1,7 +1,7 @@
 import { engine, Transform } from "@dcl/sdk/ecs"
 import { Quaternion, Vector3 } from "@dcl/sdk/math"
 
-import { BounceTrigger } from "src/client/gameComponents/bounceTrigger"
+import { BounceTrigger } from "src/client/gameComponents/bounceTriggers/bounceTrigger"
 
 import { ClientMessaging } from "src/client/clientMessaging"
 import { sfx, SoundManager } from "src/client/soundManager"
