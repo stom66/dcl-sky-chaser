@@ -35,6 +35,7 @@ export const GameSettings = {
 
 	COMBO_COOLDOWN_TIME : 1000 * 10,
 	COMBO_MAX_VALUE     : 12,
+	COMBO_GLIDING_SPEED_INCREMENT: 2.5,
 	
 	FUEL_DRAIN_RATE     : 15, // units per second
 	FUEL_REFUEL_RATE    : 1, // units per second
