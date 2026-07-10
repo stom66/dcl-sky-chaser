@@ -11,6 +11,9 @@ import { Pickup } from "src/client/gameComponents/pickups/pickup"
 import { sfx, SoundManager } from "src/client/soundManager"
 import { theme } from "src/client/ui"
 
+const MIN_RISE_SPEED = 0.25
+const MAX_RISE_SPEED = 4.0
+
 // MARK: PickupBalloon
 export class PickupBalloon extends Pickup {
 	private triggerEntity  : Entity
@@ -25,7 +28,7 @@ export class PickupBalloon extends Pickup {
 		public defaultPosition : Vector3,
 		public value           : number = 1,
 		public maxHeight       : number = 200,
-		public riseSpeed       : number = Math.random() * 4 + 0.1,
+		public riseSpeed       : number = Math.random() * (MAX_RISE_SPEED - MIN_RISE_SPEED) + MIN_RISE_SPEED,
 		public spinSpeed       : number = Math.random() * 180 - 90,
 	) {
 		super(defaultPosition)
