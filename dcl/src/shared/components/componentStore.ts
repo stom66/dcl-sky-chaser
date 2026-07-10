@@ -348,6 +348,8 @@ export namespace ComponentStore {
 
 		if (c.value >= GameSettings.COMBO_MAX_VALUE) return
 		cm.value += 1
+
+		eventBus.emit(ClientEvents.COMBO_INCREASE, { value: cm.value })
 		
 		console.log("incrementComboValue: combo value incremented to", cm.value)
 	}
@@ -365,6 +367,8 @@ export namespace ComponentStore {
 
 		cm.value -= 1
 		cm.lastUpdatedTime = Date.now()
+		
+		eventBus.emit(ClientEvents.COMBO_DECREASE, { value: cm.value })
 	}
 
 	export function resetComboValue(): void {
