@@ -33,6 +33,7 @@ ComponentStore.onComponentChange(C_GameData.ScoreBoard, (data) => {
 })
 
 eventBus.on(ClientEvents.GAME_END, (data) => { ShowUI() })
+eventBus.on(ClientEvents.GAME_ACTIVE, (data) => { HideUI() })
 
 
 
