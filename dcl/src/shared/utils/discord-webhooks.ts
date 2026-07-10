@@ -73,7 +73,7 @@ export namespace DiscordWebhooks {
 		}
 
 		const url = await getDiscordWebhookUrl()
-		if (!url) {
+		if (!url || url === "") {
 			console.log("discord-webhooks: sendDiscordMessage: DISCORD_WEBHOOK_URL not configured")
 			return
 		}
