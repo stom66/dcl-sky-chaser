@@ -24,7 +24,7 @@ import { Light } from './light'
 import { BounceSpawner } from './spawners/bounceSpawner'
 import { ProjectileManager } from './projectileManager'
 import { spawn } from '~system/PortableExperiences'
-import { SpawnManager } from './spawnManager'
+import { SpawnManager } from './spawners/pickupSpawner'
 
 
 export function initClient() {
