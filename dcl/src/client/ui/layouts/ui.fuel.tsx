@@ -24,7 +24,7 @@ ComponentStore.onComponentChange(C_PlayerFuel.PlayerFuel, (data) => {
 	fuelValue    = data?.value ?? 0
 	maxFuelValue = data?.maxValue ?? 100
 	ratio        = Math.ceil((fuelValue / maxFuelValue) * 100)
-	console.log("FuelUI: fuel value changed to", fuelValue)
+	//console.log("FuelUI: fuel value changed to", fuelValue)
 })
 
 eventBus.on(ClientEvents.GAME_ACTIVE, (data) => {

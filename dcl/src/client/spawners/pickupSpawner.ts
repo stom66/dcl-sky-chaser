@@ -198,7 +198,7 @@ export namespace SpawnManager {
 					pickup.Activate(randomPosition)
 				}
 			}
-			console.log("SpawnManager: Active pickups for", entityType.name, ":", activePickups)
+			//console.log("SpawnManager: Active pickups for", entityType.name, ":", activePickups)
 		}
 	}
 
