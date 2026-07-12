@@ -8,12 +8,22 @@ import { GameStatus } from 'src/shared/enums'
 import { GameSettings } from 'src/shared/settings'
 import { LeaderboardManager } from "./leaderboardManager"
 import { Metrics } from "./metrics/client"
-import { PlayerStats } from "./metrics/playerStats"
+import { PlayerStatsEnum } from "src/shared/metrics/playerStats"
 
 
 export namespace serverHandler {
 
 	const projectileCooldowns: Map<string, number> = new Map()
+	let currentGameCreatorUserId: string | undefined
+
+
+	// MARK: ResetGameCreator
+	/**
+	 * Clears the creator remembered for the current game lifecycle.
+	 */
+	export function resetGameCreator(): void {
+		currentGameCreatorUserId = undefined
+	}
 
 	// MARK: Init
 	export function init() {
@@ -31,6 +41,12 @@ export namespace serverHandler {
 		return typeof context?.from === 'string' ? context.from : 'unknown'
 	}
 
+
+	// MARK: Get Game Entry Type
+	function getGameEntryType(playerId: string): Metrics.GameEntryType {
+		return playerId.toLowerCase() === currentGameCreatorUserId?.toLowerCase() ? "created" : "joined"
+	}
+
 	// MARK: Request NewGame
 	export async function handleRequestNewGame(data: any, context: any) {
 		const userId = getUserId(context)
@@ -39,6 +55,7 @@ export namespace serverHandler {
 
 		if (ComponentStore.getGameStatus() === GameStatus.IDLE) {
 			ComponentStore.resetAfterRound()
+			currentGameCreatorUserId = userId
 			StartNewGame()
 
 			Metrics.trackGameCreated(userId, ComponentStore.getGameStartTime())
@@ -60,7 +77,7 @@ export namespace serverHandler {
 		const userId = getUserId(context)
 		console.log('handleRequestStatsUpdate: userId', userId, 'stat', data.stat, 'amount', data.amount)
 
-		if (data.stat === PlayerStats.COLLECTED_POINTS) {
+		if (data.stat === PlayerStatsEnum.COLLECTED_POINTS) {
 			ComponentStore.incrementPlayerScore(userId, data.amount)
 		}
 
@@ -102,7 +119,7 @@ export namespace serverHandler {
 		Metrics.trackGameStarted(gameStartTime, players)
 
 		for (const playerId of players) {
-			Metrics.trackGameJoined(playerId, gameStartTime)
+			Metrics.trackPlayerEnteredGame(playerId, gameStartTime, getGameEntryType(playerId))
 		}
 	}
 
@@ -144,11 +161,13 @@ export namespace serverHandler {
 		ComponentStore.setGameStatus(GameStatus.ENDING)
 
 		Metrics.trackGameEnded(ComponentStore.getGameStartTime(), ComponentStore.getPlayers(), scores[0]?.userId)
+		resetGameCreator()
 	}
 
 	// MARK: On Game Reset
 	function OnGameReset() {
 		ComponentStore.setGameStatus(GameStatus.IDLE)
+		resetGameCreator()
 		//ComponentStore.resetAfterRound()
 	}
 

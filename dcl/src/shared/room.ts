@@ -1,6 +1,6 @@
 import { registerMessages } from '@dcl/sdk/network'
 import { Schemas } from '@dcl/sdk/ecs'
-import { PlayerStats } from 'src/server/metrics/playerStats'
+import { PlayerStatsEnum } from 'src/shared/metrics/playerStats'
 import { ClientEvents } from 'src/client/clientEvents'
 
 
@@ -32,7 +32,7 @@ const Messages = {
 	[MessageType.REQUEST_NEW_GAME]: Schemas.Map({}),
 	[MessageType.REQUEST_SCORE_UPDATE]: Schemas.Int,
 	[MessageType.REQUEST_STATS_UPDATE]: Schemas.Map({
-		stat  : Schemas.EnumString(PlayerStats, PlayerStats.COLLECTED_BALLOONS),
+		stat  : Schemas.EnumString(PlayerStatsEnum, PlayerStatsEnum.COLLECTED_BALLOONS),
 		amount: Schemas.Int,
 	}),
 	[MessageType.REQUEST_FOUND_ALL_PIGEONS]: Schemas.Map({}),

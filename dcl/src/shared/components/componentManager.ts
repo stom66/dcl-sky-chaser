@@ -20,6 +20,11 @@ export * as C_Leaderboards from "src/shared/components/leaderboards"
 import * as C_PigeonCounter from "src/shared/components/pigeonCounter"
 export * as C_PigeonCounter from "src/shared/components/pigeonCounter"
 
+import * as C_PlayerStats from "src/shared/components/playerStats"
+export * as C_PlayerStats from "src/shared/components/playerStats"
+
+import { PlayerStatsRecord } from "src/shared/metrics/playerStats"
+
 /**
  * Lifecycle-only namespace: creates the synced gameplay entity, registers it
  * with `syncEntity`/`validateBeforeChange`, and exposes lookup + readiness
@@ -42,6 +47,7 @@ export namespace ComponentManager {
 	// MARK: Vars
 	const LANE_ENTITY_SYNC_ENUM_BASE = 1000
 	const clientReadyResolvers       : Array<() => void>    = [] // Promise resolvers awaiting client-side discovery of all lane entities.
+	const playerStatsEntities        = new Map<string, Entity>()
 	let componentEntity              : (Entity | undefined) = undefined
 	let isInitialised                : boolean              = false
 
@@ -56,6 +62,13 @@ export namespace ComponentManager {
 		C_Leaderboards.leaderboardAllTime,
 		C_Leaderboards.leaderboardWeekly,
 	]	
+
+	const playerStatsComponents = [
+		C_PlayerStats.PlayerStatsIdentity,
+		C_PlayerStats.PlayerStatsPerGame,
+		C_PlayerStats.PlayerStatsPerSession,
+		C_PlayerStats.PlayerStatsAllTime,
+	]
 
 
 	// MARK: init
@@ -203,6 +216,73 @@ export namespace ComponentManager {
 				return value.senderAddress === AUTH_SERVER_PEER_ID
 			})
 		}
+	}
+
+
+	// MARK: createPlayerStatsEntity
+	/**
+	 * Creates or updates the server-owned synced stats entity for a player.
+	 */
+	export function createPlayerStatsEntity(
+		userId      : string,
+		perGame    : PlayerStatsRecord,
+		perSession : PlayerStatsRecord,
+		allTime    : PlayerStatsRecord
+	): Entity | undefined {
+		if (!isServer()) return undefined
+
+		const existingEntity = getPlayerStatsEntity(userId)
+		const entity         = existingEntity ?? engine.addEntity()
+
+		C_PlayerStats.PlayerStatsIdentity.createOrReplace(entity, {
+			userId: userId,
+		})
+		C_PlayerStats.PlayerStatsPerGame.createOrReplace(entity, perGame)
+		C_PlayerStats.PlayerStatsPerSession.createOrReplace(entity, perSession)
+		C_PlayerStats.PlayerStatsAllTime.createOrReplace(entity, allTime)
+
+		if (existingEntity === undefined) {
+			const componentIds = Array.from(playerStatsComponents, (component) => component.componentId)
+			syncEntity(entity, componentIds)
+			protectServerEntity(entity, playerStatsComponents)
+		}
+
+		playerStatsEntities.set(userId, entity)
+		return entity
+	}
+
+
+	// MARK: getPlayerStatsEntity
+	/**
+	 * Returns the synced stats entity for a player, if it has been created or discovered.
+	 */
+	export function getPlayerStatsEntity(userId: string): Entity | undefined {
+		const knownEntity = playerStatsEntities.get(userId)
+		if (knownEntity !== undefined) return knownEntity
+
+		for (const [entity, identity] of engine.getEntitiesWith(C_PlayerStats.PlayerStatsIdentity)) {
+			if (identity.userId === userId) {
+				playerStatsEntities.set(userId, entity)
+				return entity
+			}
+		}
+
+		return undefined
+	}
+
+
+	// MARK: removePlayerStatsEntity
+	/**
+	 * Removes the server-owned synced stats entity for a player.
+	 */
+	export function removePlayerStatsEntity(userId: string): void {
+		if (!isServer()) return
+
+		const entity = getPlayerStatsEntity(userId)
+		if (entity === undefined) return
+
+		engine.removeEntity(entity)
+		playerStatsEntities.delete(userId)
 	}
 
 

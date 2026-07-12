@@ -59,6 +59,7 @@ export async function initServer(): Promise<void> {
 
 		if (gameStatus === GameStatus.ACTIVE && ComponentStore.getPlayers().length === 0) {
 			Metrics.trackGameAborted(gameStartTime, [])
+			serverHandler.resetGameCreator()
 		}
 	})
 }

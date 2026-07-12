@@ -4,10 +4,11 @@ import { ComponentData, Entity } from "@dcl/sdk/ecs"
 import { GameStatus } from "src/shared/enums"
 import { GameDataSnapshot } from "src/shared/types/shared-types"
 
-import { ComponentManager, C_GameData, C_PlayerFuel, C_Combo, C_Leaderboards, C_PigeonCounter } from "src/shared/components/componentManager"
+import { ComponentManager, C_GameData, C_PlayerFuel, C_Combo, C_Leaderboards, C_PigeonCounter, C_PlayerStats } from "src/shared/components/componentManager"
 import { GameSettings } from "src/shared/settings"
 import { LeaderboardEntry } from "src/shared/classes/leaderboard"
 import { ClientEvents, eventBus } from "../utils/eventBus"
+import { PlayerStatsRecord } from "src/shared/metrics/playerStats"
 
 // Re-export Components for easy importing elsewhere
 export * as C_GameData from "src/shared/components/gameData"
@@ -15,6 +16,7 @@ export * as C_PlayerFuel from "src/shared/components/playerFuel"
 export * as C_Combo from "src/shared/components/combo"
 export * as C_Leaderboards from "src/shared/components/leaderboards"
 export * as C_PigeonCounter from "src/shared/components/pigeonCounter"
+export * as C_PlayerStats from "src/shared/components/playerStats"
 /**
  * Data-access wrapper around the synced components. Reads work on both
  * server and client; writes are gated by `isServer()` and silently no-op on
@@ -422,6 +424,131 @@ export namespace ComponentStore {
 
 		const c = C_Leaderboards.leaderboardWeekly.get(entity)
 		return [...(c?.scores ?? [])]
+	}
+
+
+	// MARK: Player Stats
+
+
+	// MARK: createPlayerStatsEntity
+	/**
+	 * Creates the synced player stats entity for a player.
+	 */
+	export function createPlayerStatsEntity(
+		userId     : string,
+		perGame   : PlayerStatsRecord,
+		perSession: PlayerStatsRecord,
+		allTime   : PlayerStatsRecord
+	): void {
+		if (!isServer()) return
+
+		ComponentManager.createPlayerStatsEntity(
+			userId,
+			perGame,
+			perSession,
+			allTime
+		)
+	}
+
+
+	// MARK: setPlayerStatsPerGame
+	/**
+	 * Replaces a player's per-game stats component data.
+	 */
+	export function setPlayerStatsPerGame(
+		userId: string,
+		stats : PlayerStatsRecord
+	): void {
+		if (!isServer()) return
+
+		const entity = ComponentManager.getPlayerStatsEntity(userId)
+		if (entity === undefined) return
+
+		C_PlayerStats.PlayerStatsPerGame.createOrReplace(entity, stats)
+	}
+
+
+	// MARK: setPlayerStatsPerSession
+	/**
+	 * Replaces a player's per-session stats component data.
+	 */
+	export function setPlayerStatsPerSession(
+		userId: string,
+		stats : PlayerStatsRecord
+	): void {
+		if (!isServer()) return
+
+		const entity = ComponentManager.getPlayerStatsEntity(userId)
+		if (entity === undefined) return
+
+		C_PlayerStats.PlayerStatsPerSession.createOrReplace(entity, stats)
+	}
+
+
+	// MARK: setPlayerStatsAllTime
+	/**
+	 * Replaces a player's all-time stats component data.
+	 */
+	export function setPlayerStatsAllTime(
+		userId: string,
+		stats : PlayerStatsRecord
+	): void {
+		if (!isServer()) return
+
+		const entity = ComponentManager.getPlayerStatsEntity(userId)
+		if (entity === undefined) return
+
+		C_PlayerStats.PlayerStatsAllTime.createOrReplace(entity, stats)
+	}
+
+
+	// MARK: getPlayerStatsPerGame
+	/**
+	 * Returns a player's per-game stats component data.
+	 */
+	export function getPlayerStatsPerGame(userId: string): PlayerStatsRecord | undefined {
+		const entity = ComponentManager.getPlayerStatsEntity(userId)
+		if (entity === undefined) return undefined
+
+		const stats = C_PlayerStats.PlayerStatsPerGame.getOrNull(entity)
+		return stats ? { ...stats } as PlayerStatsRecord : undefined
+	}
+
+
+	// MARK: getPlayerStatsPerSession
+	/**
+	 * Returns a player's per-session stats component data.
+	 */
+	export function getPlayerStatsPerSession(userId: string): PlayerStatsRecord | undefined {
+		const entity = ComponentManager.getPlayerStatsEntity(userId)
+		if (entity === undefined) return undefined
+
+		const stats = C_PlayerStats.PlayerStatsPerSession.getOrNull(entity)
+		return stats ? { ...stats } as PlayerStatsRecord : undefined
+	}
+
+
+	// MARK: getPlayerStatsAllTime
+	/**
+	 * Returns a player's all-time stats component data.
+	 */
+	export function getPlayerStatsAllTime(userId: string): PlayerStatsRecord | undefined {
+		const entity = ComponentManager.getPlayerStatsEntity(userId)
+		if (entity === undefined) return undefined
+
+		const stats = C_PlayerStats.PlayerStatsAllTime.getOrNull(entity)
+		return stats ? { ...stats } as PlayerStatsRecord : undefined
+	}
+
+
+	// MARK: removePlayerStatsEntity
+	/**
+	 * Removes the synced player stats entity for a player.
+	 */
+	export function removePlayerStatsEntity(userId: string): void {
+		if (!isServer()) return
+
+		ComponentManager.removePlayerStatsEntity(userId)
 	}
 	
 

@@ -8,4 +8,4 @@
 - Customise server/metrics/metricEvents
 - Add calls to the methods in server/metrics/client.ts throughout the codebase, eg:
 
-  Metrics.trackGameJoined(userId, this.store.getGameStartTime())
+  Metrics.trackPlayerEnteredGame(userId, this.store.getGameStartTime(), "joined")

@@ -1,16 +1,16 @@
-import { PlayerStats, PlayerStatsRecord } from 'src/server/metrics/playerStats'
-
 import { VERSION } from 'src/shared/data/version'
+import { PlayerStatsEnum, PlayerStatsRecord } from 'src/shared/metrics/playerStats'
 
-import { MetricEvents } from 'src/server/metrics/metricEvents'
-import { Posthog } from 'src/server/metrics/posthog'
 import { isBlockedPlayer } from 'src/server/metrics/blocklist'
+import { MetricEvents } from 'src/server/metrics/metricEvents'
+import { PlayerStatsTracker } from 'src/server/metrics/playerStats'
+import { Posthog } from 'src/server/metrics/posthog'
 
 
 export namespace Metrics {
 	// MARK: Vars
-	const sessions    = new Map<string, number>()            // userId -> startTimestamp
-	const playerStats = new Map<string, PlayerStatsRecord>() // userId -> session stats
+	const sessions = new Map<string, number>() // userId -> startTimestamp
+	export type GameEntryType = "created" | "joined"
 
 
 	// MARK: Init
@@ -29,23 +29,33 @@ export namespace Metrics {
 		return `game_${gameStartTime}`
 	}
 
-	function createEmptyPlayerStats(): PlayerStatsRecord {
+	function capitalizeStatName(stat: PlayerStatsEnum): string {
+		return `${stat.charAt(0).toUpperCase()}${stat.slice(1)}`
+	}
+
+	function prefixedStats(
+		prefix: string,
+		stats : PlayerStatsRecord
+	): Record<string, number> {
 		return Object.fromEntries(
-			Object.values(PlayerStats).map(stat => [stat, 0])
-		) as PlayerStatsRecord
+			Object.values(PlayerStatsEnum).map((stat) => [`${prefix}${capitalizeStatName(stat)}`, stats[stat]])
+		)
+	}
+
+	function playerStatsPayload(userId: string): Record<string, number> {
+		return {
+			...prefixedStats("game", PlayerStatsTracker.getGameStats(userId)),
+			...prefixedStats("session", PlayerStatsTracker.getSessionStats(userId)),
+			...prefixedStats("allTime", PlayerStatsTracker.getAllTimeStats(userId)),
+		}
 	}
 
 	export function incrementPlayerStat(
 		userId: string, 
-		stat  : PlayerStats,
+		stat  : PlayerStatsEnum,
 		amount: number = 1
 	): void {
-		let record = playerStats.get(userId)
-		if (!record) {
-			record = createEmptyPlayerStats()
-			playerStats.set(userId, record)
-		}
-		record[stat] += amount
+		PlayerStatsTracker.increment(userId, stat, amount)
 	}
 
 
@@ -58,13 +68,13 @@ export namespace Metrics {
 		if (isBlockedPlayer(userId)) return
 
 		sessions.set(userId, Date.now())
-		playerStats.set(userId, createEmptyPlayerStats())
+		PlayerStatsTracker.sessionStart(userId)
 
 		trackSceneJoined(userId, displayName)
 	}
 
 
-	// MARK: SessionEnded
+	// MARK: SessionEnd
 	export function sessionEnd(userId: string): void {
 		if (isBlockedPlayer(userId)) return
 
@@ -74,11 +84,12 @@ export namespace Metrics {
 		}
 
 		const durationMs = Date.now() - startTimestamp
-		const stats      = playerStats.get(userId)
+		const stats      = playerStatsPayload(userId)
 		trackSceneLeft(userId, durationMs, stats)
+		updateAllTimePlayerStats(userId)
 
 		sessions.delete(userId)
-		playerStats.delete(userId)
+		PlayerStatsTracker.sessionEnd(userId)
 
 	}
 
@@ -112,7 +123,7 @@ export namespace Metrics {
 	export function trackSceneLeft(
 		userId      : string, 
 		durationMs  : number, 
-		playerStats?: PlayerStatsRecord
+		playerStats?: Record<string, number>
 	) {
 		if (isBlockedPlayer(userId)) return
 		
@@ -127,23 +138,49 @@ export namespace Metrics {
 	}
 
 
+	// MARK: UpdateAllTimePlayerStats
+	/**
+	 * Updates PostHog user properties with the latest all-time player stats.
+	 */
+	export function updateAllTimePlayerStats(userId: string): void {
+		if (isBlockedPlayer(userId)) return
 
-	// MARK: GameJoined
-	export function trackGameJoined(
-		userId       : string, 
-		gameStartTime: number
+		Posthog.identify(userDistinctId(userId), {
+			$set: prefixedStats("allTime", PlayerStatsTracker.getAllTimeStats(userId))
+		})
+
+		console.log('Metrics: updateAllTimePlayerStats: userId', userId)
+	}
+
+
+	// MARK: PlayerEnteredGame
+	/**
+	 * Tracks one player's participation in a started game.
+	 */
+	export function trackPlayerEnteredGame(
+		userId       : string,
+		gameStartTime: number,
+		entryType    : GameEntryType
 	) {
 		if (isBlockedPlayer(userId)) return
 		
-		incrementPlayerStat(userId, PlayerStats.GAMES_PLAYED)
+		PlayerStatsTracker.gameStart(userId)
+		incrementPlayerStat(userId, PlayerStatsEnum.GAMES_PLAYED)
 
-		Posthog.capture(userDistinctId(userId), MetricEvents.PLAYER_GAME_JOINED, {
+		if (entryType === "created") {
+			incrementPlayerStat(userId, PlayerStatsEnum.GAMES_CREATED)
+		}
+
+		Posthog.capture(userDistinctId(userId), MetricEvents.PLAYER_ENTERED_GAME, {
 			version              : VERSION,
 			gameId               : gameDistinctId(gameStartTime),
-			sessionStartTimestamp: sessions.get(userId)
+			gameStartTime        : gameStartTime,
+			entry_type           : entryType,
+			sessionStartTimestamp: sessions.get(userId),
+			...playerStatsPayload(userId),
 		})
 
-		console.log('Metrics: trackGameJoined: userId', userId, 'gameStartTime', gameStartTime)
+		console.log('Metrics: trackPlayerEnteredGame: userId', userId, 'gameStartTime', gameStartTime, 'entryType', entryType)
 	}
 
 
@@ -154,12 +191,13 @@ export namespace Metrics {
 	) {
 		if (isBlockedPlayer(userId)) return
 		
-		incrementPlayerStat(userId, PlayerStats.GAMES_WON)
+		incrementPlayerStat(userId, PlayerStatsEnum.GAMES_WON)
 
 		Posthog.capture(userDistinctId(userId), MetricEvents.PLAYER_GAME_WON, {
 			version              : VERSION,
 			gameId               : gameDistinctId(gameStartTime),
-			sessionStartTimestamp: sessions.get(userId)
+			sessionStartTimestamp: sessions.get(userId),
+			...playerStatsPayload(userId),
 		})
 
 		console.log('Metrics: trackGameWon: userId', userId, 'gameStartTime', gameStartTime)
@@ -176,7 +214,8 @@ export namespace Metrics {
 		Posthog.capture(userDistinctId(userId), MetricEvents.PLAYER_GAME_NOT_WON, {
 			version              : VERSION,
 			gameId               : gameDistinctId(gameStartTime),
-			sessionStartTimestamp: sessions.get(userId)
+			sessionStartTimestamp: sessions.get(userId),
+			...playerStatsPayload(userId),
 		})
 
 		console.log('Metrics: trackGameNotWon: userId', userId, 'gameStartTime', gameStartTime)
@@ -194,6 +233,7 @@ export namespace Metrics {
 			playerCount: playerIds.length,
 			playerIds  : playerIds
 		})
+		PlayerStatsTracker.gameEnd(playerIds)
 
 		console.log('Metrics: trackGameAborted: gameId', gameId, 'gameStartTime', gameStartTime, 'playerCount', playerIds.length)
 	}
@@ -204,19 +244,11 @@ export namespace Metrics {
 		userId       : string, 
 		gameStartTime: number,
 	) {
-		incrementPlayerStat(userId, PlayerStats.GAMES_CREATED)
-
 		const gameId = gameDistinctId(gameStartTime)
 		Posthog.capture(gameId, MetricEvents.GAME_CREATED, {
 			version        : VERSION,
 			gameStartTime  : gameStartTime,
-			createdByUserId: userId,
-		})
-
-		Posthog.capture(userDistinctId(userId), MetricEvents.PLAYER_GAME_CREATED, {
-			version              : VERSION,
-			gameId               : gameId,
-			sessionStartTimestamp: sessions.get(userId)
+			createdByUserId: isBlockedPlayer(userId) ? undefined : userId,
 		})
 
 		console.log('Metrics: trackGameCreated: gameId', gameId, 'gameStartTime', gameStartTime, 'userId', userId)
@@ -252,6 +284,7 @@ export namespace Metrics {
 			playerIds   : playerIds,
 			winnerUserId: winnerUserId
 		})
+		PlayerStatsTracker.gameEnd(playerIds)
 
 		console.log('Metrics: trackGameEnded: gameId', gameId, 'gameStartTime', gameStartTime, 'playerCount', playerIds.length, 'winnerUserId', winnerUserId)
 	}
@@ -263,11 +296,12 @@ export namespace Metrics {
 	) {
 		if (isBlockedPlayer(userId)) return
 		
-		incrementPlayerStat(userId, PlayerStats.FOUND_ALL_PIGEONS)
+		incrementPlayerStat(userId, PlayerStatsEnum.FOUND_ALL_PIGEONS)
 
 		Posthog.capture(userDistinctId(userId), MetricEvents.PLAYER_FOUND_ALL_PIGEONS, {
 			version              : VERSION,
-			sessionStartTimestamp: sessions.get(userId)
+			sessionStartTimestamp: sessions.get(userId),
+			...playerStatsPayload(userId),
 		})
 
 		console.log('Metrics: trackGameJoined: userId', userId)

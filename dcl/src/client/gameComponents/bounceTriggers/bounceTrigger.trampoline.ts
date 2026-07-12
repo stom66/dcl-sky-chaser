@@ -1,13 +1,9 @@
-import { engine, Transform } from "@dcl/sdk/ecs"
 import { Quaternion, Vector3 } from "@dcl/sdk/math"
 
-import { BounceTrigger } from "src/client/gameComponents/bounceTriggers/bounceTrigger"
-
-import { ClientMessaging } from "src/client/clientMessaging"
-import { sfx, SoundManager } from "src/client/soundManager"
-import { ParticleSpawner } from "src/client/particleSpawner"
-import { PlayerStats } from "src/server/metrics/playerStats"
 import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
+
+import { BounceTrigger } from "src/client/gameComponents/bounceTriggers/bounceTrigger"
+import { sfx, SoundManager } from "src/client/soundManager"
 
 
 export class BounceTriggerTrampoline extends BounceTrigger {
