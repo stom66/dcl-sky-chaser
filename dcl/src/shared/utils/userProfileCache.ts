@@ -16,6 +16,7 @@ const PROFILE_URL = 'https://peer.decentraland.org/lambdas/profiles/'
 class UserProfileCache {
 	private cache                  = new Map<string, DecentralandProfile>()
 	private inFlight               = new Map<string, Promise<DecentralandProfile | null>>()
+	private displayNameCache       = new Map<string, string>()
 	private avatarUrlUnavailable   = new Set<string>()
 	private pendingAvatarCallbacks = new Map<string, Set<() => void>>()
 
@@ -33,9 +34,22 @@ class UserProfileCache {
 		userId : string
 	): string {
 		const avatar          = profile?.avatars[0]
+		const playerName      = getPlayer({ userId })?.name?.trim()
+		const cachedName      = this.displayNameCache.get(userId)?.trim()
 		const shortenedUserId = userId.length > 10 ? `${userId.slice(0, 6)}...${userId.slice(-4)}` : userId
 
-		return avatar?.name?.trim() || avatar?.unclaimedName?.trim() || shortenedUserId
+		return avatar?.name?.trim() || avatar?.unclaimedName?.trim() || playerName || cachedName || shortenedUserId
+	}
+
+	private rememberDisplayName(
+		userId     : string | undefined,
+		displayName: string | undefined
+	): void {
+		const trimmedDisplayName = displayName?.trim()
+
+		if (!userId || !trimmedDisplayName) return
+
+		this.displayNameCache.set(userId, trimmedDisplayName)
 	}
 
 	constructor() {}
@@ -52,6 +66,7 @@ class UserProfileCache {
 			try {
 				// Wait deterministically for local player
 				this.localUserId = await this.waitForLocalPlayer()
+				this.rememberDisplayName(this.localUserId, getPlayer()?.name)
 	
 				this.isInitialised = true
 	
@@ -61,6 +76,7 @@ class UserProfileCache {
 				// Cache profiles for players entering scene
 				onEnterScene((player) => {
 					if (!player) return
+					this.rememberDisplayName(player.userId, player.name)
 					void this.getUserProfile(player.userId)
 				})
 			} catch (error) {
