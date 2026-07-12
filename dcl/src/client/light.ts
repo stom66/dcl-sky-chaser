@@ -23,6 +23,24 @@ export namespace Light {
 		})
 
 		// snug  Light
+		const noticeBaord = engine.addEntity()
+		Transform.create(noticeBaord, {
+			position: Vector3.create(264.875, 67.5, 261.953),
+			rotation: Quaternion.fromEulerDegrees(25, 32.5, 0),
+		})
+		LightSource.create(noticeBaord, {
+			type     : LightSource.Type.Spot({
+				innerAngle : 60,
+				outerAngle : 75,
+			}),
+			color      : Color4.White(),
+			intensity  : 45000,
+			active     : true,
+			shadow     : true,
+		})
+
+
+		// snug  Light
 		const snug = engine.addEntity()
 		Transform.create(snug, {
 			position: Vector3.create(255.753, 58.5, 255.984),
