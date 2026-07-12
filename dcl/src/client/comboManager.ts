@@ -14,6 +14,10 @@ export namespace ComboManager {
 			console.log("ComboManager: TRIGGER_RING")
 			ComponentStore.incrementComboValue()
 		})
+
+		eventBus.on(ClientEvents.GAME_ACTIVE, () => {
+			ComponentStore.resetComboValue()
+		})
 	}
 
 	function systemComboWatcher(dt: number) {
