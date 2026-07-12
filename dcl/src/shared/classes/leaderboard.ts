@@ -73,6 +73,11 @@ export class Leaderboard {
 		const existing    = entries.find((e) => e.userId === userId)
 		const displayName = await userProfileCache.getUserDisplayName(userId)
 
+		if (entries.length === 0 && this.shouldRejectEmptyReadWrite()) {
+			console.error(`Leaderboard: submitScoreQueued: refusing to write "${this.storeName}" after empty read`)
+			return
+		}
+
 		if (existing) {
 			if (!this.shouldReplace(existing, score)) return
 			existing.score       = score
@@ -132,5 +137,16 @@ export class Leaderboard {
 		score   : number
 	): boolean {
 		return score > existing.score
+	}
+
+
+	// MARK: shouldRejectEmptyReadWrite
+	/**
+	 * Whether a leaderboard should reject writes when its storage read returns
+	 * no entries. Useful for persistent boards where an empty read indicates
+	 * missing storage rather than a valid reset state.
+	 */
+	protected shouldRejectEmptyReadWrite(): boolean {
+		return false
 	}
 }
