@@ -25,6 +25,7 @@ import { BounceSpawner } from './spawners/bounceSpawner'
 import { ProjectileManager } from './projectileManager'
 import { spawn } from '~system/PortableExperiences'
 import { SpawnManager } from './spawners/pickupSpawner'
+import { NoticeBoard } from './noticeBoard'
 
 
 export function initClient() {
@@ -87,19 +88,19 @@ export function initClient() {
 		BoosterInput.init()
 		
 		SpawnManager.init()
-		
 		ParticleSpawner.init()
 		TriggerSpawner.spawnTriggers()
 		
 		UILeaderboard.init()
 		BeaconManager.init()
-
+		
 		BirdSpawner.init()
 		Light.init()
-
+		
 		BounceSpawner.init()
-
+		
 		ProjectileManager.init()
+		NoticeBoard.init()
 
 		const { SetupUI } = await import('src/client/ui-screen')
 		SetupUI()
