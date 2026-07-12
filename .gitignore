@@ -10,6 +10,7 @@ bin
 
 # Substance painter
 *.spp.painter_lock
+*autosave_[0-9].spp
 
 # Logs
 logs
