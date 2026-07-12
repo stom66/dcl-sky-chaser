@@ -184,6 +184,48 @@
             "parent": 0
           }
         },
+        "518": {
+          "json": {
+            "position": {
+              "x": 267.2295837402344,
+              "y": 63.537261962890625,
+              "z": 265.4853210449219
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            },
+            "rotation": {
+              "x": 0,
+              "y": 0.9531103372573853,
+              "z": 0,
+              "w": -0.3026230037212372
+            },
+            "parent": 0
+          }
+        },
+        "519": {
+          "json": {
+            "position": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            },
+            "rotation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            },
+            "parent": 518
+          }
+        },
         "520": {
           "json": {
             "position": {
@@ -667,6 +709,27 @@
             "parent": 534
           }
         },
+        "543": {
+          "json": {
+            "position": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            },
+            "rotation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            },
+            "parent": 518
+          }
+        },
         "544": {
           "json": {
             "position": {
@@ -948,6 +1011,20 @@
             "invisibleMeshesCollisionMask": 3
           }
         },
+        "518": {
+          "json": {
+            "src": "assets/models/notice-board.gltf",
+            "visibleMeshesCollisionMask": 0,
+            "invisibleMeshesCollisionMask": 3
+          }
+        },
+        "519": {
+          "json": {
+            "src": "assets/models/noticeBoard-flagTag.gltf",
+            "visibleMeshesCollisionMask": 0,
+            "invisibleMeshesCollisionMask": 3
+          }
+        },
         "520": {
           "json": {
             "src": "assets/asset-packs/barbacue/Barbacue_01/Barbacue_01.glb",
@@ -1095,6 +1172,13 @@
             "invisibleMeshesCollisionMask": 3
           }
         },
+        "543": {
+          "json": {
+            "src": "assets/models/noticeBoard-pigeonDeluxe.gltf",
+            "visibleMeshesCollisionMask": 0,
+            "invisibleMeshesCollisionMask": 3
+          }
+        },
         "544": {
           "json": {
             "src": "assets/asset-packs/cactus_4/Cactus 4.glb",
@@ -1159,6 +1243,16 @@
         "517": {
           "json": {
             "value": "windSock.gltf"
+          }
+        },
+        "518": {
+          "json": {
+            "value": "notice-board.gltf"
+          }
+        },
+        "519": {
+          "json": {
+            "value": "noticeBoard-flagTag.gltf"
           }
         },
         "520": {
@@ -1276,6 +1370,11 @@
             "value": "Cactus 4"
           }
         },
+        "543": {
+          "json": {
+            "value": "noticeBoard-pigeonDeluxe.gltf"
+          }
+        },
         "544": {
           "json": {
             "value": "Cactus 4_2"
@@ -1316,7 +1415,23 @@
               "Tag Group 1",
               "Tag Group 2",
               "Tag Group 3",
-              "Tag Group 4"
+              "Tag Group 4",
+              "PosterPigeonDeluxe",
+              "PosterFlagTag"
+            ]
+          }
+        },
+        "519": {
+          "json": {
+            "tags": [
+              "PosterFlagTag"
+            ]
+          }
+        },
+        "543": {
+          "json": {
+            "tags": [
+              "PosterPigeonDeluxe"
             ]
           }
         }
@@ -1395,7 +1510,8 @@
                   534,
                   535,
                   547,
-                  548
+                  548,
+                  518
                 ]
               },
               {
@@ -1559,6 +1675,22 @@
               {
                 "entity": 548,
                 "children": []
+              },
+              {
+                "entity": 518,
+                "open": true,
+                "children": [
+                  519,
+                  543
+                ]
+              },
+              {
+                "entity": 519,
+                "children": []
+              },
+              {
+                "entity": 543,
+                "children": []
               }
             ]
           }
@@ -1598,6 +1730,12 @@
           "json": {}
         },
         "517": {
+          "json": {}
+        },
+        "518": {
+          "json": {}
+        },
+        "519": {
           "json": {}
         },
         "520": {
@@ -1667,6 +1805,9 @@
           "json": {}
         },
         "542": {
+          "json": {}
+        },
+        "543": {
           "json": {}
         },
         "544": {
