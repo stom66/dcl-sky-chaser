@@ -28,6 +28,16 @@ class UserProfileCache {
 		return typeof avatarUrl === 'string' ? avatarUrl : ''
 	}
 
+	private resolveDisplayName(
+		profile: DecentralandProfile | null | undefined,
+		userId : string
+	): string {
+		const avatar          = profile?.avatars[0]
+		const shortenedUserId = userId.length > 10 ? `${userId.slice(0, 6)}...${userId.slice(-4)}` : userId
+
+		return avatar?.name?.trim() || avatar?.unclaimedName?.trim() || shortenedUserId
+	}
+
 	constructor() {}
 
 
@@ -143,7 +153,7 @@ class UserProfileCache {
 		}
 
 		const profile = this.cache.get(id)
-		return profile?.avatars[0]?.name ?? ''
+		return this.resolveDisplayName(profile, id)
 	}
 
 
@@ -157,7 +167,7 @@ class UserProfileCache {
 		}
 
 		const profile = await this.getUserProfile(id)
-		return profile?.avatars[0]?.name ?? ''
+		return this.resolveDisplayName(profile, id)
 	}
 
 

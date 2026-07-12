@@ -11,7 +11,13 @@ import { ButtonImageClose } from '../components/buttonImage.close'
 
 
 // MARK: Vars
-let scoreboard      : Map<string, number> = new Map()
+type ScoreboardRow = {
+	displayName: string
+	score      : number
+}
+
+let scoreboard        : Map<string, ScoreboardRow> = new Map()
+let scoreboardVersion : number = 0
 
 const PANEL_HIDDEN  = -1200
 const PANEL_VISIBLE = 8
@@ -22,13 +28,25 @@ var panelBottom     : number = PANEL_HIDDEN
 // MARK: Events
 ComponentStore.onComponentChange(C_GameData.ScoreBoard, (data) => {
  	console.log("ui.scoreboard: SCOREBOARD COMPONENT CHANGED")
-	var scores = data?.scores ?? []
+	const currentVersion = ++scoreboardVersion
+	var scores           = data?.scores ?? []
 	scores.sort((a, b) => b.score - a.score)
 	
 	scoreboard.clear()
 	for (const s of scores) {
-		void userProfileCache.getUserProfile(s.userId)
-		scoreboard.set(userProfileCache.getDisplayName(s.userId), s.score)
+		scoreboard.set(s.userId, {
+			displayName: userProfileCache.getDisplayName(s.userId),
+			score      : s.score
+		})
+
+		void userProfileCache.getUserDisplayName(s.userId).then((displayName) => {
+			if (currentVersion !== scoreboardVersion) return
+
+			const row = scoreboard.get(s.userId)
+			if (!row) return
+
+			row.displayName = displayName
+		})
 	}
 })
 
@@ -53,11 +71,11 @@ function getScoreboardRows() {
 	const result: ReactEcs.JSX.Element[] = []
 
 	let i = 0
-	for (const [displayName, score] of scoreboard) {
+	for (const [userId, row] of scoreboard) {
 		i++
 		result.push(
 			<UiEntity
-				key         = {`ui_Results_row_${displayName}`}
+				key         = {`ui_Results_row_${userId}`}
 				uiTransform = {{
 					height        : 'auto',
 					width         : '100%',
@@ -82,7 +100,7 @@ function getScoreboardRows() {
 					}}
 				/>
 				<Label
-					value       = {displayName}
+					value       = {row.displayName}
 					textAlign   = 'middle-left'
 					fontSize    = {22-(i*0.5)}
 					color       = {theme.colors.light}
@@ -92,7 +110,7 @@ function getScoreboardRows() {
 					}}
 				/>
 				<Label
-					value       = {score.toString()}
+					value       = {row.score.toString()}
 					textAlign   = 'middle-right'
 					fontSize    = {22-(i*0.75)}
 					color       = {theme.colors.light}
