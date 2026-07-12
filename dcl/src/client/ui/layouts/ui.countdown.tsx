@@ -32,15 +32,23 @@ let ratio               = remaining / GameSettings.COUNTDOWN_DURATION
 let isInitialized = false
 
 function getRemainingTime() {
-	if (gameStartTime > Date.now()) {
-		return gameStartTime - Date.now()
+	if (gameStartTime === 0) return 0
+
+	const localGameStartTime = clockSync.toLocalTime(gameStartTime)
+
+	if (localGameStartTime > Date.now()) {
+		return localGameStartTime - Date.now()
 	} else {
-		return (gameStartTime + GameSettings.GAME_DURATION) - Date.now()
+		return (localGameStartTime + GameSettings.GAME_DURATION) - Date.now()
 	}
 }
 
 function getRatio() {
-	if (gameStartTime > Date.now()) {
+	if (gameStartTime === 0) return 0
+
+	const localGameStartTime = clockSync.toLocalTime(gameStartTime)
+
+	if (localGameStartTime > Date.now()) {
 		return Math.ceil((remaining / GameSettings.COUNTDOWN_DURATION) * 100)
 	} else {
 		return Math.ceil((remaining / GameSettings.GAME_DURATION) * 100)
@@ -48,7 +56,7 @@ function getRatio() {
 }
 
 ComponentStore.onComponentChange(C_GameData.GameData, (data) => {
-	gameStartTime = clockSync.toLocalTime(data?.startTime ?? 0)
+	gameStartTime = data?.startTime ?? 0
 
 	remaining = getRemainingTime()
 	ratio     = getRatio()
