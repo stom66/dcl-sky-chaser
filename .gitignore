@@ -8,6 +8,9 @@ bin
 *.afdesign~lock~
 *.af~lock~
 
+# Substance painter
+*.spp.painter_lock
+
 # Logs
 logs
 *.log
