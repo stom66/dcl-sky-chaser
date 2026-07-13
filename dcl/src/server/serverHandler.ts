@@ -127,13 +127,15 @@ export namespace serverHandler {
 	// MARK: On Game End
 	async function OnGameEnd() {
 		// Submit scores to leaderboards
-		const scores              = ComponentStore.getPlayerScores()
-		const allTimeScores       : LeaderboardScore[] = []
-		const weeklyScores        : LeaderboardScore[] = []
+		const scores                = ComponentStore.getPlayerScores()
+		const leaderboardAllTime    = await LeaderboardManager.getLeaderboardAllTime()
+		const leaderboardWeekly     = await LeaderboardManager.getLeaderboardWeekly()
+		const allTimeScores         : LeaderboardScore[] = []
+		const weeklyScores          : LeaderboardScore[] = []
 
-		// Get the current highest score
-		const lbAlltimeHighestScore = scores.reduce((max, score) => Math.max(max, score.score), 0)
-		const lbWeeklyHighestScore  = scores.reduce((max, score) => Math.max(max, score.score), 0)
+		// Get the previous highest leaderboard scores before this round is submitted.
+		const lbAlltimeHighestScore = leaderboardAllTime.reduce((max, entry) => Math.max(max, entry.score), 0)
+		const lbWeeklyHighestScore  = leaderboardWeekly.reduce((max, entry) => Math.max(max, entry.score), 0)
 
 		for (const [index, score] of scores.entries()) {
 
