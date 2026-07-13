@@ -1,6 +1,6 @@
-import { Leaderboard, LeaderboardEntry } from "src/shared/classes/leaderboard";
-import { LeaderboardAllTime } from "src/shared/classes/leaderboard.allTime";
-import { LeaderboardWeekly } from "src/shared/classes/leaderboard.weekly";
+import { Leaderboard, LeaderboardEntry, LeaderboardScore } from "src/shared/classes/leaderboard"
+import { LeaderboardAllTime } from "src/shared/classes/leaderboard.allTime"
+import { LeaderboardWeekly } from "src/shared/classes/leaderboard.weekly"
 
 export namespace LeaderboardManager {
 
@@ -11,12 +11,11 @@ export namespace LeaderboardManager {
 		leaderboards.weekly  = new LeaderboardWeekly()
 	}
 
-	export async function submitScore(
+	export async function submitScores(
 		boardName: string,
-		userId   : string,
-		score    : number
+		scores   : LeaderboardScore[]
 	): Promise<void> {
-		await leaderboards[boardName].submitScore(userId, score)
+		await leaderboards[boardName].submitScores(scores)
 	}
 
 

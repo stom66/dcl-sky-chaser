@@ -1,4 +1,6 @@
 import { Storage } from "@dcl/sdk/server"
+import * as utils from "@dcl-sdk/utils"
+
 
 import { userProfileCache } from "src/shared/utils/userProfileCache"
 
@@ -10,10 +12,15 @@ export type LeaderboardEntry = {
 	rank       : number
 }
 
+export type LeaderboardScore = {
+	userId: string
+	score : number
+}
+
 export class Leaderboard {
 	protected storeName  : string
-	protected recordLimit: number = 10
-	private submissionQueue: Promise<void> = Promise.resolve()
+	protected recordLimit: number  = 10
+	private isBusy       : boolean = false
 
 	constructor(storeName: string) {
 		this.storeName = storeName
@@ -44,63 +51,101 @@ export class Leaderboard {
 	}
 
 
-	// MARK: submitScore
+	// MARK: submitScores
 	/**
-	 * Reads the latest data, applies the score if shouldReplace allows it, then writes
-	 * the cleaned result back so storage never grows beyond recordLimit or keeps dead entries.
+	 * Reads the latest data, applies each score if shouldReplace allows it, then
+	 * writes the cleaned result back in one storage update.
 	 */
-	public async submitScore(
-		userId: string,
-		score : number
+	public async submitScores(
+		scores: LeaderboardScore[]
 	): Promise<void> {
-		const submission = this.submissionQueue.then(() => this.submitScoreQueued(userId, score))
-		this.submissionQueue = submission.catch(() => undefined)
+		if (scores.length === 0) return
 
-		return submission
+		await this.waitForTurn()
+
+		try {
+			await this.submitScoresBusy(scores)
+		} finally {
+			this.isBusy = false
+		}
 	}
 
 
-	// MARK: submitScoreQueued
+	// MARK: submitScoresBusy
 	/**
-	 * Applies one score update after any previous update for this leaderboard has
-	 * finished, preventing overlapping storage reads from overwriting each other.
+	 * Applies score updates while the leaderboard is locked for writing.
 	 */
-	private async submitScoreQueued(
-		userId: string,
-		score : number
+	private async submitScoresBusy(
+		scores: LeaderboardScore[]
 	): Promise<void> {
-		const entries     = await this.read()
-		const existing    = entries.find((e) => e.userId === userId)
-		const displayName = await userProfileCache.getUserDisplayName(userId)
+		const entries = await this.read()
 
-		if (entries.length === 0 && this.shouldRejectEmptyReadWrite()) {
-			console.error(`Leaderboard: submitScoreQueued: refusing to write "${this.storeName}" after empty read`)
-			return
-		}
-
-		if (existing) {
-			if (!this.shouldReplace(existing, score)) return
-			existing.score       = score
-			existing.displayName = displayName
-			existing.lastUpdated = Date.now()
-		} else {
-			entries.push({
-				userId     : userId,
-				displayName: displayName,
-				score      : score,
-				lastUpdated: Date.now(),
-				rank       : 0
-			})
+		for (const score of scores) {
+			await this.applyScore(entries, score)
 		}
 
 		try {
 			const cleaned = this.cleanup(entries)
 			await Storage.set(this.storeName, JSON.stringify(cleaned))
-			console.log(`Leaderboard: submitScore: wrote "${this.storeName}"`, cleaned)
+			console.log(`Leaderboard: submitScores: wrote "${this.storeName}"`, cleaned)
 			this.callback(cleaned)
 		} catch (error) {
-			console.error(`Leaderboard: submitScore: failed to write "${this.storeName}"`, error)
+			console.error(`Leaderboard: submitScores: failed to write "${this.storeName}"`, error)
 		}
+	}
+
+
+	// MARK: applyScore
+	/**
+	 * Applies one incoming score to the in-memory leaderboard entries.
+	 */
+	private async applyScore(
+		entries: LeaderboardEntry[],
+		score  : LeaderboardScore
+	): Promise<void> {
+		const existing    = entries.find((e) => e.userId === score.userId)
+		const displayName = await userProfileCache.getUserDisplayName(score.userId)
+
+		if (existing) {
+			if (!this.shouldReplace(existing, score.score)) return
+
+			existing.score       = score.score
+			existing.displayName = displayName
+			existing.lastUpdated = Date.now()
+			return
+		}
+
+		entries.push({
+			userId     : score.userId,
+			displayName: displayName,
+			score      : score.score,
+			lastUpdated: Date.now(),
+			rank       : 0
+		})
+	}
+
+
+	// MARK: waitForTurn
+	/**
+	 * Waits until no write is active, then marks this leaderboard as busy.
+	 */
+	private async waitForTurn(): Promise<void> {
+		while (this.isBusy) {
+			await this.wait(10)
+		}
+
+		this.isBusy = true
+	}
+
+
+	// MARK: wait
+	/**
+	 * Resolves after the requested delay.
+	 */
+	private async wait(ms: number): Promise<void> {
+		return new Promise((resolve) => {
+			utils.timers.setTimeout(resolve, ms)
+		})
 	}
 
 	// MARK: callback
@@ -137,16 +182,5 @@ export class Leaderboard {
 		score   : number
 	): boolean {
 		return score > existing.score
-	}
-
-
-	// MARK: shouldRejectEmptyReadWrite
-	/**
-	 * Whether a leaderboard should reject writes when its storage read returns
-	 * no entries. Useful for persistent boards where an empty read indicates
-	 * missing storage rather than a valid reset state.
-	 */
-	protected shouldRejectEmptyReadWrite(): boolean {
-		return false
 	}
 }

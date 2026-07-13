@@ -10,16 +10,6 @@ export class LeaderboardAllTime extends Leaderboard {
 		super('alltime')
 	}
 
-	// MARK: shouldRejectEmptyReadWrite
-	/**
-	 * All-time results should already exist in storage. Refuse to write if the
-	 * read returns empty, because that would overwrite historical results with
-	 * only the current round's submissions.
-	 */
-	protected shouldRejectEmptyReadWrite(): boolean {
-		return true
-	}
-
 	protected callback(entries: LeaderboardEntry[]): void {
 		console.log(`LeaderboardAllTime: submitScore: wrote "alltime"`, entries)
 		ComponentStore.setLeaderboardAllTime(entries)

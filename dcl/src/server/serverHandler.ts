@@ -1,14 +1,15 @@
 import * as utils from "@dcl-sdk/utils"
 
+import { LeaderboardScore } from "src/shared/classes/leaderboard"
 import { ComponentStore } from 'src/shared/components/componentStore'
-import { MessageType, room } from 'src/shared/room'
-
-import { ServerMessaging } from 'src/server/serverMessaging'
 import { GameStatus } from 'src/shared/enums'
-import { GameSettings } from 'src/shared/settings'
-import { LeaderboardManager } from "./leaderboardManager"
-import { Metrics } from "./metrics/client"
 import { PlayerStatsEnum } from "src/shared/metrics/playerStats"
+import { MessageType, room } from 'src/shared/room'
+import { GameSettings } from 'src/shared/settings'
+
+import { LeaderboardManager } from "src/server/leaderboardManager"
+import { Metrics } from "src/server/metrics/client"
+import { ServerMessaging } from 'src/server/serverMessaging'
 
 
 export namespace serverHandler {
@@ -126,11 +127,13 @@ export namespace serverHandler {
 	// MARK: On Game End
 	async function OnGameEnd() {
 		// Submit scores to leaderboards
-		const scores = ComponentStore.getPlayerScores()
+		const scores              = ComponentStore.getPlayerScores()
+		const allTimeScores       : LeaderboardScore[] = []
+		const weeklyScores        : LeaderboardScore[] = []
 
 		// Get the current highest score
 		const lbAlltimeHighestScore = scores.reduce((max, score) => Math.max(max, score.score), 0)
-		const lbWeeklyHighestScore = scores.reduce((max, score) => Math.max(max, score.score), 0)
+		const lbWeeklyHighestScore  = scores.reduce((max, score) => Math.max(max, score.score), 0)
 
 		for (const [index, score] of scores.entries()) {
 
@@ -141,22 +144,31 @@ export namespace serverHandler {
 				Metrics.trackGameNotWon(score.userId, ComponentStore.getGameStartTime())
 			}
 
-			// All time scores
-			await LeaderboardManager.submitScore('alltime', score.userId, score.score)
+			allTimeScores.push({
+				userId: score.userId,
+				score : score.score
+			})
+
 			if (score.score > lbAlltimeHighestScore) {
 				room.send(MessageType.NOTIFY_LEADERBOARD_WINNER_ALL_TIME, {
 					sentAt: Date.now()
 				}, { to: [score.userId] })
 			}
 
-			// Weekly scores
-			await LeaderboardManager.submitScore('weekly', score.userId, score.score)
+			weeklyScores.push({
+				userId: score.userId,
+				score : score.score
+			})
+
 			if (score.score > lbWeeklyHighestScore) {
 				room.send(MessageType.NOTIFY_LEADERBOARD_WINNER_WEEKLY, {
 					sentAt: Date.now()
 				}, { to: [score.userId] })
 			}
 		}
+
+		await LeaderboardManager.submitScores('alltime', allTimeScores)
+		await LeaderboardManager.submitScores('weekly', weeklyScores)
 
 		ComponentStore.setGameStatus(GameStatus.ENDING)
 
