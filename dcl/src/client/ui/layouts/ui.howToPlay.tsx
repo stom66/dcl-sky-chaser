@@ -7,6 +7,9 @@ import { ButtonImageClose } from '../components'
 const PANEL_HIDDEN  = vhAsPixels(110) * -1
 const PANEL_VISIBLE = 8
 var panelBottom     : number = PANEL_VISIBLE
+
+const BUTTON_HIDDEN = -256
+const BUTTON_VISIBLE = 8
 var buttonTop       : number = PANEL_HIDDEN / 8
 
 
@@ -14,7 +17,7 @@ var buttonTop       : number = PANEL_HIDDEN / 8
 /** Shows the How To Play panel. */
 export function ShowUI() {
 	tweenValue(panelBottom, PANEL_VISIBLE, 0.5, (v) => panelBottom = v)
-	tweenValue(buttonTop, PANEL_HIDDEN / 8, 0.5, (v) => buttonTop = v)
+	tweenValue(buttonTop, BUTTON_HIDDEN, 0.5, (v) => buttonTop = v)
 }
 
 
@@ -22,7 +25,7 @@ export function ShowUI() {
 /** Hides the How To Play panel. */
 export function HideUI() {
 	tweenValue(panelBottom, PANEL_HIDDEN, 0.5, (v) => panelBottom = v)
-	tweenValue(buttonTop, PANEL_VISIBLE, 0.5, (v) => buttonTop = v)
+	tweenValue(buttonTop, BUTTON_VISIBLE, 0.5, (v) => buttonTop = v)
 }
 
 
