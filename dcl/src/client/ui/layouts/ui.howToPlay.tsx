@@ -4,7 +4,7 @@ import { vhAsPixels } from 'src/client/ui/utils/sizing'
 import { tweenValue } from 'src/client/ui/utils/tweens'
 import { ButtonImageClose } from '../components'
 
-const PANEL_HIDDEN  = -1200
+const PANEL_HIDDEN  = vhAsPixels(110) * -1
 const PANEL_VISIBLE = 8
 var panelBottom     : number = PANEL_VISIBLE
 var buttonTop       : number = PANEL_HIDDEN / 8

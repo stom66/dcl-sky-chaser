@@ -8,6 +8,7 @@ import { ClientEvents, eventBus } from 'src/shared/utils/eventBus'
 import { theme } from '../vars/theme'
 import { alpha, darken } from '../utils/colors'
 import { ButtonImageClose } from '../components/buttonImage.close'
+import { vhAsPixels } from '../utils/sizing'
 
 
 // MARK: Vars
@@ -19,7 +20,7 @@ type ScoreboardRow = {
 let scoreboard        : Map<string, ScoreboardRow> = new Map()
 let scoreboardVersion : number = 0
 
-const PANEL_HIDDEN  = -1200
+const PANEL_HIDDEN  = vhAsPixels(110) * -1
 const PANEL_VISIBLE = 8
 var panelBottom     : number = PANEL_HIDDEN
 //var panelBottom     : number = IS_DEV ? PANEL_HIDDEN: PANEL_VISIBLE

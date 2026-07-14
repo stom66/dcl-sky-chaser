@@ -3,8 +3,9 @@ import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
 import { Color4 } from '@dcl/sdk/math'
 
 import { tweenValue } from 'src/client/ui/utils/tweens'
+import { vhAsPixels } from '../utils/sizing'
 
-const PANEL_HIDDEN  = -1200
+const PANEL_HIDDEN  = vhAsPixels(110) * -1
 const PANEL_VISIBLE = 8
 //var panelBottom     : number = IS_DEV ? PANEL_VISIBLE : PANEL_HIDDEN
 var panelBottom     : number = PANEL_HIDDEN
