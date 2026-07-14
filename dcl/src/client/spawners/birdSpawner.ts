@@ -71,6 +71,7 @@ export namespace BirdSpawner {
 		for (const [index, transform] of transforms.entries()) {
 			createBird(index, transform)
 		}
+		console.log("BirdSpawner: spawned", transforms.length, "birds")
 
 		ComponentStore.setPigeonMaxCount(transforms.length)
 
@@ -130,7 +131,7 @@ export namespace BirdSpawner {
 			onBirdClicked(bird, index, isFart)
 		})
 
-		console.log("BirdSpawner: spawned bird", index, src)	
+		//console.log("BirdSpawner: spawned bird", index, src)	
 		
 	}
 
