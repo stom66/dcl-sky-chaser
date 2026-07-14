@@ -14,12 +14,12 @@ export namespace LocomotionController {
 	export function init() {
 		applyLocomotionSettings()
 
-		eventBus.on(ClientEvents.COMBO_INCREASE, (data: { value: number }) => {
+		eventBus.on(ClientEvents.PLAYER_COMBO_INCREASE, (data: { value: number }) => {
 			console.log("ComboManager: COMBO_INCREASE")	
 			setGlidingSpeed(defaultSettings.glidingSpeed + (data.value * GameSettings.COMBO_GLIDING_SPEED_INCREMENT))
 		})
 
-		eventBus.on(ClientEvents.COMBO_DECREASE, (data: { value: number }) => {
+		eventBus.on(ClientEvents.PLAYER_COMBO_DECREASE, (data: { value: number }) => {
 			console.log("ComboManager: COMBO_INCREASE")	
 			setGlidingSpeed(defaultSettings.glidingSpeed + (data.value * GameSettings.COMBO_GLIDING_SPEED_INCREMENT))
 		})

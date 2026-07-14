@@ -37,6 +37,6 @@ export enum ClientEvents {
 
 
 
-	COMBO_INCREASE             = "combo_Increase",
-	COMBO_DECREASE             = "combo_Decrease",
+	PLAYER_COMBO_INCREASE             = "combo_Increase",
+	PLAYER_COMBO_DECREASE             = "combo_Decrease",
 }
