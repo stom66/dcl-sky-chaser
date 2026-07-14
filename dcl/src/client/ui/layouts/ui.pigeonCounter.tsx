@@ -32,7 +32,7 @@ ComponentStore.onComponentChange(C_PigeonCounter.PigeonCounter, (data) => {
 	}
 })
 
-eventBus.on(ClientEvents.FOUND_ALL_PIGEONS, (data) => {
+eventBus.on(ClientEvents.PLAYER_FOUND_ALL_PIGEONS, (data) => {
 	HideUI()
 })
 

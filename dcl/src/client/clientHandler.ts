@@ -39,6 +39,6 @@ export namespace ClientHandler {
 	// MARK: Projectile
 	function handleNotifyProjectile(data: { position: Vector3, direction: Vector3, owner: string }) {
 		console.log('ClientHandler: handleNotifyProjectile: data', data)
-		eventBus.emit(ClientEvents.TRIGGER_PROJECTILE, {position: data.position, direction: data.direction, owner: data.owner })
+		eventBus.emit(ClientEvents.NOTIFY_PROJECTILE_FIRED, {position: data.position, direction: data.direction, owner: data.owner })
 	}
 }

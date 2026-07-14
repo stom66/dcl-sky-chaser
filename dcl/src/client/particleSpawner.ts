@@ -36,31 +36,36 @@ export namespace ParticleSpawner {
 		})
 
 		// Locally triggered effects
-		eventBus.on(ClientEvents.TRIGGER_AWNING, (data)     => {
-			triggerEffect(ClientEvents.TRIGGER_AWNING, data?.position ?? zero, data?.direction ?? zero)
+		eventBus.on(ClientEvents.PLAYER_COLLIDED_AWNING, (data)     => {
+			triggerEffect(ClientEvents.PLAYER_COLLIDED_AWNING, data?.position ?? zero, data?.direction ?? zero)
 		})
-		eventBus.on(ClientEvents.TRIGGER_TRAMPOLINE, (data) => {
-			triggerEffect(ClientEvents.TRIGGER_TRAMPOLINE, data?.position ?? zero, data?.direction ?? zero)
+		eventBus.on(ClientEvents.PLAYER_COLLIDED_TRAMPOLINE, (data) => {
+			triggerEffect(ClientEvents.PLAYER_COLLIDED_TRAMPOLINE, data?.position ?? zero, data?.direction ?? zero)
 		})
-		eventBus.on(ClientEvents.TRIGGER_UMBRELLA, (data)   => {
-			triggerEffect(ClientEvents.TRIGGER_UMBRELLA, data?.position ?? zero, data?.direction ?? zero)
-		})
-
-		eventBus.on(ClientEvents.TRIGGER_RING, (data)       => {
-			triggerEffect(ClientEvents.TRIGGER_RING, data?.position ?? zero, Vector3.create(0, data?.yRot ?? 0, 0))
-		})
-		eventBus.on(ClientEvents.TRIGGER_FUEL, (data)       => {
-			triggerEffect(ClientEvents.TRIGGER_FUEL, data?.position ?? zero, data?.direction ?? zero)
-		})
-		eventBus.on(ClientEvents.TRIGGER_BALLOON, (data)    => {
-			triggerEffect(ClientEvents.TRIGGER_BALLOON, data?.position ?? zero, data?.direction ?? zero)
+		eventBus.on(ClientEvents.PLAYER_COLLIDED_UMBRELLA, (data)   => {
+			triggerEffect(ClientEvents.PLAYER_COLLIDED_UMBRELLA, data?.position ?? zero, data?.direction ?? zero)
 		})
 
-		eventBus.on(ClientEvents.TRIGGER_EXPLOSION, (data)  => {
-			triggerEffect(ClientEvents.TRIGGER_EXPLOSION, data?.position ?? zero, zero)
+		eventBus.on(ClientEvents.PLAYER_COLLIDED_RING, (data)       => {
+			triggerEffect(ClientEvents.PLAYER_COLLIDED_RING, data?.position ?? zero, Vector3.create(0, data?.yRot ?? 0, 0))
+		})
+		eventBus.on(ClientEvents.PLAYER_COLLIDED_FUEL, (data)       => {
+			triggerEffect(ClientEvents.PLAYER_COLLIDED_FUEL, data?.position ?? zero)
 		})
 
-		eventBus.on(ClientEvents.FOUND_ALL_PIGEONS, (data)  => {
+		eventBus.on(ClientEvents.PLAYER_COLLIDED_BALLOON, (data)    => {
+			triggerEffect(ClientEvents.PLAYER_COLLIDED_BALLOON, data?.position ?? zero)
+		})
+
+		eventBus.on(ClientEvents.PROJECTILE_HIT_BALLOON, (data)  => {
+			triggerEffect(ClientEvents.PROJECTILE_HIT_BALLOON, data?.position ?? zero)
+		})
+
+		eventBus.on(ClientEvents.PROJECTILE_HIT_FUEL, (data)  => {
+			triggerEffect(ClientEvents.PROJECTILE_HIT_FUEL, data?.position ?? zero, zero)
+		})
+
+		eventBus.on(ClientEvents.PLAYER_FOUND_ALL_PIGEONS, (data)  => {
 			TriggerPigeonSpurt(Transform.getOrNull(engine.PlayerEntity)?.position ?? zero)
 		})
 
@@ -93,27 +98,32 @@ export namespace ParticleSpawner {
 	}
 
 
-	function triggerEffect(effect: ClientEvents, position: Vector3, direction: Vector3) {
+	function triggerEffect(
+		effect   : ClientEvents, 
+		position : Vector3, 
+		direction: Vector3 = Vector3.Zero()
+	) {
 		switch (effect) {
-			case ClientEvents.TRIGGER_AWNING:
+			case ClientEvents.PLAYER_COLLIDED_AWNING:
 				TriggerDustSpurt(position)
 				break
-			case ClientEvents.TRIGGER_TRAMPOLINE:
+			case ClientEvents.PLAYER_COLLIDED_TRAMPOLINE:
 				TriggerDustSpurt(position)
 				break
-			case ClientEvents.TRIGGER_UMBRELLA:
+			case ClientEvents.PLAYER_COLLIDED_UMBRELLA:
 				TriggerDustSpurt(position)
 				break
-			case ClientEvents.TRIGGER_RING:
-				TriggerPickupSpeedRing(position, direction.y)
-				break
-			case ClientEvents.TRIGGER_FUEL:
-				TriggerPickupFuel(position)
-				break
-			case ClientEvents.TRIGGER_BALLOON:
+			case ClientEvents.PLAYER_COLLIDED_BALLOON:
+			case ClientEvents.PROJECTILE_HIT_BALLOON:
 				TriggerPickupBalloon(position)
 				break
-			case ClientEvents.TRIGGER_EXPLOSION:
+			case ClientEvents.PLAYER_COLLIDED_RING:
+				TriggerPickupSpeedRing(position, direction.y)
+				break
+			case ClientEvents.PLAYER_COLLIDED_FUEL:
+				TriggerPickupFuel(position)
+				break
+			case ClientEvents.PROJECTILE_HIT_FUEL:
 				TriggerExplosion(position)
 				break
 		}

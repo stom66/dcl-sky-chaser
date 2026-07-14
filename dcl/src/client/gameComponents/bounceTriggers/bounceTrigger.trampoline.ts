@@ -31,6 +31,6 @@ export class BounceTriggerTrampoline extends BounceTrigger {
 	) {
 		SoundManager.playSound(sfx.boing)
 		
-		eventBus.emit(ClientEvents.TRIGGER_TRAMPOLINE, { position, normal })
+		eventBus.emit(ClientEvents.PLAYER_COLLIDED_TRAMPOLINE, { position, normal })
 	}
 }

@@ -52,7 +52,7 @@ export function DebugUI() {
 				<ButtonText textLabel="newGame" callback={() => ClientMessaging.RequestNewGame() } />
 				<ButtonText textLabel="addPoints" callback={() => ClientMessaging.RequestStatsUpdate(PlayerStatsEnum.COLLECTED_BALLOONS) } />
 				<ButtonText textLabel="triggerDustSpurt" callback={() => {
-					eventBus.emit(ClientEvents.FOUND_ALL_PIGEONS, {  })
+					eventBus.emit(ClientEvents.PLAYER_FOUND_ALL_PIGEONS, {  })
 				}} />
 				<ButtonText textLabel="triggerLeaderboardWinner" callback={() => ClientHandler.handleNotifyLeaderboardWinner("ALL TIME") } />
 				<ButtonText textLabel="incrementCombo" callback={() => ComponentStore.incrementComboValue() } />

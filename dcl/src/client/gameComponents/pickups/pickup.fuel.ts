@@ -106,7 +106,7 @@ export class PickupFuel extends Pickup {
 		ComponentStore.increaseFuelValue(value)
 		SoundManager.playSound(sfx.fuelPickup)
 
-		eventBus.emit(ClientEvents.TRIGGER_FUEL, {
+		eventBus.emit(ClientEvents.PLAYER_COLLIDED_FUEL, {
 			position: this.getPosition(),
 			amount  : value
 		})
@@ -124,7 +124,7 @@ export class PickupFuel extends Pickup {
 			projectileEntity: entity,
 			projectileOwner : ProjectileComponent.getOrNull(entity)?.owner ?? ""
 		})
-		eventBus.emit(ClientEvents.TRIGGER_EXPLOSION, {
+		eventBus.emit(ClientEvents.PROJECTILE_HIT_FUEL, {
 			position: position
 		})
 
@@ -173,12 +173,8 @@ export class PickupFuel extends Pickup {
 
 
 	// MARK: onDeactivate
-	protected onDeactivate() : void {
+	protected onDeactivate(silent: boolean) : void {
 		Tween.setScale(this.rootEntity, this.meshScaleV3, Vector3.Zero(), 200, EasingFunction.EF_EASEBOUNCE)
-
-		//utils.timers.setTimeout(() => {
-		//	this.rootTransform.position = this.defaultPosition
-		//}, 500 + (Math.floor(Math.random() * 1500)))
 	}
 
 

@@ -126,7 +126,7 @@ export class PickupBalloon extends Pickup {
 		console.log("PickupBalloon: onHitByPlayer: Player entered")
 		const combo = ComponentStore.getComboValue()
 
-		eventBus.emit(ClientEvents.TRIGGER_BALLOON, {
+		eventBus.emit(ClientEvents.PLAYER_COLLIDED_BALLOON, {
 			position: this.getPosition(),
 			points  : this.getValue() * combo
 		})
@@ -138,22 +138,24 @@ export class PickupBalloon extends Pickup {
 		entity: Entity,
 	) : void {
 		const owner = ProjectileComponent.getOrNull(entity)?.owner ?? ""
+		const combo = ComponentStore.getComboValue()
 
 		eventBus.emit(ClientEvents.PROJECTILE_HIT_BALLOON, {
+			points          : this.getValue() * combo,
 			position        : this.getPosition(),
 			projectileEntity: entity,
 			projectileOwner : owner
 		})
 
 		// Allow players to get points from SHOOTING balloons as well
-		if (owner === "") {
+/* 		if (owner === "") {
 			this.onHitByPlayer()
 		} else {
 			eventBus.emit(ClientEvents.NOTIFY_TRIGGER, {
-				effect  : ClientEvents.TRIGGER_BALLOON,
+				effect  : ClientEvents.PLAYER_COLLIDED_BALLOON,
 				position: this.defaultPosition
 			})
-		}
+		} */
 	}
 
 
@@ -172,10 +174,12 @@ export class PickupBalloon extends Pickup {
 
 
 	// MARK: onDeactivate
-	protected onDeactivate() : void {
+	protected onDeactivate(silent: boolean) : void {
 		Tween.setScale(this.rootEntity, Vector3.One(), Vector3.Zero(), 200, EasingFunction.EF_LINEAR)
 
-		SoundManager.playSound(sfx.balloonPickup, this.rootEntity)
+		if (!silent) {
+			SoundManager.playSound(sfx.balloonPickup, this.rootEntity)
+		}
 	}
 
 

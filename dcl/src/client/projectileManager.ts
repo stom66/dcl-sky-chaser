@@ -19,7 +19,10 @@ export namespace ProjectileManager {
 	const HIDE_LOCATION = Vector3.create(128, -100, 128)
 
 	export function init() {
-		eventBus.on(ClientEvents.TRIGGER_PROJECTILE, (data) => { 
+		eventBus.on(ClientEvents.NOTIFY_PROJECTILE_FIRED, (data) => { 
+			fireProjectile(data.position, data.direction, data.owner) 
+		})
+		eventBus.on(ClientEvents.PROJECTILE_FIRED, (data) => { 
 			fireProjectile(data.position, data.direction, data.owner) 
 		})
 
@@ -44,10 +47,10 @@ export namespace ProjectileManager {
 	}
 
 	// Triggered when local or server players request a projectile
-	export function requestProjectile(data: { position: Vector3, direction: Vector3, owner?: string }) {
+	function requestProjectile(data: { position: Vector3, direction: Vector3, owner?: string }) {
 		console.log('ProjectileManager: requestProjectile: data', data)
 		ClientMessaging.RequestProjectile(data.position, data.direction)
-		eventBus.emit(ClientEvents.TRIGGER_PROJECTILE, data) // indirectly call the spawnProjectile function below
+		eventBus.emit(ClientEvents.PROJECTILE_FIRED, data) // indirectly call the spawnProjectile function below
 	}
 
 	// Get a pooled projectile, or create a new one if none are available

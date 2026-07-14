@@ -10,8 +10,8 @@ export namespace ComboManager {
 	export function init() {
 		engine.addSystem(systemComboWatcher)
 
-		eventBus.on(ClientEvents.TRIGGER_RING, () => {
-			console.log("ComboManager: TRIGGER_RING")
+		eventBus.on(ClientEvents.PLAYER_COLLIDED_RING, () => {
+			console.log("ComboManager: PLAYER_COLLIDED_RING")
 			ComponentStore.incrementComboValue()
 		})
 

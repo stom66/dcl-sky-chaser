@@ -60,13 +60,13 @@ export abstract class Pickup {
 	/**
 	 * Deactivates the pickup and runs subclass-specific cleanup or animation.
 	 */
-	public Deactivate() : void {
+	public Deactivate(silent: boolean = false) : void {
 		if (!this.active) return
 		if (this.triggered) return
 
 		this.triggered = true
 
-		this.onDeactivate()
+		this.onDeactivate(silent)
 
 		utils.timers.setTimeout(() => {
 			this.active = false
@@ -118,7 +118,7 @@ export abstract class Pickup {
 
 
 	// MARK: onDeactivate
-	protected abstract onDeactivate() : void
+	protected abstract onDeactivate(silent: boolean) : void
 
 
 	// MARK: onStep

@@ -75,7 +75,7 @@ export namespace BirdSpawner {
 		ComponentStore.setPigeonMaxCount(transforms.length)
 
 		
-		eventBus.on(ClientEvents.FOUND_ALL_PIGEONS, (data) => {			
+		eventBus.on(ClientEvents.PLAYER_FOUND_ALL_PIGEONS, (data) => {			
 			for (let i = 0; i < 8; i++) {
 				utils.timers.setTimeout(() => {
 					SoundManager.playSound(sfx.coo)
@@ -151,9 +151,9 @@ export namespace BirdSpawner {
 
 		const t = Transform.getOrNull(bird)
 		if (t) {
-			eventBus.emit(ClientEvents.TRIGGER_PIGEON, { position: t.position })
+			eventBus.emit(ClientEvents.PLAYER_TOUCHED_PIGEON, { position: t.position })
 		} else {
-			eventBus.emit(ClientEvents.TRIGGER_PIGEON, undefined)
+			eventBus.emit(ClientEvents.PLAYER_TOUCHED_PIGEON, undefined)
 		}
 	}
 }

@@ -3,6 +3,7 @@ import { Color4, Quaternion, Vector3 } from "@dcl/sdk/math"
 import { GameSettings } from "src/shared/settings"
 import { ProjectileComponent } from "src/shared/components/projectile"
 import { sfx, SoundManager } from "../soundManager"
+import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
 
 const HIDE_LOCATION = Vector3.create(128, -100, 128)
 const PLAYER_HIT_IMPULSE = 50
@@ -15,6 +16,7 @@ export class Projectile {
 	speed    : number
 	active   : boolean
 	age      : number
+	lifetime : number
 	owner    : string
 
 	constructor(origin: Vector3) {
@@ -23,6 +25,7 @@ export class Projectile {
 		this.speed     = GameSettings.PROJECTILE_SPEED
 		this.active    = false
 		this.age       = 0
+		this.lifetime  = GameSettings.PROJECTILE_LIFETIME
 		this.owner     = ""
 
 		this.entity = engine.addEntity()
@@ -147,7 +150,7 @@ export class Projectile {
 	// MARK: MoveForward
 	public MoveForward(dt: number) : void {
 		this.age += dt
-		if (this.age > GameSettings.PROJECTILE_LIFETIME) {
+		if (this.age > this.lifetime) {
 			this.active = false
 			this.Disable()
 			return
@@ -180,12 +183,18 @@ export class Projectile {
 		const projectileComponent = ProjectileComponent.getOrNull(this.entity)
 		if (projectileComponent === null) return
 		if (projectileComponent.owner === "") return
-		
+
+		// If here, we got hit by another player		
 		const playerPosition = Transform.getOrNull(engine.PlayerEntity)?.position
 		const t = Transform.getOrNull(this.entity)
 		if (!playerPosition || t === null) return
 
 		const impulseDirection = Vector3.normalize(Vector3.subtract(t.position, playerPosition))
 		Physics.applyImpulseToPlayer(impulseDirection, PLAYER_HIT_IMPULSE)
+		
+		eventBus.emit(ClientEvents.PROJECTILE_HIT_PLAYER, {
+			projectileOwner: projectileComponent.owner,
+			position: t.position
+		})
 	}
 }

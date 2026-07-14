@@ -138,7 +138,7 @@ export namespace SpawnManager {
 				let angle = index * angleSpacing
 				const randomPosition = getRandomPosition(entityType, angle)
 				pickup.Activate(randomPosition)
-				console.log("SpawnManager: Activated pickup at", randomPosition.x, randomPosition.y, randomPosition.z)
+				//console.log("SpawnManager: Activated pickup at", randomPosition.x, randomPosition.y, randomPosition.z)
 			}
 		}
 	}
@@ -169,7 +169,7 @@ export namespace SpawnManager {
 	function deactivatePickups() {
 		for (const entityType of pickupTypes) {
 			for (const pickup of entityType.pool) {
-				pickup.Deactivate()
+				pickup.Deactivate(true)
 			}
 		}
 	}

@@ -33,6 +33,6 @@ export class BounceTriggerAwning extends BounceTrigger {
 	) {
 		SoundManager.playSound(sfx.boing)
 		
-		eventBus.emit(ClientEvents.TRIGGER_AWNING, { position, normal })
+		eventBus.emit(ClientEvents.PLAYER_COLLIDED_AWNING, { position, normal })
 	}
 }

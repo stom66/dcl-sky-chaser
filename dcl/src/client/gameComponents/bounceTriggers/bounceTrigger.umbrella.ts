@@ -28,6 +28,6 @@ export class BounceTriggerUmbrella extends BounceTrigger {
 	) {
 		SoundManager.playSound(sfx.boing)
 		
-		eventBus.emit(ClientEvents.TRIGGER_UMBRELLA, { position, normal })
+		eventBus.emit(ClientEvents.PLAYER_COLLIDED_UMBRELLA, { position, normal })
 	}
 }

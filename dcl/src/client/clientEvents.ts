@@ -1,29 +1,42 @@
+
+
 export enum ClientEvents {
-	NOTIFY_TRIGGER         = "notifyTrigger",     // used when server notifies client about a trigger effect
+	NOTIFY_TRIGGER             = "notifyTrigger",         // used when server notifies client about a trigger effect
 
-	GAME_IDLE              = "gameIdle",
-	GAME_STARTING          = "gameStarting",
-	GAME_ACTIVE            = "gameStarted",
-	GAME_END               = "gameEnd",
+	GAME_IDLE                  = "game_Idle",
+	GAME_STARTING              = "game_Starting",
+	GAME_ACTIVE                = "game_Started",
+	GAME_END                   = "game_End",
+
+	FOUND_ALL_PIGEONS          = "foundAllPigeons",
 	
-	TRIGGER_RING           = "triggerRing",
-	TRIGGER_FUEL           = "triggerFuel",
-	TRIGGER_BALLOON        = "triggerBalloon",
+	TRIGGER_UMBRELLA           = "trigger_Umbrella",
+	TRIGGER_TRAMPOLINE         = "trigger_Trampoline",
+	
+	NOTIFY_PROJECTILE_FIRED    = "notifyProjectileFired", // Fired by ProjectileManager for LOCAL projectiles
+	
+	PROJECTILE_HIT_YOU         = "projectile_HitYou",     // odd one out, is YOU being hit by ENEMY birdstrike
+	PROJECTILE_FIRED           = "projectile_Fired",      // Fired by ProjectileManager for LOCAL projectiles
+	PROJECTILE_HIT_PLAYER      = "projectile_HitPlayer",
+	PROJECTILE_HIT_BALLOON     = "projectile_HitBalloon", // When ANY projectile hits a balloon
+	PROJECTILE_HIT_FUEL        = "projectile_HitFuel",
+	PROJECTILE_MISSED          = "projectile_Missed",     // triggered when one of your projectiles reaches its max age
+	
+	
+	PLAYER_COLLIDED_FUEL       = "playerCollided_Fuel",
+	PLAYER_COLLIDED_BALLOON    = "playerCollided_Balloon",
+	PLAYER_COLLIDED_RING       = "playerCollided_Ring",
 
-	FOUND_ALL_PIGEONS      = "foundAllPigeons",
-	TRIGGER_PIGEON         = "triggerPigeon",
-	TRIGGER_AWNING         = "triggerAwning",
-	TRIGGER_UMBRELLA       = "triggerUmbrella",
-	TRIGGER_TRAMPOLINE     = "triggerTrampoline",
+	PLAYER_COLLIDED_AWNING     = "playerCollided_Awning",
+	PLAYER_COLLIDED_UMBRELLA   = "playerCollided_Umbrella",
+	PLAYER_COLLIDED_TRAMPOLINE = "playerCollided_Trampoline",
 
-	TRIGGER_PROJECTILE     = "triggerProjectile",
-	TRIGGER_EXPLOSION      = "triggerExplosion",
+	
+	PLAYER_TOUCHED_PIGEON      = "playerTouched_Pigeon",  // When a player clicks on of the 10 pigeons
+	PLAYER_FOUND_ALL_PIGEONS   = "playerFoundAllPigeons",
 
-	PROJECTILE_HIT_FUEL    = "projectileHitFuel",
-	PROJECTILE_HIT_BALLOON = "projectileHitBalloon",
-	//PROJECTILE_HIT_RING    = "projectileHitRing",
-	PROJECTILE_HIT_PLAYER  = "projectileHitPlayer",
 
-	COMBO_INCREASE         = "comboIncrease",
-	COMBO_DECREASE         = "comboDecrease",
+
+	COMBO_INCREASE             = "combo_Increase",
+	COMBO_DECREASE             = "combo_Decrease",
 }

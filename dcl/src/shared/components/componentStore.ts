@@ -590,7 +590,7 @@ export namespace ComponentStore {
 		console.log("foundPigeon: pigeon found", index, "count is now", c.count)
 
 		if (c.count === c.maxCount) {
-			eventBus.emit(ClientEvents.FOUND_ALL_PIGEONS, {})
+			eventBus.emit(ClientEvents.PLAYER_FOUND_ALL_PIGEONS, {})
 			console.log("foundPigeon: all pigeons found")
 		}
 	}

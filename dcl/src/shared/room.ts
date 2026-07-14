@@ -37,7 +37,7 @@ const Messages = {
 	}),
 	[MessageType.REQUEST_FOUND_ALL_PIGEONS]: Schemas.Map({}),
 	[MessageType.REQUEST_TRIGGER_EFFECT]: Schemas.Map({
-		effect   : Schemas.EnumString(ClientEvents, ClientEvents.TRIGGER_FUEL),
+		effect   : Schemas.EnumString(ClientEvents, ClientEvents.PLAYER_COLLIDED_FUEL),
 		position : Schemas.Vector3,
 		direction: Schemas.Vector3,
 	}),
@@ -58,7 +58,7 @@ const Messages = {
 		...SchemaSentAt
 	}),
 	[MessageType.NOTIFY_TRIGGER_EFFECT]: Schemas.Map({
-		effect   : Schemas.EnumString(ClientEvents, ClientEvents.TRIGGER_FUEL),
+		effect   : Schemas.EnumString(ClientEvents, ClientEvents.PLAYER_COLLIDED_FUEL),
 		position : Schemas.Vector3,
 		direction: Schemas.Vector3,
 	}),

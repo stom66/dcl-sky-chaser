@@ -28,8 +28,13 @@ export async function initServer(): Promise<void> {
 	// Initialize the leaderboard manager
 	LeaderboardManager.init()
 
+	// Send a batch of server times to the clients to get an inital average
+	for (let i = 0; i < 10; i++) {
+		utils.timers.setTimeout(() => {
+			ServerMessaging.sendServerTime()
+		}, 500 * i)
+	}
 	// Periodically send the server time to the clients
-	ServerMessaging.sendServerTime()
 	utils.timers.setInterval(() => {
 		ServerMessaging.sendServerTime()
 	}, ServerSettings.SERVER_TIME_UPDATE_INTERVAL)

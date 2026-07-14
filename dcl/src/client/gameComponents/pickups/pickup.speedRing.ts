@@ -74,7 +74,7 @@ export class PickupSpeedRing extends Pickup {
 		SoundManager.playSound(sfx.swish)
 
 		const yRot = Quaternion.toEulerAngles(playerTransform.rotation).y
-		eventBus.emit(ClientEvents.TRIGGER_RING, {
+		eventBus.emit(ClientEvents.PLAYER_COLLIDED_RING, {
 			position: playerTransform.position,
 			yRot    : yRot
 		})
@@ -97,7 +97,7 @@ export class PickupSpeedRing extends Pickup {
 
 
 	// MARK: onDeactivate
-	protected onDeactivate() : void {
+	protected onDeactivate(silent: boolean) : void {
 		Tween.setScale(this.rootEntity, Vector3.One(), Vector3.Zero(), 200, EasingFunction.EF_EASEINCIRC)
 	}
 
