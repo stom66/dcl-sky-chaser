@@ -3,15 +3,15 @@ import { Quaternion, Vector3 } from "@dcl/sdk/math"
 
 
 export type BounceTriggerConfig = {
-	triggerPosition  : Vector3,          // REQUIRED
-	triggerScale?    : Vector3,          // Default to one
-	triggerRotation? : Quaternion,       // Default to zero
-	triggerShape?    : "sphere" | "box", // default to "sphere"
-	triggerMaxDistance? : number,        // default to 0.15
-	raycastMaxDistance? : number,        // default to 3
-	meshName?        : string,           // default to empty string
-	impulseDirection?: Vector3 | null,   // default to blank
-	impulseStrength? : number,           // default to 100
+	triggerPosition    : Vector3,          // REQUIRED
+	triggerScale?      : Vector3,          // Default to one
+	triggerRotation?   : Quaternion,       // Default to zero
+	triggerShape?      : "sphere" | "box", // default to "sphere"
+	triggerMaxDistance?: number,           // default to 0.15
+	raycastMaxDistance?: number,           // default to 3
+	meshName?          : string,           // default to empty string
+	impulseDirection?  : Vector3 | null,   // default to blank
+	impulseStrength?   : number,           // default to 100
 }
 
 export class BounceTrigger {
