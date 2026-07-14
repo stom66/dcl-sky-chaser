@@ -71,25 +71,20 @@ export const ButtonImage = ({
 			}}
 			onMouseUp    = {() => {
 				pressedStates.set(stateId, false)
+
+				// Mobile users can't hover so work around that
 				if (isMobile()) {
-					if (callback !== undefined) {
-						callback()
-					}
+					if (callback !== undefined) callback()
 					currentIndex.set(stateId, ButtonIndex.DEFAULT)
-					return
-				} 
-				
-				if (isDesktop()) {
+
+				} else {					
 					if (hoverStates.get(stateId) === true) {
-						if (callback !== undefined) {
-							callback()
-						}
+						if (callback !== undefined) callback()
 						currentIndex.set(stateId, ButtonIndex.HOVER)
 					} else {
 						currentIndex.set(stateId, ButtonIndex.DEFAULT)
 					}
 				}
-
 			}}
 		/>
 	)
