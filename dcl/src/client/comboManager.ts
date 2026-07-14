@@ -8,7 +8,7 @@ export namespace ComboManager {
 
 
 	export function init() {
-		engine.addSystem(systemComboWatcher)
+		engine.addSystem(sys_comboWatcher)
 
 		eventBus.on(ClientEvents.PLAYER_COLLIDED_RING, () => {
 			console.log("ComboManager: PLAYER_COLLIDED_RING")
@@ -20,7 +20,7 @@ export namespace ComboManager {
 		})
 	}
 
-	function systemComboWatcher(dt: number) {
+	function sys_comboWatcher(dt: number) {
 		const value = ComponentStore.getComboValue()
 		const lastUpdatedTime = ComponentStore.getComboLastUpdatedTime()
 

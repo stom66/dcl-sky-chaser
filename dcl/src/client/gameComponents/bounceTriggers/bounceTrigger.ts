@@ -77,7 +77,7 @@ export class BounceTrigger {
 				console.log("BounceTrigger: Player entered")
 				if (!this.systemActiveRaycast) {
 					this.systemActiveRaycast = true
-					engine.addSystem(this.system_raycastCheck)
+					engine.addSystem(this.sys_raycastCheck)
 				}
 			}
 		})
@@ -86,14 +86,14 @@ export class BounceTrigger {
 				console.log("BounceTrigger: Player exited")
 				if (this.systemActiveRaycast) {
 					this.systemActiveRaycast = false
-					engine.removeSystem(this.system_raycastCheck)
+					engine.removeSystem(this.sys_raycastCheck)
 				}
 			}
 		})
 	}
 
 	// MARK: sys_raycast
-	private system_raycastCheck = (dt: number) => {
+	private sys_raycastCheck = (dt: number) => {
 		if (!this.systemActiveRaycast) return
 
 		this.elapsedSinceLastRaycast += dt
@@ -118,7 +118,7 @@ export class BounceTrigger {
 								if (this.DEBUG_LOGGING) console.log("BounceTrigger: raycast hit", hit.meshName, "| distance", hit.length, "SUCCESS")
 
 								this.systemActiveRaycast = false
-								engine.removeSystem(this.system_raycastCheck)
+								engine.removeSystem(this.sys_raycastCheck)
 								
 								const pos = hit.position ?? Vector3.Zero()
 								const nml = Vector3.normalize(hit.normalHit ?? Vector3.Zero())

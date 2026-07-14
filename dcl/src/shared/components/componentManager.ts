@@ -178,7 +178,7 @@ export namespace ComponentManager {
 	function initClient(): void {
 		// MARK: create synced components
 		console.log('ComponentManager: initClient: starting discovery watcher')
-		const watcher = (): void => {
+		const sys_watcher = (): void => {
 			// Search for all entities with the GameData component
 			for (const [entity, gameData] of engine.getEntitiesWith(C_GameData.GameData)) {
 				if (componentEntity === undefined) {
@@ -189,7 +189,7 @@ export namespace ComponentManager {
 
 			// If the component entity is found, remove the watcher and resolve the client ready promise
 			if (componentEntity !== undefined) {
-				engine.removeSystem(watcher)
+				engine.removeSystem(sys_watcher)
 				
 				// Add the clientComponentes
 				seedComponentDefaults()
@@ -199,7 +199,7 @@ export namespace ComponentManager {
 				return
 			}
 		}
-		engine.addSystem(watcher)
+		engine.addSystem(sys_watcher)
 
 		// MARK: create client components
 		console.log('ComponentManager: initClient: creating local components')

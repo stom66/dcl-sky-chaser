@@ -91,16 +91,16 @@ class UserProfileCache {
 	// MARK: waitForLocalPlayer
 	waitForLocalPlayer(): Promise<string> {
 		return new Promise((resolve) => {
-			const system = () => {
+			const sys_getPlayer = () => {
 				const player = getPlayer()
 		
 				if (player?.userId) {
-					engine.removeSystem(system)
+					engine.removeSystem(sys_getPlayer)
 					resolve(player.userId)
 				}
 			}
 		
-			engine.addSystem(system)
+			engine.addSystem(sys_getPlayer)
 		})
 	}
 

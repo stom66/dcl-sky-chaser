@@ -42,8 +42,8 @@ export namespace ProjectileManager {
 			gameIsActive = false
 		}) */
 
-		engine.addSystem(sys_UpdateProjectiles)
-		engine.addSystem(sys_InputWatcher)
+		engine.addSystem(sys_updateProjectiles)
+		engine.addSystem(sys_inputWatcher)
 	}
 
 	// Triggered when local or server players request a projectile
@@ -88,7 +88,7 @@ export namespace ProjectileManager {
 		}
 	}
 
-	function sys_UpdateProjectiles(dt: number) : void {
+	function sys_updateProjectiles(dt: number) : void {
 		for (const projectile of ProjectilePool) {
 			if (projectile.isActive()) {
 				projectile.MoveForward(dt)
@@ -96,7 +96,7 @@ export namespace ProjectileManager {
 		}
 	}
 
-	function sys_InputWatcher(dt: number) {
+	function sys_inputWatcher(dt: number) {
 		isFPressed     = inputSystem.isPressed(InputAction.IA_SECONDARY)
 
 		if (isFPressed && gameIsActive) {

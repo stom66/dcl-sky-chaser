@@ -36,11 +36,11 @@ ComponentStore.onComponentChange(C_Combo.Combo, (data) => {
 
 	if (isInitialized) return
 	isInitialized = true
-	engine.addSystem(updateRatio)
+	engine.addSystem(sys_updateRatio)
 })
 
 
-function updateRatio() {
+function sys_updateRatio() {
 	if (comboValue == 1) {
 		ratio = 0
 		return

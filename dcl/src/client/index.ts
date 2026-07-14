@@ -39,7 +39,7 @@ export function initClient() {
 	})
 
 	// MARK: Wait for Load
-	function waitForLoad() {
+	function sys_waitForLoad() {
 		// Wait for userData to be available
 		let userData = getPlayer()
 		if(!userData)                                  {console.log("waitForLoad: userData");                   return}
@@ -56,7 +56,7 @@ export function initClient() {
 
 		if (!ComponentManager.isReady())               {console.log("waitForLoad: ComponentManager not ready"); return}
 
-		engine.removeSystem(waitForLoad)
+		engine.removeSystem(sys_waitForLoad)
 
 		onGameLoaded()
 	}
@@ -109,5 +109,5 @@ export function initClient() {
 
 	// Load game specific stuff
 
-	engine.addSystem(waitForLoad)
+	engine.addSystem(sys_waitForLoad)
 }

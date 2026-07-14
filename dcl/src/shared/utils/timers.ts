@@ -17,7 +17,7 @@ const createTimers = (targetEngine: IEngine) => {
 	const timers: Map<TimerId, TimerData> = new Map()
 	let timerIdCounter = 0
 	
-	const system = (dt: number) => {
+	const sys_timers = (dt: number) => {
 		const deadTimers = []
 		const callbacks = []
 		
@@ -39,7 +39,7 @@ const createTimers = (targetEngine: IEngine) => {
 		for (const callback of callbacks) callback()
 		}
 	
-	targetEngine.addSystem(system, 100e3 + 256)
+	targetEngine.addSystem(sys_timers, 100e3 + 256)
 	
 	return {
 		setTimeout(callback: Callback, milliseconds: number): TimerId {

@@ -59,7 +59,7 @@ export function pixelsScaledRelative(
 
 
 // MARK: system_updateCanvasSize
-function system_updateCanvasSize(_dt: number): void {
+function sys_updateCanvasSize(_dt: number): void {
 	const canvasInfo = getCanvasInfo()
 	if (!canvasInfo) return
 
@@ -67,5 +67,5 @@ function system_updateCanvasSize(_dt: number): void {
 	if (actual_height !== canvasInfo.height) actual_height = canvasInfo.height
 }
 
-engine.addSystem(system_updateCanvasSize)
+engine.addSystem(sys_updateCanvasSize)
 

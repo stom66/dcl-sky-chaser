@@ -14,16 +14,16 @@ export namespace BeaconManager {
 		eventBus.on(ClientEvents.GAME_ACTIVE, (data) => {
 			createBeacons()
 			elapsed = 0
-			engine.addSystem(systemUpdateBeacons)
+			engine.addSystem(sys_updateBeacons)
 		})
 		eventBus.on(ClientEvents.GAME_END, () => {
-			engine.removeSystem(systemUpdateBeacons)
+			engine.removeSystem(sys_updateBeacons)
 
 			destroyBeacons()
 		})
 	}
 
-	function systemUpdateBeacons(dt: number) {
+	function sys_updateBeacons(dt: number) {
 		elapsed += dt
 
 		let offset = 0

@@ -65,11 +65,11 @@ ComponentStore.onComponentChange(C_GameData.GameData, (data) => {
 
 	if (isInitialized) return
 	isInitialized = true
-	engine.addSystem(updateRatio)
+	engine.addSystem(sys_updateRatio)
 })
 
 
-function updateRatio() {
+function sys_updateRatio() {
 	if (remaining < 0) {
 		ratio = 0
 		return

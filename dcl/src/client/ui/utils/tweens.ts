@@ -59,7 +59,7 @@ export function tweenValue(
 ) {
 	let elapsed = 0
 
-	function system(dt: number) {
+	function sys_tweenValue(dt: number) {
 		elapsed += dt
 		const t = Math.min(elapsed / duration, 1)
 		const easedT = easing != null ? applyEasing(t, easing) : t
@@ -67,10 +67,10 @@ export function tweenValue(
 
 		if (t >= 1) {
 			onUpdate(to)
-			engine.removeSystem(system)
+			engine.removeSystem(sys_tweenValue)
 			onComplete?.()
 		}
 	}
 
-	engine.addSystem(system)
+	engine.addSystem(sys_tweenValue)
 }

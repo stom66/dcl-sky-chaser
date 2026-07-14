@@ -34,7 +34,7 @@ export namespace SoundManager {
 	// MARK: init
 	/**
 	 * Registers the BGM fade system, creates the background-music entity, preloads all SFX
-	 * into hidden entities, and wires {@link systemUpdateSound}. Safe to call once; later
+	 * into hidden entities, and wires {@link sys_updateSound}. Safe to call once; later
 	 * calls are ignored.
 	 */
 	export function init(): void {
@@ -57,7 +57,7 @@ export namespace SoundManager {
 
 		createToiletSfx()
 
-		engine.addSystem(systemUpdateSound)
+		engine.addSystem(sys_updateSound)
 
 		// Bind the game joined event to start the background music
 /* 		eventBus.on(ClientEvents.ON_GAME_JOINED, () => {
@@ -315,7 +315,7 @@ export namespace SoundManager {
 	 *
 	 * @param dt - Delta time in seconds since the last frame.
 	 */
-	const systemUpdateSound = (dt: number): void => {
+	const sys_updateSound = (dt: number): void => {
 		if (bgmFadePhase === 'idle' || !bgmEntity) return
 
 		const audio = AudioSource.getMutableOrNull(bgmEntity)

@@ -81,7 +81,7 @@ export namespace SpawnManager {
 		console.log("SpawnManager initialized")
 		preloadEntities()
 
-		engine.addSystem(sys_UpdatePickups)
+		engine.addSystem(sys_updatePickups)
 
 		eventBus.on(ClientEvents.GAME_ACTIVE, (data) => {
 			if (isRunning) return
@@ -176,7 +176,7 @@ export namespace SpawnManager {
 
 
 	// MARK: sys_UpdatePickups
-	function sys_UpdatePickups(dt: number) {
+	function sys_updatePickups(dt: number) {
 		if (!isRunning) return
 
 		// Count the number of active items

@@ -27,18 +27,18 @@ export function EnableHints() {
 	isEnabled        = true
 	currentHintIndex = MAX_HINTS_IN_ATLAS // not -1, because the system will decrement it
 	ShowUI()
-	engine.addSystem(sys_UpdateHints)
+	engine.addSystem(sys_updateHints)
 }
 
 export function DisableHints() {
 	if (!isEnabled) return
 
 	isEnabled = false
-	engine.removeSystem(sys_UpdateHints)
+	engine.removeSystem(sys_updateHints)
 	HideUI()
 }
 
-function sys_UpdateHints() {
+function sys_updateHints() {
 	if (Date.now() - lastHitnShowTime > TIME_TO_SHOW_HINT) {
 		if (isVisible) {
 			HideUI()

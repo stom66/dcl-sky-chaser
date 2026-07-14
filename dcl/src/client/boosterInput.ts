@@ -13,14 +13,14 @@ export namespace BoosterInput {
 
 
 	export function init() {
-		engine.addSystem(systemInputWatcher)
+		engine.addSystem(sys_inputWatcher)
 
 		eventBus.on(ClientEvents.GAME_ACTIVE, () => {
 			ComponentStore.resetFuelValue()
 		})
 	}
 
-	function systemInputWatcher(dt: number) {
+	function sys_inputWatcher(dt: number) {
 		//isSpacePressed = inputSystem.isPressed(InputAction.IA_JUMP)
 		isEPressed     = inputSystem.isPressed(InputAction.IA_PRIMARY)
 

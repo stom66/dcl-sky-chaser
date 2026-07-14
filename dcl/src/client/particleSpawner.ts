@@ -69,12 +69,12 @@ export namespace ParticleSpawner {
 			TriggerPigeonSpurt(Transform.getOrNull(engine.PlayerEntity)?.position ?? zero)
 		})
 
-		engine.addSystem(systemInputWatcher)
+		engine.addSystem(sys_inputWatcher)
 
 		//enableWind() // DEBUG
 	}
 
-	function systemInputWatcher(dt: number) {
+	function sys_inputWatcher(dt: number) {
 		const isEPressed = inputSystem.isPressed(InputAction.IA_PRIMARY)
 
 		if (isEPressed && !isEnabled) {
