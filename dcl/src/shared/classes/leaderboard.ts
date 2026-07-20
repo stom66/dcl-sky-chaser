@@ -13,8 +13,9 @@ export type LeaderboardEntry = {
 }
 
 export type LeaderboardScore = {
-	userId: string
-	score : number
+	userId         : string
+	score          : number
+	isNewHighscore?: boolean
 }
 
 export class Leaderboard {

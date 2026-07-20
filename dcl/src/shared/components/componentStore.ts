@@ -268,6 +268,18 @@ export namespace ComponentStore {
 		return scores
 	}
 
+	export function flagPlayerAsNewHighscore(userId: string): void {
+		if (!isServer()) return
+
+		const entity = ComponentManager.tryGetComponentEntity()
+		if (entity === undefined) return
+
+		const c = C_GameData.ScoreBoard.getMutableOrNull(entity)
+		if (c === null) return
+		
+		c.scores = c.scores?.map((s) => s.userId === userId ? { ...s, isNewHighscore: true } : s)
+	}
+
 
 	// MARK: Fuel
 	export function getFuelValue(): {

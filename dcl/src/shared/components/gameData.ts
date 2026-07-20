@@ -19,8 +19,9 @@ export const ScoreBoard = engine.defineComponent(
 	{
 		scores: Schemas.Optional(
 			Schemas.Array(Schemas.Map({
-				userId: Schemas.String,
-				score: Schemas.Int,
+				userId        : Schemas.String,
+				score         : Schemas.Int,
+				isNewHighscore: Schemas.Optional(Schemas.Boolean),
 			}))
 		)
 	}

@@ -147,25 +147,30 @@ export namespace serverHandler {
 			}
 
 			allTimeScores.push({
-				userId: score.userId,
-				score : score.score
+				userId        : score.userId,
+				score         : score.score,
+				isNewHighscore: score.score > lbAlltimeHighestScore
 			})
 
 			if (score.score > lbAlltimeHighestScore) {
-				room.send(MessageType.NOTIFY_LEADERBOARD_WINNER_ALL_TIME, {
+				// We no longer send an event to the player, isjntead we upadte this in the client component
+				ComponentStore.flagPlayerAsNewHighscore(score.userId)
+				/* room.send(MessageType.NOTIFY_LEADERBOARD_WINNER_ALL_TIME, {
 					sentAt: Date.now()
-				}, { to: [score.userId] })
+				}, { to: [score.userId] }) */
 			}
 
 			weeklyScores.push({
 				userId: score.userId,
-				score : score.score
+				score : score.score,
+				isNewHighscore: score.score > lbAlltimeHighestScore
 			})
 
 			if (score.score > lbWeeklyHighestScore) {
-				room.send(MessageType.NOTIFY_LEADERBOARD_WINNER_WEEKLY, {
+				ComponentStore.flagPlayerAsNewHighscore(score.userId)
+				/* room.send(MessageType.NOTIFY_LEADERBOARD_WINNER_WEEKLY, {
 					sentAt: Date.now()
-				}, { to: [score.userId] })
+				}, { to: [score.userId] }) */
 			}
 		}
 

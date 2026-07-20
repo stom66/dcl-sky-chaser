@@ -13,8 +13,9 @@ import { vhAsPixels } from '../utils/sizing'
 
 // MARK: Vars
 type ScoreboardRow = {
-	displayName: string
-	score      : number
+	displayName    : string
+	score          : number
+	isNewHighscore?: boolean
 }
 
 let scoreboard        : Map<string, ScoreboardRow> = new Map()
@@ -36,8 +37,9 @@ ComponentStore.onComponentChange(C_GameData.ScoreBoard, (data) => {
 	scoreboard.clear()
 	for (const s of scores) {
 		scoreboard.set(s.userId, {
-			displayName: userProfileCache.getDisplayName(s.userId),
-			score      : s.score
+			displayName   : userProfileCache.getDisplayName(s.userId),
+			score         : s.score,
+			isNewHighscore: s.isNewHighscore
 		})
 
 		void userProfileCache.getUserDisplayName(s.userId).then((displayName) => {
@@ -101,13 +103,14 @@ function getScoreboardRows() {
 					}}
 				/>
 				<Label
-					value       = {row.displayName}
+					value       = {row.displayName + (row.isNewHighscore ? ' (NEW HIGH SCORE)' : '')}
 					textAlign   = 'middle-left'
 					fontSize    = {22-(i*0.5)}
 					color       = {theme.colors.light}
 					uiTransform = {{
-						width : '65%',
-						height: 'auto',
+						flexGrow: 1,
+						width   : 'auto',
+						height  : 'auto',
 					}}
 				/>
 				<Label
