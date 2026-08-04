@@ -1,17 +1,17 @@
 import { engine, IEngine } from '@dcl/sdk/ecs'
 
-export type Timers = ReturnType<typeof createTimers>
+export type Timers   = ReturnType<typeof createTimers>
 
 export type Callback = () => void
 
-export type TimerId = number
+export type TimerId  = number
 
 const createTimers = (targetEngine: IEngine) => {
 	type TimerData = {
 		accumulatedTime: number
-		interval: number
-		recurrent: boolean
-		callback: Callback
+		interval       : number
+		recurrent      : boolean
+		callback       : Callback
 	}
 	
 	const timers: Map<TimerId, TimerData> = new Map()
@@ -19,7 +19,7 @@ const createTimers = (targetEngine: IEngine) => {
 	
 	const sys_timers = (dt: number) => {
 		const deadTimers = []
-		const callbacks = []
+		const callbacks  = []
 		
 		for (const [timerId, timerData] of timers) {
 			timerData.accumulatedTime += 1000 * dt
@@ -37,7 +37,7 @@ const createTimers = (targetEngine: IEngine) => {
 		for (const timerId of deadTimers) timers.delete(timerId)
 			
 		for (const callback of callbacks) callback()
-		}
+	}
 	
 	targetEngine.addSystem(sys_timers, 100e3 + 256)
 	
