@@ -1,14 +1,14 @@
-import { AvatarLocomotionSettings, engine, Physics, Transform } from "@dcl/sdk/ecs";
+import { AvatarLocomotionSettings, engine, PBAvatarLocomotionSettings, Physics, Transform } from "@dcl/sdk/ecs";
 import { Quaternion, Vector3 } from "@dcl/sdk/math";
 import { GameSettings } from "src/shared/settings";
 import { ClientEvents, eventBus } from "src/shared/utils/eventBus";
 
 export namespace LocomotionController {
 
-	const defaultSettings = {
+	const defaultSettings: PBAvatarLocomotionSettings = {
 		runSpeed    : 10,
 		jumpHeight  : 2,
-		glidingSpeed: 6,
+		glidingSpeed: 6
 	}
 
 	export function init() {
@@ -16,12 +16,12 @@ export namespace LocomotionController {
 
 		eventBus.on(ClientEvents.PLAYER_COMBO_INCREASE, (data: { value: number }) => {
 			console.log("ComboManager: COMBO_INCREASE")	
-			setGlidingSpeed(defaultSettings.glidingSpeed + (data.value * GameSettings.COMBO_GLIDING_SPEED_INCREMENT))
+			setGlidingSpeed(defaultSettings.glidingSpeed! + (data.value * GameSettings.COMBO_GLIDING_SPEED_INCREMENT))
 		})
 
 		eventBus.on(ClientEvents.PLAYER_COMBO_DECREASE, (data: { value: number }) => {
 			console.log("ComboManager: COMBO_INCREASE")	
-			setGlidingSpeed(defaultSettings.glidingSpeed + (data.value * GameSettings.COMBO_GLIDING_SPEED_INCREMENT))
+			setGlidingSpeed(defaultSettings.glidingSpeed! + (data.value * GameSettings.COMBO_GLIDING_SPEED_INCREMENT))
 		})
 	}
 
