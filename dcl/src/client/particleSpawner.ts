@@ -231,12 +231,12 @@ export namespace ParticleSpawner {
 	}
 
 	function disableWind() {
-		if (!entityBooster) return
-		const p = ParticleSystem.getOrNull(entityBooster)
+		if (!entityWind) return
+		const p = ParticleSystem.getOrNull(entityWind)
 		if (!p) return
 
-		console.log("ParticleSpawner: deleting particle system")
-		ParticleSystem.deleteFrom(entityBooster)
+		console.log("ParticleSpawner: deleting WIND particle system")
+		ParticleSystem.deleteFrom(entityWind)
 	}
 
 
