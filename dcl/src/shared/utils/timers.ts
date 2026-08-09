@@ -1,9 +1,16 @@
+/*
+	Original author: unknown
+
+	This script was taken from an example repo for the new auth servers. 
+	I like it, so I've used it here.
+	If the OA wants to lay claim to this please let me know and I'll happily 
+	add attribution.
+*/
+
 import { engine, IEngine } from '@dcl/sdk/ecs'
 
 export type Timers   = ReturnType<typeof createTimers>
-
 export type Callback = () => void
-
 export type TimerId  = number
 
 const createTimers = (targetEngine: IEngine) => {
@@ -42,20 +49,52 @@ const createTimers = (targetEngine: IEngine) => {
 	targetEngine.addSystem(sys_timers, 100e3 + 256)
 	
 	return {
-		setTimeout(callback: Callback, milliseconds: number): TimerId {
+		//MARK: setTimeout
+		setTimeout(
+			callback    : Callback, 
+			milliseconds: number
+		): TimerId {
+			if (milliseconds <= 0) {
+				callback()
+				return 0
+			}
+
 			const timerId = timerIdCounter++
-			timers.set(timerId, { callback: callback, interval: milliseconds, recurrent: false, accumulatedTime: 0 })
+			timers.set(timerId, { 
+				callback       : callback, 
+				interval       : milliseconds, 
+				recurrent      : false, 
+				accumulatedTime: 0 
+			})
 			return timerId
 		},
-		clearTimeout(timer: TimerId) {
+
+		//MARK: clearTimeout
+		clearTimeout(
+			timer: TimerId
+		) {
 			timers.delete(timer)
 		},
-		setInterval(callback: Callback, milliseconds: number): TimerId {
+		
+		//MARK: setInterval
+		setInterval(
+			callback    : Callback, 
+			milliseconds: number
+		): TimerId {
 			const timerId = timerIdCounter++
-			timers.set(timerId, { callback: callback, interval: milliseconds, recurrent: true, accumulatedTime: 0 })
+			timers.set(timerId, { 
+				callback       : callback, 
+				interval       : milliseconds, 
+				recurrent      : true, 
+				accumulatedTime: 0 
+			})
 			return timerId
 		},
-		clearInterval(timer: TimerId) {
+
+		//MARK: clearInterval
+		clearInterval(
+			timer: TimerId
+		) {
 			timers.delete(timer)
 		}
 	}
