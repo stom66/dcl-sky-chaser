@@ -34,6 +34,8 @@ export namespace serverHandler {
 		room.onMessage(MessageType.REQUEST_FOUND_ALL_PIGEONS, (data, context) => handleRequestFoundAllPigeons(data, context))
 		room.onMessage(MessageType.REQUEST_TRIGGER_EFFECT, (data, context) => handleRequestTriggerEffect(data, context))
 		room.onMessage(MessageType.REQUEST_PROJECTILE, (data, context) => handleRequestProjectile(data, context))
+		room.onMessage(MessageType.REQUEST_PROJECTILE_PLAYER_HIT, (data, context) => handleRequestProjectilePlayerHit(data, context))
+		room.onMessage(MessageType.REQUEST_EXPLOSION_KNOCKBACK, (data, context) => handleRequestExplosionKnockback(data, context))
 	}
 
 
@@ -236,6 +238,7 @@ export namespace serverHandler {
 
 		if (timeSinceLastProjectile > GameSettings.PROJECTILE_COOLDOWN) {
 			projectileCooldowns.set(userId, Date.now())
+			Metrics.incrementPlayerStat(userId, PlayerStatsEnum.PROJECTILES_FIRED)
 
 			const sendTo = ComponentStore.getPlayers().filter(player => player.toLowerCase() !== userId)
 			if (sendTo.length === 0) {
@@ -251,5 +254,34 @@ export namespace serverHandler {
 		} else {
 			console.log('handleRequestProjectile: cooldown not ready, skipping')
 		}
+	}
+
+
+	// MARK: On Projectile Player Hit
+	function handleRequestProjectilePlayerHit(data: any, context: any) {
+		const recipientUserId = getUserId(context)
+		const projectileOwner = typeof data?.projectileOwner === "string" ? data.projectileOwner : ""
+		console.log('handleRequestProjectilePlayerHit: recipientUserId', recipientUserId, 'projectileOwner', projectileOwner)
+
+		if (projectileOwner === "") return
+		if (projectileOwner.toLowerCase() === recipientUserId.toLowerCase()) return
+
+		Metrics.incrementPlayerStat(projectileOwner, PlayerStatsEnum.PROJECTILES_HIT_PLAYERS)
+		Metrics.incrementPlayerStat(recipientUserId, PlayerStatsEnum.PROJECTILES_HIT_BY_PLAYERS)
+		ComponentStore.incrementPlayerScore(projectileOwner, 1)
+	}
+
+
+	// MARK: On Explosion Knockback
+	function handleRequestExplosionKnockback(data: any, context: any) {
+		const recipientUserId = getUserId(context)
+		const projectileOwner = typeof data?.projectileOwner === "string" ? data.projectileOwner : ""
+		console.log('handleRequestExplosionKnockback: recipientUserId', recipientUserId, 'projectileOwner', projectileOwner)
+
+		if (projectileOwner === "") return
+		if (projectileOwner.toLowerCase() === recipientUserId.toLowerCase()) return
+
+		Metrics.incrementPlayerStat(projectileOwner, PlayerStatsEnum.KNOCKBACKS_DEALT_BY_EXPLOSIONS)
+		Metrics.incrementPlayerStat(recipientUserId, PlayerStatsEnum.KNOCKBACKS_FROM_OTHER_EXPLOSIONS)
 	}
 }

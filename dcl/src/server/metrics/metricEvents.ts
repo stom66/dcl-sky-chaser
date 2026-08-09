@@ -9,6 +9,7 @@ export const MetricEvents = {
 	PLAYER_SCENE_LEFT         : "playerLeftScene",         // When a player leaves the scene
 
 	PLAYER_ENTERED_GAME       : "playerEnteredGame",       // When a player enters a game, with entry_type for created or joined
+	PLAYER_GAME_ENDED         : "playerGameEnded",         // When a player's game ends, with game scoped stats
 	PLAYER_GAME_SPECTATED     : "playerSpectatedGame",     // When a player spectates a game
 	PLAYER_GAME_WON           : "playerWonGame",           // When a player wins a game
 	PLAYER_GAME_NOT_WON       : "playerDidNotWinGame",     // When a player doesn't win a game

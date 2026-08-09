@@ -41,6 +41,26 @@ export namespace ClientMessaging {
 	}
 
 
+	// MARK: RequestProjectilePlayerHit
+	/**
+	 * Reports that this player was hit by another player's projectile.
+	 */
+	export function RequestProjectilePlayerHit(projectileOwner: string): void {
+		console.log('ClientMessaging: RequestProjectilePlayerHit')
+		room.send(MessageType.REQUEST_PROJECTILE_PLAYER_HIT, { projectileOwner })
+	}
+
+
+	// MARK: RequestExplosionKnockback
+	/**
+	 * Reports that this player was knocked back by another player's fuel explosion.
+	 */
+	export function RequestExplosionKnockback(projectileOwner: string): void {
+		console.log('ClientMessaging: RequestExplosionKnockback')
+		room.send(MessageType.REQUEST_EXPLOSION_KNOCKBACK, { projectileOwner })
+	}
+
+
 
 
 	eventBus.on(ClientEvents.PLAYER_FOUND_ALL_PIGEONS, (data) => { handleFoundAllPigeons() })
@@ -51,7 +71,7 @@ export namespace ClientMessaging {
 
 
 	eventBus.on(ClientEvents.PLAYER_COLLIDED_AWNING, (data)     => { 
-		RequestStatsUpdate(PlayerStatsEnum.TRIGGERED_AWNING) 
+		RequestStatsUpdate(PlayerStatsEnum.TRIGGERED_AWNINGS) 
 		RequestTriggerEffect(ClientEvents.PLAYER_COLLIDED_AWNING, data?.position ?? Vector3.Zero(), data?.direction ?? Vector3.Zero())
 	})
 	eventBus.on(ClientEvents.PLAYER_COLLIDED_TRAMPOLINE, (data) => { 
@@ -63,11 +83,12 @@ export namespace ClientMessaging {
 		RequestTriggerEffect(ClientEvents.PLAYER_COLLIDED_UMBRELLA, data?.position ?? Vector3.Zero(), data?.direction ?? Vector3.Zero())
 	})
 	eventBus.on(ClientEvents.PLAYER_COLLIDED_RING, (data)       => { 
-		RequestStatsUpdate(PlayerStatsEnum.TRIGGERED_SPEEDRINGS) 
+		RequestStatsUpdate(PlayerStatsEnum.TRIGGERED_SPEED_RINGS) 
 		RequestTriggerEffect(ClientEvents.PLAYER_COLLIDED_RING, data?.position ?? Vector3.Zero(), Vector3.create(0, data?.yRot ?? 0, 0))
 	})
 	eventBus.on(ClientEvents.PLAYER_COLLIDED_FUEL, (data)       => { 
-		RequestStatsUpdate(PlayerStatsEnum.COLLECTED_FUEL, data?.amount ?? 0) 
+		RequestStatsUpdate(PlayerStatsEnum.COLLECTED_FUEL_AMOUNT, data?.amount ?? 0) 
+		RequestStatsUpdate(PlayerStatsEnum.COLLECTED_FUEL_PICKUPS) 
 		RequestTriggerEffect(ClientEvents.PLAYER_COLLIDED_FUEL, data?.position ?? Vector3.Zero(), data?.direction ?? Vector3.Zero())
 	})
 
@@ -77,10 +98,22 @@ export namespace ClientMessaging {
 		// Was it OUR projectile?
 		if (data.projectileOwner !== "") return
 
+		RequestStatsUpdate(PlayerStatsEnum.PROJECTILES_HIT_BALLOONS) 
 		RequestStatsUpdate(PlayerStatsEnum.COLLECTED_BALLOONS) 
 		RequestStatsUpdate(PlayerStatsEnum.COLLECTED_POINTS, data?.points ?? 0) 
 		RequestTriggerEffect(ClientEvents.PROJECTILE_HIT_BALLOON, data?.position ?? Vector3.Zero(), data?.direction ?? Vector3.Zero())
 		//room.send(MessageType.REQUEST_TRIGGER_EFFECT, { effect: ClientEvents.PROJECTILE_HIT_BALLOON, position: data?.position ?? Vector3.Zero(), direction: data?.direction ?? Vector3.Zero() })
+	})
+	eventBus.on(ClientEvents.PROJECTILE_HIT_FUEL, (data)       => { 
+		// Was it OUR projectile? The fuel pickup currently emits one extra event without projectileOwner.
+		if (data?.projectileOwner !== "") return
+
+		RequestStatsUpdate(PlayerStatsEnum.PROJECTILES_HIT_FUEL_PICKUPS)
+	})
+	eventBus.on(ClientEvents.PROJECTILE_HIT_PLAYER, (data)     => { 
+		if ((data?.projectileOwner ?? "") === "") return
+
+		RequestProjectilePlayerHit(data.projectileOwner)
 	})
 
 

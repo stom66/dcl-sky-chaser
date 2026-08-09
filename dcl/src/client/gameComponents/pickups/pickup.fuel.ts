@@ -6,7 +6,9 @@ import { ComponentStore } from "src/shared/components/componentStore"
 import { FuelPickupChildComponent, FuelPickupComponent } from "src/shared/components/fuelPickup"
 import { ProjectileComponent } from "src/shared/components/projectile"
 import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
+import { PlayerStatsEnum } from "src/shared/metrics/playerStats"
 
+import { ClientMessaging } from "src/client/clientMessaging"
 import { Pickup } from "src/client/gameComponents/pickups/pickup"
 import { sfx, SoundManager } from "src/client/soundManager"
 
@@ -117,12 +119,13 @@ export class PickupFuel extends Pickup {
 	onHitByProjectile(
 		entity: Entity,
 	) : void {
-		const position = this.getPosition()
+		const position        = this.getPosition()
+		const projectileOwner = ProjectileComponent.getOrNull(entity)?.owner ?? ""
 
 		eventBus.emit(ClientEvents.PROJECTILE_HIT_FUEL, {
 			fuelPosition    : position,
 			projectileEntity: entity,
-			projectileOwner : ProjectileComponent.getOrNull(entity)?.owner ?? ""
+			projectileOwner : projectileOwner
 		})
 		eventBus.emit(ClientEvents.PROJECTILE_HIT_FUEL, {
 			position: position
@@ -139,6 +142,12 @@ export class PickupFuel extends Pickup {
 				let ratio = distanceSquared / EXPLOSION_RADIUS_SQUARED
 				ratio = Math.min(1, Math.max(0, ratio))
 				Physics.applyImpulseToPlayer(Vector3.subtract(playerPosition, position), (1 - ratio) * 200)
+
+				if (projectileOwner === "") {
+					ClientMessaging.RequestStatsUpdate(PlayerStatsEnum.KNOCKBACKS_FROM_OWN_EXPLOSIONS)
+				} else {
+					ClientMessaging.RequestExplosionKnockback(projectileOwner)
+				}
 			}
 		}
 	}

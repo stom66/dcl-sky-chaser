@@ -12,6 +12,8 @@ export enum MessageType {
 	REQUEST_FOUND_ALL_PIGEONS          = 'requestFoundAllPigeons',
 	REQUEST_TRIGGER_EFFECT             = 'requestTriggerEffect',
 	REQUEST_PROJECTILE                 = 'requestProjectile',
+	REQUEST_PROJECTILE_PLAYER_HIT      = 'requestProjectilePlayerHit',
+	REQUEST_EXPLOSION_KNOCKBACK        = 'requestExplosionKnockback',
 
 	NOTIFY_SERVER_TIME                 = "notifyServerTime",
 	NOTIFY_LEADERBOARD_WINNER_WEEKLY   = "notifyLeaderboardWinnerWeekly",
@@ -44,6 +46,12 @@ const Messages = {
 	[MessageType.REQUEST_PROJECTILE]: Schemas.Map({
 		position : Schemas.Vector3,
 		direction: Schemas.Vector3
+	}),
+	[MessageType.REQUEST_PROJECTILE_PLAYER_HIT]: Schemas.Map({
+		projectileOwner: Schemas.String
+	}),
+	[MessageType.REQUEST_EXPLOSION_KNOCKBACK]: Schemas.Map({
+		projectileOwner: Schemas.String
 	}),
 
 

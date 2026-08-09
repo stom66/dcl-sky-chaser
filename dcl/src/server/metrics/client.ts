@@ -42,12 +42,16 @@ export namespace Metrics {
 		)
 	}
 
-	function playerStatsPayload(userId: string): Record<string, number> {
-		return {
-			...prefixedStats("game", PlayerStatsTracker.getGameStats(userId)),
-			...prefixedStats("session", PlayerStatsTracker.getSessionStats(userId)),
-			...prefixedStats("allTime", PlayerStatsTracker.getAllTimeStats(userId)),
-		}
+	function gameStatsPayload(userId: string): Record<string, number> {
+		return prefixedStats("game", PlayerStatsTracker.getGameStats(userId))
+	}
+
+	function sessionStatsPayload(userId: string): Record<string, number> {
+		return prefixedStats("session", PlayerStatsTracker.getSessionStats(userId))
+	}
+
+	function allTimeStatsPayload(userId: string): Record<string, number> {
+		return prefixedStats("allTime", PlayerStatsTracker.getAllTimeStats(userId))
 	}
 
 	export function incrementPlayerStat(
@@ -84,7 +88,7 @@ export namespace Metrics {
 		}
 
 		const durationMs = Date.now() - startTimestamp
-		const stats      = playerStatsPayload(userId)
+		const stats      = sessionStatsPayload(userId)
 		trackSceneLeft(userId, durationMs, stats)
 		updateAllTimePlayerStats(userId)
 
@@ -146,7 +150,7 @@ export namespace Metrics {
 		if (isBlockedPlayer(userId)) return
 
 		Posthog.identify(userDistinctId(userId), {
-			$set: prefixedStats("allTime", PlayerStatsTracker.getAllTimeStats(userId))
+			$set: allTimeStatsPayload(userId)
 		})
 
 		console.log('Metrics: updateAllTimePlayerStats: userId', userId)
@@ -177,7 +181,7 @@ export namespace Metrics {
 			gameStartTime        : gameStartTime,
 			entry_type           : entryType,
 			sessionStartTimestamp: sessions.get(userId),
-			...playerStatsPayload(userId),
+			...gameStatsPayload(userId),
 		})
 
 		console.log('Metrics: trackPlayerEnteredGame: userId', userId, 'gameStartTime', gameStartTime, 'entryType', entryType)
@@ -197,7 +201,7 @@ export namespace Metrics {
 			version              : VERSION,
 			gameId               : gameDistinctId(gameStartTime),
 			sessionStartTimestamp: sessions.get(userId),
-			...playerStatsPayload(userId),
+			...gameStatsPayload(userId),
 		})
 
 		console.log('Metrics: trackGameWon: userId', userId, 'gameStartTime', gameStartTime)
@@ -215,7 +219,7 @@ export namespace Metrics {
 			version              : VERSION,
 			gameId               : gameDistinctId(gameStartTime),
 			sessionStartTimestamp: sessions.get(userId),
-			...playerStatsPayload(userId),
+			...gameStatsPayload(userId),
 		})
 
 		console.log('Metrics: trackGameNotWon: userId', userId, 'gameStartTime', gameStartTime)
@@ -284,9 +288,38 @@ export namespace Metrics {
 			playerIds   : playerIds,
 			winnerUserId: winnerUserId
 		})
+
+		for (const playerId of playerIds) {
+			trackPlayerGameEnded(playerId, gameStartTime, winnerUserId)
+		}
+
 		PlayerStatsTracker.gameEnd(playerIds)
 
 		console.log('Metrics: trackGameEnded: gameId', gameId, 'gameStartTime', gameStartTime, 'playerCount', playerIds.length, 'winnerUserId', winnerUserId)
+	}
+
+
+	// MARK: PlayerGameEnded
+	/**
+	 * Captures one player's final game-scoped stats before they are reset.
+	 */
+	export function trackPlayerGameEnded(
+		userId       : string,
+		gameStartTime: number,
+		winnerUserId : string | undefined
+	): void {
+		if (isBlockedPlayer(userId)) return
+
+		Posthog.capture(userDistinctId(userId), MetricEvents.PLAYER_GAME_ENDED, {
+			version              : VERSION,
+			gameId               : gameDistinctId(gameStartTime),
+			winnerUserId         : winnerUserId,
+			won                  : userId === winnerUserId,
+			sessionStartTimestamp: sessions.get(userId),
+			...gameStatsPayload(userId),
+		})
+
+		console.log('Metrics: trackPlayerGameEnded: userId', userId, 'gameStartTime', gameStartTime, 'winnerUserId', winnerUserId)
 	}
 
 
@@ -301,7 +334,7 @@ export namespace Metrics {
 		Posthog.capture(userDistinctId(userId), MetricEvents.PLAYER_FOUND_ALL_PIGEONS, {
 			version              : VERSION,
 			sessionStartTimestamp: sessions.get(userId),
-			...playerStatsPayload(userId),
+			...sessionStatsPayload(userId),
 		})
 
 		console.log('Metrics: trackGameJoined: userId', userId)

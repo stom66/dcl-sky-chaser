@@ -170,12 +170,10 @@ export namespace PlayerStatsTracker {
 
 	// MARK: gameStart
 	/**
-	 * Initializes per-game tracking for a player if they do not already have current game stats.
+	 * Resets per-game tracking when a player enters a game.
 	 */
 	export function gameStart(userId: string): void {
-		if (!gameStats.has(userId)) {
-			gameStats.set(userId, createEmptyStats())
-		}
+		gameStats.set(userId, createEmptyStats())
 		publishStatsEntity(userId)
 	}
 
