@@ -272,6 +272,7 @@ export namespace serverHandler {
 
 		if (projectileOwner === "") return
 		if (projectileOwner.toLowerCase() === recipientUserId.toLowerCase()) return
+		if (ComponentStore.getGameStatus() !== GameStatus.ACTIVE) return
 
 		Metrics.incrementPlayerStat(projectileOwner, PlayerStatsEnum.PROJECTILES_HIT_PLAYERS)
 		Metrics.incrementPlayerStat(recipientUserId, PlayerStatsEnum.PROJECTILES_HIT_BY_PLAYERS)
