@@ -4,15 +4,14 @@ import {
 	MostWantedState,
 	normalizeMostWanted,
 } from "src/shared/components/mostWanted"
-
-import { StorageBackedState } from "src/server/storage/storageBackedState"
+import { ServerBackedState } from "src/shared/storage/serverBackedState"
 
 
 export namespace MostWantedManager {
 
 	const storageKey = "mostWanted"
 
-	let backedState: StorageBackedState<MostWantedState> | undefined
+	let backedState: ServerBackedState<MostWantedState> | undefined
 
 
 	// MARK: init
@@ -20,10 +19,10 @@ export namespace MostWantedManager {
 	 * Hydrates MostWanted from scene storage and publishes into the synced component.
 	 */
 	export function init(): void {
-		backedState = new StorageBackedState<MostWantedState>({
+		backedState = new ServerBackedState<MostWantedState>({
 			key          : storageKey,
 			createDefault: createEmptyMostWanted,
-			normalize    : normalizeMostWanted,
+			normalize    : (raw) => normalizeMostWanted(raw as Partial<MostWantedState> | null | undefined),
 			onPublish    : (state) => {
 				ComponentStore.setMostWanted(state)
 			},

@@ -1,5 +1,5 @@
 import { Leaderboard, LeaderboardEntry } from "src/shared/classes/leaderboard"
-import { ComponentStore } from "../components/componentStore"
+import { ComponentStore } from "src/shared/components/componentStore"
 
 /**
  * All-time leaderboard. Uses the base behaviour as-is: a score is only ever

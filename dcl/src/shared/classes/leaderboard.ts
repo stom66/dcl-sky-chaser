@@ -1,7 +1,4 @@
-import { Storage } from "@dcl/sdk/server"
-import * as utils from "@dcl-sdk/utils"
-
-
+import { ServerBackedState } from "src/shared/storage/serverBackedState"
 import { userProfileCache } from "src/shared/utils/userProfileCache"
 
 export type LeaderboardEntry = {
@@ -20,79 +17,62 @@ export type LeaderboardScore = {
 
 export class Leaderboard {
 	protected storeName  : string
-	protected recordLimit: number  = 10
-	private isBusy       : boolean = false
+	protected recordLimit: number = 10
+
+	private readonly backed: ServerBackedState<LeaderboardEntry[]>
+	private readonly ready : Promise<void>
+
 
 	constructor(storeName: string) {
 		this.storeName = storeName
 
-		this.read().then((entries) => {
-			this.callback(entries)
+		this.backed = new ServerBackedState<LeaderboardEntry[]>({
+			key          : storeName,
+			createDefault: () => [],
+			normalize    : (raw) => {
+				const entries = Array.isArray(raw) ? raw as LeaderboardEntry[] : []
+				return this.cleanup(entries)
+			},
+			onPublish: (entries) => {
+				this.callback(entries)
+			},
+		})
+
+		this.ready = this.backed.init().catch((error) => {
+			console.error(`Leaderboard: constructor: failed to hydrate "${this.storeName}"`, error)
 		})
 	}
 
 
 	// MARK: read
 	/**
-	 * Reads entries from storage, clean them up, remove stale entries, sorted high
-	 * to low, and capped to recordLimit.
+	 * Returns the current in-memory leaderboard entries after initial hydration.
 	 */
 	public async read(): Promise<LeaderboardEntry[]> {
-		const raw = await Storage.get<string>(this.storeName)
-		if (!raw) return []
-
-		try {
-			const entries = JSON.parse(raw) as LeaderboardEntry[]
-			const cleaned = this.cleanup(entries)
-			return cleaned
-		} catch (error) {
-			console.error(`Leaderboard: read: failed to parse "${this.storeName}"`, error)
-			return []
-		}
+		await this.ready
+		return this.backed.get()
 	}
 
 
 	// MARK: submitScores
 	/**
-	 * Reads the latest data, applies each score if shouldReplace allows it, then
-	 * writes the cleaned result back in one storage update.
+	 * Applies each score if shouldReplace allows it, then writes the cleaned
+	 * result back in one queued storage update.
 	 */
 	public async submitScores(
 		scores: LeaderboardScore[]
 	): Promise<void> {
 		if (scores.length === 0) return
 
-		await this.waitForTurn()
+		await this.backed.updateAsync(async (entries) => {
+			const next = [...entries]
 
-		try {
-			await this.submitScoresBusy(scores)
-		} finally {
-			this.isBusy = false
-		}
-	}
+			for (const score of scores) {
+				await this.applyScore(next, score)
+			}
 
-
-	// MARK: submitScoresBusy
-	/**
-	 * Applies score updates while the leaderboard is locked for writing.
-	 */
-	private async submitScoresBusy(
-		scores: LeaderboardScore[]
-	): Promise<void> {
-		const entries = await this.read()
-
-		for (const score of scores) {
-			await this.applyScore(entries, score)
-		}
-
-		try {
-			const cleaned = this.cleanup(entries)
-			await Storage.set(this.storeName, JSON.stringify(cleaned))
-			console.log(`Leaderboard: submitScores: wrote "${this.storeName}"`, cleaned)
-			this.callback(cleaned)
-		} catch (error) {
-			console.error(`Leaderboard: submitScores: failed to write "${this.storeName}"`, error)
-		}
+			return next
+		})
 	}
 
 
@@ -126,36 +106,13 @@ export class Leaderboard {
 	}
 
 
-	// MARK: waitForTurn
-	/**
-	 * Waits until no write is active, then marks this leaderboard as busy.
-	 */
-	private async waitForTurn(): Promise<void> {
-		while (this.isBusy) {
-			await this.wait(10)
-		}
-
-		this.isBusy = true
-	}
-
-
-	// MARK: wait
-	/**
-	 * Resolves after the requested delay.
-	 */
-	private async wait(ms: number): Promise<void> {
-		return new Promise((resolve) => {
-			utils.timers.setTimeout(resolve, ms)
-		})
-	}
-
 	// MARK: callback
 	/**
-	 * Callback to be overridden by subclasses to perform additional actions when a score is 
+	 * Callback to be overridden by subclasses to perform additional actions when a score is
 	 * submitted or data is read.
 	 */
 	protected callback(entries: LeaderboardEntry[]): void {
-		console.log(`Leaderboard: submitScore: wrote "${this.storeName}"`, entries)
+		console.log(`Leaderboard: callback: wrote "${this.storeName}"`, entries)
 	}
 
 

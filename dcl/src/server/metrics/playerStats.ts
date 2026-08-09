@@ -1,18 +1,17 @@
-import { Storage } from "@dcl/sdk/server"
-
 import { ComponentStore } from "src/shared/components/componentStore"
 import { PlayerStatsEnum, PlayerStatsRecord } from "src/shared/metrics/playerStats"
+import { PlayerBackedState } from "src/shared/storage/playerBackedState"
+import { ServerEvents } from "src/shared/utils/eventBus"
 
 export { PlayerStatsEnum as PlayerStats, PlayerStatsRecord } from "src/shared/metrics/playerStats"
 
 
 export namespace PlayerStatsTracker {
 	// MARK: Vars
-	const storageKey        = "playerStats"
-	const gameStats         = new Map<string, PlayerStatsRecord>()
-	const sessionStats      = new Map<string, PlayerStatsRecord>()
-	const allTimeStats      = new Map<string, PlayerStatsRecord>()
-	const allTimeWriteQueue = new Map<string, Promise<void>>()
+	const storageKey   = "playerStats"
+	const gameStats    = new Map<string, PlayerStatsRecord>()
+	const sessionStats = new Map<string, PlayerStatsRecord>()
+	const allTimeState = new Map<string, PlayerBackedState<PlayerStatsRecord>>()
 
 
 	// MARK: createEmptyStats
@@ -26,6 +25,20 @@ export namespace PlayerStatsTracker {
 	// MARK: cloneStats
 	function cloneStats(record: PlayerStatsRecord): PlayerStatsRecord {
 		return { ...record }
+	}
+
+
+	// MARK: normalizeStats
+	function normalizeStats(rawStats: unknown): PlayerStatsRecord {
+		const normalized = createEmptyStats()
+		const partial    = (rawStats ?? {}) as Partial<PlayerStatsRecord>
+
+		for (const stat of Object.values(PlayerStatsEnum)) {
+			const value = partial[stat]
+			normalized[stat] = typeof value === "number" ? value : 0
+		}
+
+		return normalized
 	}
 
 
@@ -52,29 +65,6 @@ export namespace PlayerStatsTracker {
 	}
 
 
-	// MARK: publishAllTimeStats
-	function publishAllTimeStats(userId: string): void {
-		ComponentStore.setPlayerStatsAllTime(userId, getAllTimeStats(userId))
-	}
-
-
-	// MARK: normalizeStats
-	function normalizeStats(rawStats: Partial<PlayerStatsRecord> | undefined): PlayerStatsRecord {
-		const normalized = createEmptyStats()
-
-		if (!rawStats) {
-			return normalized
-		}
-
-		for (const stat of Object.values(PlayerStatsEnum)) {
-			const value = rawStats[stat]
-			normalized[stat] = typeof value === "number" ? value : 0
-		}
-
-		return normalized
-	}
-
-
 	// MARK: incrementRecord
 	function incrementRecord(
 		record: PlayerStatsRecord,
@@ -85,63 +75,35 @@ export namespace PlayerStatsTracker {
 	}
 
 
-	// MARK: readAllTimeStats
-	async function readAllTimeStats(userId: string): Promise<PlayerStatsRecord> {
-		const raw = await Storage.player.get<string>(userId, storageKey)
-		if (!raw) {
-			return createEmptyStats()
+	// MARK: getOrCreateAllTimeState
+	function getOrCreateAllTimeState(userId: string): PlayerBackedState<PlayerStatsRecord> {
+		const existing = allTimeState.get(userId)
+		if (existing) {
+			return existing
 		}
 
-		try {
-			return normalizeStats(JSON.parse(raw) as Partial<PlayerStatsRecord>)
-		} catch (error) {
-			console.error(`PlayerStatsTracker: readAllTimeStats: failed to parse "${storageKey}" for "${userId}"`, error)
-			return createEmptyStats()
-		}
-	}
-
-
-	// MARK: queueAllTimeWrite
-	function queueAllTimeWrite(
-		userId                 : string,
-		stat                   : PlayerStatsEnum,
-		amount                 : number,
-		cacheAlreadyIncremented: boolean
-	): void {
-		const queuedWrite = (allTimeWriteQueue.get(userId) ?? Promise.resolve()).then(async () => {
-			const record = allTimeStats.get(userId) ?? await readAllTimeStats(userId)
-
-			if (!cacheAlreadyIncremented) {
-				incrementRecord(record, stat, amount)
-			}
-
-			allTimeStats.set(userId, record)
-			publishAllTimeStats(userId)
-
-			try {
-				await Storage.player.set(userId, storageKey, JSON.stringify(record))
-				console.log(`PlayerStatsTracker: queueAllTimeWrite: wrote "${storageKey}" for "${userId}"`, record)
-			} catch (error) {
-				console.error(`PlayerStatsTracker: queueAllTimeWrite: failed to write "${storageKey}" for "${userId}"`, error)
-			}
+		const backed = new PlayerBackedState<PlayerStatsRecord>({
+			userId,
+			key            : storageKey,
+			createDefault  : createEmptyStats,
+			normalize      : normalizeStats,
+			writeOnUpdate  : false,
+			persistOnEvents: [
+				ServerEvents.GAME_END,
+				ServerEvents.PLAYER_SESSION_END,
+			],
+			onPublish: (state) => {
+				ComponentStore.setPlayerStatsAllTime(userId, cloneStats(state))
+			},
 		})
 
-		allTimeWriteQueue.set(userId, queuedWrite.catch(() => undefined))
-	}
+		allTimeState.set(userId, backed)
 
-
-	// MARK: ensureAllTimeStats
-	function ensureAllTimeStats(userId: string): void {
-		const queuedRead = (allTimeWriteQueue.get(userId) ?? Promise.resolve()).then(async () => {
-			if (allTimeStats.has(userId)) {
-				return
-			}
-
-			allTimeStats.set(userId, await readAllTimeStats(userId))
-			publishAllTimeStats(userId)
+		backed.init().catch((error) => {
+			console.error(`PlayerStatsTracker: getOrCreateAllTimeState: failed to hydrate for "${userId}"`, error)
 		})
 
-		allTimeWriteQueue.set(userId, queuedRead.catch(() => undefined))
+		return backed
 	}
 
 
@@ -153,7 +115,7 @@ export namespace PlayerStatsTracker {
 		sessionStats.set(userId, createEmptyStats())
 		gameStats.set(userId, createEmptyStats())
 		publishStatsEntity(userId)
-		ensureAllTimeStats(userId)
+		getOrCreateAllTimeState(userId)
 	}
 
 
@@ -212,13 +174,11 @@ export namespace PlayerStatsTracker {
 			publishGameStats(userId)
 		}
 
-		const currentAllTimeStats = allTimeStats.get(userId)
-		if (currentAllTimeStats) {
-			incrementRecord(currentAllTimeStats, stat, amount)
-			publishAllTimeStats(userId)
-		}
-
-		queueAllTimeWrite(userId, stat, amount, Boolean(currentAllTimeStats))
+		getOrCreateAllTimeState(userId).update((state) => {
+			const next = cloneStats(state)
+			incrementRecord(next, stat, amount)
+			return next
+		})
 	}
 
 
@@ -245,6 +205,6 @@ export namespace PlayerStatsTracker {
 	 * Returns the cached all-time stats, or an empty record while storage is still loading.
 	 */
 	export function getAllTimeStats(userId: string): PlayerStatsRecord {
-		return cloneStats(allTimeStats.get(userId) ?? createEmptyStats())
+		return cloneStats(allTimeState.get(userId)?.get() ?? createEmptyStats())
 	}
 }
