@@ -8,8 +8,10 @@ import { MessageType, room } from 'src/shared/room'
 import { GameSettings } from 'src/shared/settings'
 
 import { LeaderboardManager } from "src/server/leaderboardManager"
+import { isBlockedPlayer } from "src/server/metrics/blocklist"
 import { Metrics } from "src/server/metrics/client"
-import { ServerMessaging } from 'src/server/serverMessaging'
+import { MostWantedManager } from "src/server/mostWantedManager"
+import { ServerMessaging } from "src/server/serverMessaging"
 
 
 export namespace serverHandler {
@@ -222,8 +224,13 @@ export namespace serverHandler {
 		const userId = getUserId(context)
 		console.log('handleRequestFoundAllPigeons: userId', userId)
 
+		if (userId === 'unknown' || isBlockedPlayer(userId)) {
+			return
+		}
 
 		Metrics.trackFoundAllPigeons(userId)
+
+		MostWantedManager.setWantedForPigeons(userId)
 	}
 
 

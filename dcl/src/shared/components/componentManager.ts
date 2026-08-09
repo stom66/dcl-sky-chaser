@@ -17,6 +17,9 @@ export * as C_Combo from "src/shared/components/combo"
 import * as C_Leaderboards from "src/shared/components/leaderboards"
 export * as C_Leaderboards from "src/shared/components/leaderboards"
 
+import * as C_MostWanted from "src/shared/components/mostWanted"
+export * as C_MostWanted from "src/shared/components/mostWanted"
+
 import * as C_PigeonCounter from "src/shared/components/pigeonCounter"
 export * as C_PigeonCounter from "src/shared/components/pigeonCounter"
 
@@ -61,7 +64,8 @@ export namespace ComponentManager {
 		C_GameData.ScoreBoard,
 		C_Leaderboards.leaderboardAllTime,
 		C_Leaderboards.leaderboardWeekly,
-	]	
+		C_MostWanted.MostWanted,
+	]
 
 	const playerStatsComponents = [
 		C_PlayerStats.PlayerStatsIdentity,
@@ -125,6 +129,14 @@ export namespace ComponentManager {
 			if (!leaderboardWeeklyExists) {
 				C_Leaderboards.leaderboardWeekly.createOrReplace(entity, { 
 					scores: [] 
+				})
+			}
+
+			const mostWantedExists = C_MostWanted.MostWanted.has(entity)
+			if (!mostWantedExists) {
+				C_MostWanted.MostWanted.createOrReplace(entity, {
+					wantedForPigeons: "",
+					wantedForMurder : "",
 				})
 			}
 

@@ -1,32 +1,32 @@
+import { Transform } from "@dcl/sdk/ecs"
 import { onEnterScene, onLeaveScene } from "@dcl/sdk/players"
 import * as utils from "@dcl-sdk/utils"
 
-import { ServerSettings } from "src/shared/settings"
-import { GameStatus } from "src/shared/enums"
-
 import { ComponentManager } from "src/shared/components/componentManager"
 import { ComponentStore } from "src/shared/components/componentStore"
+import { GameStatus } from "src/shared/enums"
+import { ServerSettings } from "src/shared/settings"
+import { DiscordWebhooks } from "src/shared/utils/discord-webhooks"
 
+import { LeaderboardManager } from "src/server/leaderboardManager"
+import { isBlockedPlayer } from "src/server/metrics/blocklist"
+import { Metrics } from "src/server/metrics/client"
+import { MostWantedManager } from "src/server/mostWantedManager"
 import { serverHandler } from "src/server/serverHandler"
 import { ServerMessaging } from "src/server/serverMessaging"
-import { LeaderboardManager } from "./leaderboardManager"
-import { Metrics } from "./metrics/client"
-import { Transform } from "@dcl/sdk/ecs"
-import { DiscordWebhooks } from "src/shared/utils/discord-webhooks"
-import { isBlockedPlayer } from "./metrics/blocklist"
 
 
 export async function initServer(): Promise<void> {
 	console.log("Server: initServer()")
 
-	
 	ComponentManager.init()
 	ComponentStore.init()
-	
+
 	serverHandler.init()
 
 	// Initialize the leaderboard manager
 	LeaderboardManager.init()
+	MostWantedManager.init()
 
 	// Send a batch of server times to the clients to get an inital average
 	for (let i = 0; i < 10; i++) {
@@ -68,4 +68,3 @@ export async function initServer(): Promise<void> {
 		}
 	})
 }
- 

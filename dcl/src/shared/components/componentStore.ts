@@ -4,18 +4,20 @@ import { ComponentData, Entity } from "@dcl/sdk/ecs"
 import { GameStatus } from "src/shared/enums"
 import { GameDataSnapshot } from "src/shared/types/shared-types"
 
-import { ComponentManager, C_GameData, C_PlayerFuel, C_Combo, C_Leaderboards, C_PigeonCounter, C_PlayerStats } from "src/shared/components/componentManager"
-import { GameSettings } from "src/shared/settings"
 import { LeaderboardEntry } from "src/shared/classes/leaderboard"
-import { ClientEvents, eventBus } from "../utils/eventBus"
+import { ComponentManager, C_Combo, C_GameData, C_Leaderboards, C_MostWanted, C_PigeonCounter, C_PlayerFuel, C_PlayerStats } from "src/shared/components/componentManager"
+import { createEmptyMostWanted, MostWantedState } from "src/shared/components/mostWanted"
 import { PlayerStatsRecord } from "src/shared/metrics/playerStats"
+import { GameSettings } from "src/shared/settings"
+import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
 
 // Re-export Components for easy importing elsewhere
-export * as C_GameData from "src/shared/components/gameData"
-export * as C_PlayerFuel from "src/shared/components/playerFuel"
 export * as C_Combo from "src/shared/components/combo"
+export * as C_GameData from "src/shared/components/gameData"
 export * as C_Leaderboards from "src/shared/components/leaderboards"
+export * as C_MostWanted from "src/shared/components/mostWanted"
 export * as C_PigeonCounter from "src/shared/components/pigeonCounter"
+export * as C_PlayerFuel from "src/shared/components/playerFuel"
 export * as C_PlayerStats from "src/shared/components/playerStats"
 /**
  * Data-access wrapper around the synced components. Reads work on both
@@ -48,6 +50,7 @@ export namespace ComponentStore {
 		C_PlayerFuel.PlayerFuel,
 		C_Leaderboards.leaderboardAllTime,
 		C_Leaderboards.leaderboardWeekly,
+		C_MostWanted.MostWanted,
 		C_PigeonCounter.PigeonCounter,
 	] as const
 
@@ -436,6 +439,76 @@ export namespace ComponentStore {
 
 		const c = C_Leaderboards.leaderboardWeekly.get(entity)
 		return [...(c?.scores ?? [])]
+	}
+
+
+	// MARK: MostWanted
+	/**
+	 * Returns the synced MostWanted state, or empty defaults until ready.
+	 */
+	export function getMostWanted(): MostWantedState {
+		const entity = ComponentManager.tryGetComponentEntity()
+		if (entity === undefined) return createEmptyMostWanted()
+
+		const c = C_MostWanted.MostWanted.getOrNull(entity)
+		if (c === null) return createEmptyMostWanted()
+
+		return {
+			wantedForPigeons: c.wantedForPigeons,
+			wantedForMurder : c.wantedForMurder,
+		}
+	}
+
+
+	// MARK: setMostWanted
+	/**
+	 * Replaces the synced MostWanted state. Server only.
+	 */
+	export function setMostWanted(state: MostWantedState): void {
+		if (!isServer()) return
+
+		const entity = ComponentManager.tryGetComponentEntity()
+		if (entity === undefined) return
+
+		const c = C_MostWanted.MostWanted.getMutableOrNull(entity)
+		if (c === null) return
+
+		c.wantedForPigeons = state.wantedForPigeons
+		c.wantedForMurder  = state.wantedForMurder
+	}
+
+
+	// MARK: setWantedForPigeons
+	/**
+	 * Updates the pigeon MostWanted user id. Server only.
+	 */
+	export function setWantedForPigeons(userId: string): void {
+		if (!isServer()) return
+
+		const entity = ComponentManager.tryGetComponentEntity()
+		if (entity === undefined) return
+
+		const c = C_MostWanted.MostWanted.getMutableOrNull(entity)
+		if (c === null) return
+
+		c.wantedForPigeons = userId
+	}
+
+
+	// MARK: setWantedForMurder
+	/**
+	 * Updates the murder MostWanted user id. Server only.
+	 */
+	export function setWantedForMurder(userId: string): void {
+		if (!isServer()) return
+
+		const entity = ComponentManager.tryGetComponentEntity()
+		if (entity === undefined) return
+
+		const c = C_MostWanted.MostWanted.getMutableOrNull(entity)
+		if (c === null) return
+
+		c.wantedForMurder = userId
 	}
 
 
