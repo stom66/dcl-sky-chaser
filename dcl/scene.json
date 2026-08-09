@@ -1091,5 +1091,6 @@
   "worldConfiguration": {
     "name": "skychaser.dcl.eth"
   },
-  "rating": "T"
+  "rating": "T",
+  "landscapeTerrain": true
 }
