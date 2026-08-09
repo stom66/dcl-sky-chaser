@@ -7,6 +7,7 @@ import { ComponentStore } from "src/shared/components/componentStore"
 import { GameStatus } from "src/shared/enums"
 import { ServerSettings } from "src/shared/settings"
 import { DiscordWebhooks } from "src/shared/utils/discord-webhooks"
+import { eventBus, ServerEvents } from "src/shared/utils/eventBus"
 
 import { LeaderboardManager } from "src/server/leaderboardManager"
 import { isBlockedPlayer } from "src/server/metrics/blocklist"
@@ -63,6 +64,10 @@ export async function initServer(): Promise<void> {
 		Metrics.sessionEnd(userId)
 
 		if (gameStatus === GameStatus.ACTIVE && ComponentStore.getPlayers().length === 0) {
+			eventBus.emit(ServerEvents.GAME_END, {
+				status   : GameStatus.ENDING,
+				startTime: gameStartTime,
+			})
 			Metrics.trackGameAborted(gameStartTime, [])
 			serverHandler.resetGameCreator()
 		}

@@ -9,7 +9,7 @@ import { ComponentManager, C_Combo, C_GameData, C_Leaderboards, C_MostWanted, C_
 import { createEmptyMostWanted, MostWantedState } from "src/shared/components/mostWanted"
 import { PlayerStatsRecord } from "src/shared/metrics/playerStats"
 import { GameSettings } from "src/shared/settings"
-import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
+import { ClientEvents, eventBus, ServerEvents } from "src/shared/utils/eventBus"
 
 // Re-export Components for easy importing elsewhere
 export * as C_Combo from "src/shared/components/combo"
@@ -154,7 +154,27 @@ export namespace ComponentStore {
 		const c = C_GameData.GameData.getMutableOrNull(entity)
 		if (c === null) return
 
+		const previousStatus = c.status
 		c.status = status
+
+		if (previousStatus === status) {
+			return
+		}
+
+		const payload = {
+			status,
+			startTime: c.startTime,
+		}
+
+		if (status === GameStatus.STARTING) {
+			eventBus.emit(ServerEvents.GAME_STARTING, payload)
+		} else if (status === GameStatus.ACTIVE) {
+			eventBus.emit(ServerEvents.GAME_ACTIVE, payload)
+		} else if (status === GameStatus.ENDING) {
+			eventBus.emit(ServerEvents.GAME_END, payload)
+		} else if (status === GameStatus.IDLE) {
+			eventBus.emit(ServerEvents.GAME_IDLE, payload)
+		}
 	}
 	
 

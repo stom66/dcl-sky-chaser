@@ -1,6 +1,7 @@
 import { IS_DEV } from "../settings"
 
 export { ClientEvents } from "src/client/clientEvents"
+export { ServerEvents } from "src/server/serverEvents"
 
 export type Listener<T = any> = (data: T) => void
 export type EventBus = ReturnType<typeof createEventBus>

@@ -1,5 +1,6 @@
 import { VERSION } from 'src/shared/data/version'
 import { PlayerStatsEnum, PlayerStatsRecord } from 'src/shared/metrics/playerStats'
+import { eventBus, ServerEvents } from 'src/shared/utils/eventBus'
 
 import { isBlockedPlayer } from 'src/server/metrics/blocklist'
 import { MetricEvents } from 'src/server/metrics/metricEvents'
@@ -73,6 +74,7 @@ export namespace Metrics {
 
 		sessions.set(userId, Date.now())
 		PlayerStatsTracker.sessionStart(userId)
+		eventBus.emit(ServerEvents.PLAYER_SESSION_START, { userId })
 
 		trackSceneJoined(userId, displayName)
 	}
@@ -92,9 +94,10 @@ export namespace Metrics {
 		trackSceneLeft(userId, durationMs, stats)
 		updateAllTimePlayerStats(userId)
 
+		eventBus.emit(ServerEvents.PLAYER_SESSION_END, { userId })
+
 		sessions.delete(userId)
 		PlayerStatsTracker.sessionEnd(userId)
-
 	}
 
 
