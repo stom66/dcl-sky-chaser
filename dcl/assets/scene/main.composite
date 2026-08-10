@@ -1822,7 +1822,7 @@
       }
     },
     {
-      "name": "inspector::SceneMetadata-v4",
+      "name": "inspector::SceneMetadata-v5",
       "jsonSchema": {
         "type": "object",
         "properties": {
@@ -2142,6 +2142,14 @@
             }
           },
           "disableNearbyVoiceChat": {
+            "type": "boolean",
+            "serializationType": "optional",
+            "optionalJsonSchema": {
+              "type": "boolean",
+              "serializationType": "boolean"
+            }
+          },
+          "hideLandscapeTerrain": {
             "type": "boolean",
             "serializationType": "optional",
             "optionalJsonSchema": {
@@ -6307,7 +6315,8 @@
               "fixedTime": 51600
             },
             "creator": "0xCEC7e38e088A87D77F2B60Fcae6840D00E018155",
-            "disableNearbyVoiceChat": false
+            "disableNearbyVoiceChat": false,
+            "hideLandscapeTerrain": false
           }
         }
       }
