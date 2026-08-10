@@ -1092,5 +1092,5 @@
     "name": "skychaser.dcl.eth"
   },
   "rating": "T",
-  "landscapeTerrain": true
+  "landscapeTerrain": false
 }
