@@ -230,9 +230,7 @@ export abstract class StorageBackedState<T extends object> {
 
 	// MARK: scheduleRetry
 	private scheduleRetry(): void {
-		if (this.isRetryScheduled) {
-			return
-		}
+		if (this.isRetryScheduled) return
 
 		this.isRetryScheduled = true
 
