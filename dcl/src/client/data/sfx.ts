@@ -7,7 +7,14 @@ export const sfx = {
 	],
 
 	music: [
-		"assets/sfx/music/music_zapsplat_astro_race.mp3",
+		"assets/sfx/music/BalloonDrift.01.mp3",
+		"assets/sfx/music/BalloonDrift.02.mp3",
+		"assets/sfx/music/BalloonDrift.03.mp3",
+		"assets/sfx/music/BalloonDrift.04.mp3",
+		"assets/sfx/music/BalloonDrift.05.mp3",
+		"assets/sfx/music/BalloonDrift.06.mp3",
+		"assets/sfx/music/BalloonDrift.07.mp3",
+		"assets/sfx/music/BalloonDrift.08.mp3",
 	],
 
 	countdown: [

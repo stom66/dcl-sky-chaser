@@ -11,8 +11,10 @@ export namespace SoundManager {
 
 
 	// MARK: settings
-	const FADE_DURATION          = 3.0                                // Duration when fading music in/out
-	const BGM_VOLUME             = 0.35                               // Volume when music is fully faded in
+	const FADE_DURATION          = 1.0                                // Duration when fading music in/out
+	const BGM_VOLUME             = 0.2                               // Fixed AudioSource volume (never mutated while playing)
+	const BGM_FADE_NEAR          = 0                                  // Local Y offset = full loudness (parented to camera)
+	const BGM_FADE_FAR           = 48                                 // Local Y offset = effectively silent via spatial falloff
 	const SFX_ENTITY_VOLUME      = 1.0                                // Volume on preloaded one-shot entities (retrigger uses this as baseline)
 	const COUNTDOWN_LAST_SECONDS = 5                                  // How many of the last seconds to play countdown sounds for
 
@@ -24,11 +26,15 @@ export namespace SoundManager {
 	let bgmFadePhase             : BgmFadePhase           = 'idle'    // current fade phase
 	let bgmEntity                : Entity                             // background music entity
 	let fadeElapsed              = 0                                  // elapsed time since last fade change (used by systemUpdateSound)
-	let fadeSegmentStartVolume   = 0                                  // volume at the start of the current fade segment - typically 0 or 1, unless a fade is started during another fade
+	let fadeFromDistance         = BGM_FADE_FAR                       // distance at the start of the current fade segment
+	let fadeToDistance           = BGM_FADE_NEAR                      // distance at the end of the current fade segment
+	let bgmDistance              = BGM_FADE_FAR                       // last applied local-Y distance from the camera
 
 	const sfxCache               : Record<string, Entity> = {}        // preloaded sound effect entities
 	let lastPlayedSfx            : string | undefined     = undefined // last played sound effect - used to avoid playing the same sound effect twice in a row
 	let countdownTimerIds        : number[]               = []        // timer ids for the countdown sounds
+
+	let lastPlayedMusicIndex = Math.floor(Math.random() * sfx.music.length)
 
 
 	// MARK: init
@@ -41,16 +47,21 @@ export namespace SoundManager {
 		if (isInitialized) return
 		isInitialized = true
 
-		// Add the background music entity
+		// BGM is parented to the camera and faded by distance — mutating AudioSource.volume
+		// while playing restarts the clip in the current client (sounds like rapid ticks).
 		bgmEntity = engine.addEntity()
-		Transform.create(bgmEntity, {})
+		Transform.create(bgmEntity, {
+			parent  : engine.CameraEntity,
+			position: Vector3.create(0, BGM_FADE_FAR, 0),
+		})
 		AudioSource.create(bgmEntity, {
 			audioClipUrl: sfx.music[Math.floor(Math.random() * sfx.music.length)],
 			loop        : true,
-			global      : true,
+			global      : false,
 			playing     : false,
 			volume      : BGM_VOLUME,
 		})
+		bgmDistance = BGM_FADE_FAR
 
 		// Add the sound effect entities
 		preloadSfx()
@@ -59,22 +70,14 @@ export namespace SoundManager {
 
 		engine.addSystem(sys_updateSound)
 
-		// Bind the game joined event to start the background music
-/* 		eventBus.on(ClientEvents.ON_GAME_JOINED, () => {
+		// Bind the game start event to start the background music
+ 		eventBus.on(ClientEvents.GAME_ACTIVE, () => {
 			startBgm()
 		})
 
-		eventBus.on(ClientEvents.ON_MY_ROLL_START, () => {
-			playSound(sfx.alert)
-		})
-
-		eventBus.on(ClientEvents.ON_GROUP_ROLL_PLAYBACK_START, () => {
-			playSound(sfx.swish)
-		})
-
-		eventBus.on(ClientEvents.ON_GROUP_GAME_END, () => {
+		eventBus.on(ClientEvents.GAME_IDLE, () => {
 			stopBgm()
-		}) */
+		})
 	}
 
 	function createToiletSfx() {
@@ -149,11 +152,27 @@ export namespace SoundManager {
 	}
 
 
+	// MARK: setBgmDistance
+	/**
+	 * Moves the BGM entity's local Y offset from the camera. Used instead of volume fades
+	 * so {@link AudioSource} is not mutated while the clip is playing.
+	 *
+	 * @param distance - Local Y metres from the camera ({@link BGM_FADE_NEAR} loud … {@link BGM_FADE_FAR} silent).
+	 */
+	function setBgmDistance(distance: number): void {
+		const transform = Transform.getMutableOrNull(bgmEntity)
+		if (!transform) return
+		bgmDistance          = distance
+		transform.position.y = distance
+	}
+
+
 	// MARK: startBgm
 	/**
-	 * Starts background music: picks a random track from {@link sfx.music}, fades volume up
-	 * from zero. If music is already playing (idle or fading in), does nothing. If a
-	 * fade-out is in progress, interrupts it and starts a fresh fade-in.
+	 * Starts background music: picks the next track from {@link sfx.music}, then fades in by
+	 * moving the source toward the camera. If music is already playing (idle or fading in),
+	 * does nothing. If a fade-out is in progress, interrupts it and fades back in from the
+	 * current distance (same clip — does not retarget the URL mid-play).
 	 */
 	export function startBgm(): void {
 		if (!bgmEntity) return
@@ -163,31 +182,43 @@ export namespace SoundManager {
 
 		if (audio.playing && bgmFadePhase !== 'fadingOut') return
 
-		bgmFadePhase           = 'fadingIn'
-		fadeElapsed            = 0
-		fadeSegmentStartVolume = 0
-		audio.audioClipUrl     = sfx.music[Math.floor(Math.random() * sfx.music.length)]
-		audio.volume           = 0
-		audio.playing          = true
+		const resumingFadeOut = audio.playing && bgmFadePhase === 'fadingOut'
+
+		bgmFadePhase     = 'fadingIn'
+		fadeElapsed      = 0
+		fadeFromDistance = bgmDistance
+		fadeToDistance   = BGM_FADE_NEAR
+
+		if (!resumingFadeOut) {
+			lastPlayedMusicIndex += 1
+			if (lastPlayedMusicIndex >= sfx.music.length) lastPlayedMusicIndex = 0
+
+			setBgmDistance(BGM_FADE_FAR)
+			fadeFromDistance   = BGM_FADE_FAR
+			audio.audioClipUrl = sfx.music[lastPlayedMusicIndex]
+			audio.playing      = true
+		}
 	}
 
 
 	// MARK: stopBgm
 	/**
-	 * Fades background music to silence then stops playback. No-op if already silent. If
-	 * called mid-fade-in, fades out from the current volume (no jump to full level).
+	 * Fades background music out by moving the source away from the camera, then stops
+	 * playback. No-op if already stopped at the far distance. Mid fade-in continues from
+	 * the current distance (no jump to full loudness).
 	 */
 	export function stopBgm(): void {
 		if (!bgmEntity) return
 
-		const audio = AudioSource.getMutableOrNull(bgmEntity)
+		const audio = AudioSource.getOrNull(bgmEntity)
 		if (!audio) return
 
-		if (!audio.playing && (audio.volume ?? 0) <= 0.001) return
+		if (!audio.playing && bgmDistance >= BGM_FADE_FAR - 0.01) return
 
-		bgmFadePhase           = 'fadingOut'
-		fadeElapsed            = 0
-		fadeSegmentStartVolume = audio.volume ?? BGM_VOLUME
+		bgmFadePhase     = 'fadingOut'
+		fadeElapsed      = 0
+		fadeFromDistance = bgmDistance
+		fadeToDistance   = BGM_FADE_FAR
 	}
 
 
@@ -310,39 +341,26 @@ export namespace SoundManager {
 
 	// MARK: systemUpdateSound
 	/**
-	 * Engine system: advances BGM fade-in / fade-out using {@link FADE_DURATION} and
-	 * {@link fadeSegmentStartVolume}. Runs every frame after {@link init}.
+	 * Engine system: advances BGM fade-in / fade-out by lerping distance from the camera
+	 * ({@link FADE_DURATION}). Does not touch {@link AudioSource}.volume while playing.
 	 *
 	 * @param dt - Delta time in seconds since the last frame.
 	 */
 	const sys_updateSound = (dt: number): void => {
 		if (bgmFadePhase === 'idle' || !bgmEntity) return
 
-		const audio = AudioSource.getMutableOrNull(bgmEntity)
-		if (!audio) return
-
 		fadeElapsed += dt
 
-		// Are we finished? Set final volume
-		if (fadeElapsed >= FADE_DURATION) {
-			if (bgmFadePhase === 'fadingOut') {
-				audio.volume  = 0
-				audio.playing = false
-			} else {
-				audio.volume = BGM_VOLUME
-			}
-			bgmFadePhase = 'idle'
-			return
-		}
+		const t        = Math.min(1, fadeElapsed / FADE_DURATION)
+		const distance = fadeFromDistance + (fadeToDistance - fadeFromDistance) * t
+		setBgmDistance(distance)
 
-		// Not finished, update volume
-		const t = fadeElapsed / FADE_DURATION
+		if (t < 1) return
+
 		if (bgmFadePhase === 'fadingOut') {
-			const volume = Math.max(0, fadeSegmentStartVolume * (1 - t))
-			audio.volume = volume
-		} else {
-			const volume = Math.min(1, fadeSegmentStartVolume + (BGM_VOLUME - fadeSegmentStartVolume) * t)
-			audio.volume = volume
+			const audio = AudioSource.getMutableOrNull(bgmEntity)
+			if (audio) audio.playing = false
 		}
+		bgmFadePhase = 'idle'
 	}
 }
