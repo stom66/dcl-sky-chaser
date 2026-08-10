@@ -1,4 +1,4 @@
-import { engine, Entity, InputAction, inputSystem, ParticleSystem, PBParticleSystem_BlendMode, PBParticleSystem_SimulationSpace, TextureFilterMode, Transform } from "@dcl/sdk/ecs";
+import { engine, Entity, InputAction, inputSystem, ParticleSystem, PBParticleSystem_BlendMode, PBParticleSystem_LimitVelocity, PBParticleSystem_SimulationSpace, TextureFilterMode, Transform } from "@dcl/sdk/ecs";
 import { Color4, Quaternion, Vector3 } from "@dcl/sdk/math";
 import { ComponentStore } from "src/shared/components/componentStore";
 import * as utils from '@dcl-sdk/utils'
@@ -7,26 +7,53 @@ import { ClientEvents, eventBus } from "src/shared/utils/eventBus";
 
 export namespace ParticleSpawner {
 
-	var entityBooster: Entity | null = null
-	var entityWind: Entity | null = null
+	var entityBooster         : Entity | null = null
+	var entityBoosterWindRoot : Entity | null = null
+	var entityEnvWindRoot     : Entity | null = null
+	var boosterWindEntities   : Entity[]      = []
+	var envWindEntities       : Entity[]      = []
 
 	var isEnabled = false
+
+	const BOOSTER_WIND_SPRITES = [
+		'assets/tex/sprites-wind-02.png',
+		'assets/tex/sprites-wind-03.png',
+		'assets/tex/sprites-wind-04.png',
+		'assets/tex/sprites-wind-05.png',
+		'assets/tex/sprites-wind-06.png',
+	]
+
+	const ENV_WIND_SPRITES = [
+		'assets/tex/sprites-wind-05.png',
+		'assets/tex/sprites-wind-06.png',
+	]
 
 	export function init() {
 		entityBooster = engine.addEntity()
 		Transform.create(entityBooster, { 
-			parent: engine.PlayerEntity,
+			parent  : engine.PlayerEntity,
 			position: Vector3.create(0,1,-0.1),
 			rotation: Quaternion.fromEulerDegrees(30, 180, 0)
 		})	
 
-		entityWind = engine.addEntity()
-		Transform.create(entityWind, { 
-			parent: engine.CameraEntity,
-			position: Vector3.create(0,0,10),
+		entityBoosterWindRoot = engine.addEntity()
+		Transform.create(entityBoosterWindRoot, { 
+			parent  : engine.PlayerEntity,
+			position: Vector3.create(0, 1, 10),
 			rotation: Quaternion.fromEulerDegrees(0, 180, 0),
-			scale: Vector3.create(4, 1, 1)
+			scale   : Vector3.create(4, 1, 1)
 		})	
+
+		entityEnvWindRoot = engine.addEntity()
+		Transform.create(entityEnvWindRoot, {
+			parent  : engine.PlayerEntity,
+			position: Vector3.create(0, 0, 0),
+			rotation: Quaternion.fromEulerDegrees(-90, 0, 0),
+			scale   : Vector3.create(1, 1, 1)
+		})
+
+		createBoosterWind()
+		createEnvWind()
 
 		const zero = Vector3.Zero()
 
@@ -70,8 +97,6 @@ export namespace ParticleSpawner {
 		})
 
 		engine.addSystem(sys_inputWatcher)
-
-		//enableWind() // DEBUG
 	}
 
 	function sys_inputWatcher(dt: number) {
@@ -81,12 +106,12 @@ export namespace ParticleSpawner {
 			isEnabled = true
 			console.log("ParticleSpawner: setting active to true")
 			enableBooster()
-			//enableWind()
+			enableBoosterWind()
 		} else if (!isEPressed && isEnabled) {
 			isEnabled = false
 			console.log("ParticleSpawner: setting active to false")
 			disableBooster()
-			//disableWind()
+			disableBoosterWind()
 		}
 		
 		if (isEPressed && isEnabled) {
@@ -116,12 +141,14 @@ export namespace ParticleSpawner {
 			case ClientEvents.PLAYER_COLLIDED_BALLOON:
 			case ClientEvents.PROJECTILE_HIT_BALLOON:
 				TriggerPickupBalloon(position)
+				TriggerDustSpurt(position)
 				break
 			case ClientEvents.PLAYER_COLLIDED_RING:
 				TriggerPickupSpeedRing(position, direction.y)
 				break
 			case ClientEvents.PLAYER_COLLIDED_FUEL:
 				TriggerPickupFuel(position)
+				TriggerDustSpurt(position)
 				break
 			case ClientEvents.PROJECTILE_HIT_FUEL:
 				TriggerExplosion(position)
@@ -183,60 +210,159 @@ export namespace ParticleSpawner {
 	}
 
 
-	// MARK: Wind
-	function enableWind() {
-		if (!entityWind) return
+	// MARK: createBoosterWind
+	function createBoosterWind() {
+		if (!entityBoosterWindRoot) return
+		if (boosterWindEntities.length > 0) return
 
-		console.log("ParticleSpawner: creating WIND particle system")
+		console.log("ParticleSpawner: createBoosterWind: creating booster wind particle systems")
 
-		ParticleSystem.create(entityWind, {
-			active              : true,
+		for (const sprite of BOOSTER_WIND_SPRITES) {
+			const entity = engine.addEntity()
+			Transform.create(entity, { parent: entityBoosterWindRoot })
+			addBoosterWind(entity, sprite)
+			boosterWindEntities.push(entity)
+		}
+	}
+
+
+	// MARK: addBoosterWind
+	function addBoosterWind(
+		entity: Entity,
+		sprite: string
+	) {
+		const startZ = Math.random() * 360
+		const spinZ  = (Math.random() < 0.5 ? -1 : 1) * (15 + Math.random() * 45)
+
+		ParticleSystem.create(entity, {
+			active              : false,
 			loop                : true,
 			prewarm             : false,
-			faceTravelDirection : true,
+			faceTravelDirection : false,
 			rate                : 10,
 			lifetime            : 3,
-			maxParticles        : 50,
+			maxParticles        : 200,
 			gravity             : 0,
 			blendMode           : PBParticleSystem_BlendMode.PSB_ADD,
-			shape               : ParticleSystem.Shape.Cone({ 
-				angle : 25, 
-				radius: 0.1 
+			shape               : ParticleSystem.Shape.Box({
+				size: Vector3.create(7, 4, 1)
 			}),
-			initialVelocitySpeed: { 
-				start: 2.5, 
-				end  : 7.5 
+			initialVelocitySpeed: {
+				start: 12.5,
+				end  : 47.5
 			},
-			initialSize: { 
-				start: 2, 
-				end  : 2 
+			initialSize: {
+				start: 0.025,
+				end  : 0.5
 			},
-			initialColor: { 
-				start: Color4.White(), 
-				end  : Color4.White() 
+			initialColor: {
+				start: Color4.White(),
+				end  : Color4.White()
 			},
-			sizeOverTime: { 
-				start: 1, 
-				end  : 1 
+			sizeOverTime: {
+				start: 1,
+				end  : 0
 			},
-			texture             : { src: 'assets/tex/particles-wind.png',
+			initialRotation : Quaternion.fromEulerDegrees(0, 0, startZ),
+			rotationOverTime: Quaternion.fromEulerDegrees(0, 0, spinZ),
+			texture: {
+				src       : sprite,
 				filterMode: TextureFilterMode.TFM_POINT,
-			 },
-			billboard           : true,
-			spriteSheet         : { tilesX: 1, tilesY: 4, framesPerSecond: 2, },
-			initialRotation     : Quaternion.fromEulerDegrees(-90, -90, 0),
-			simulationSpace     : PBParticleSystem_SimulationSpace.PSS_WORLD,
-			
+			},
+			billboard      : true,
+			simulationSpace: PBParticleSystem_SimulationSpace.PSS_WORLD,
 		})
 	}
 
-	function disableWind() {
-		if (!entityWind) return
-		const p = ParticleSystem.getOrNull(entityWind)
-		if (!p) return
 
-		console.log("ParticleSpawner: deleting WIND particle system")
-		ParticleSystem.deleteFrom(entityWind)
+	// MARK: setBoosterWindActive
+	function setBoosterWindActive(
+		active: boolean
+	) {
+		for (const entity of boosterWindEntities) {
+			const p = ParticleSystem.getMutableOrNull(entity)
+			if (!p) continue
+			p.active = active
+		}
+	}
+
+
+	// MARK: enableBoosterWind
+	function enableBoosterWind() {
+		console.log("ParticleSpawner: enableBoosterWind: setting active to true")
+		setBoosterWindActive(true)
+	}
+
+
+	// MARK: disableBoosterWind
+	function disableBoosterWind() {
+		console.log("ParticleSpawner: disableBoosterWind: setting active to false")
+		setBoosterWindActive(false)
+	}
+
+
+	// MARK: createEnvWind
+	function createEnvWind() {
+		if (!entityEnvWindRoot) return
+		if (envWindEntities.length > 0) return
+
+		console.log("ParticleSpawner: createEnvWind: creating environmental wind particle systems")
+
+		for (const sprite of ENV_WIND_SPRITES) {
+			const entity = engine.addEntity()
+			Transform.create(entity, { parent: entityEnvWindRoot })
+			addEnvWind(entity, sprite)
+			envWindEntities.push(entity)
+		}
+	}
+
+
+	// MARK: addEnvWind
+	function addEnvWind(
+		entity: Entity,
+		sprite: string
+	) {
+		const startZ = Math.random() * 360
+		const spinZ  = (Math.random() < 0.5 ? -1 : 1) * (10 + Math.random() * 30)
+
+		ParticleSystem.create(entity, {
+			active              : true,
+			loop                : true,
+			prewarm             : true,
+			faceTravelDirection : false,
+			rate                : 1,
+			lifetime            : 20,
+			maxParticles        : 40,
+			gravity             : -5,
+			blendMode           : PBParticleSystem_BlendMode.PSB_ADD,
+			shape               : ParticleSystem.Shape.Box({
+				size: Vector3.create(6, 6, 0.5)
+			}),
+			initialVelocitySpeed: {
+				start: 0.25,
+				end  : 0.75
+			},
+			initialSize: {
+				start: 0.04,
+				end  : 0.4
+			},
+			initialColor: {
+				start: Color4.White(),
+				end  : Color4.White()
+			},
+			sizeOverTime: {
+				start: 0,
+				end  : 1
+			},
+			initialRotation : Quaternion.fromEulerDegrees(0, 0, startZ),
+			rotationOverTime: Quaternion.fromEulerDegrees(0, 0, spinZ),
+			texture: {
+				src       : sprite,
+				filterMode: TextureFilterMode.TFM_POINT,
+			},
+			billboard      : true,
+			simulationSpace: PBParticleSystem_SimulationSpace.PSS_WORLD,
+		})
 	}
 
 
@@ -251,10 +377,10 @@ export namespace ParticleSpawner {
 		ParticleSystem.create(entity, {
 			active              : true,
 			loop                : false,
-			prewarm             : false,
-			faceTravelDirection : false,
+			prewarm             : true,
+			faceTravelDirection : true,
 			rate                : 0,
-			lifetime            : 0.5,
+			lifetime            : 0.75,
 			maxParticles        : 300,
 			gravity             : 2,
 			blendMode           : PBParticleSystem_BlendMode.PSB_ALPHA,
@@ -265,11 +391,12 @@ export namespace ParticleSpawner {
 			initialColor        : { start: Color4.fromHexString("#ffffff"), end: Color4.fromHexString("#cccccc") },
 			//colorOverTime       : { start: Color4.create(1.000, 0.800, 0.500, 1.000), end: Color4.create(0.800, 0.200, 0.000, 0.000) },
 			bursts              : { values: [
-				{ time: 0, count: 64, cycles: 1, interval: 0.01, probability: 1 },
+				{ time: 0, count: 48, cycles: 1, interval: 0.01, probability: 1 },
 			] },
 			billboard           : true,
-			texture             : { src: 'assets/tex/particles-explosion.png' },
-			spriteSheet         : { tilesX: 2, tilesY: 2, framesPerSecond: 10},
+			texture             : { src: 'assets/tex/sprites-explosion.png' },
+			spriteSheet         : { tilesX: 6, tilesY: 6, framesPerSecond: 36},
+			rotationOverTime    : { x: 0, y: 0, z: 0, w: 1 },
 		})
 
 		utils.timers.setTimeout(() => {
@@ -288,26 +415,25 @@ export namespace ParticleSpawner {
 		ParticleSystem.create(entity, {
 			active              : true,
 			loop                : false,
-			prewarm             : false,
+			prewarm             : true,
 			faceTravelDirection : false,
 			rate                : 0,
 			lifetime            : 2,
 			maxParticles        : 300,
 			gravity             : 6,
-			blendMode           : PBParticleSystem_BlendMode.PSB_ADD,
+
+			blendMode           : PBParticleSystem_BlendMode.PSB_ALPHA,
 			shape               : ParticleSystem.Shape.Cone({ angle: 30, radius: 0.2 }),
-			initialVelocitySpeed: { start: 12.5, end: 17.5 },
-			initialSize         : { start: 0.25, end: 0.75 },
+			initialVelocitySpeed: { start: 12.5, end: 25 },
+			initialSize         : { start: 0.25, end: 3 },
 			sizeOverTime        : { start: 1, end: 0 },
-			//rotationOverTime    : { x: 0, y: 0, z: 0, w: 1 },
 			initialColor        : { start: Color4.fromHexString("#ffffff"), end: Color4.fromHexString("#cccccc") },
-			//colorOverTime       : { start: Color4.create(1.000, 0.800, 0.500, 1.000), end: Color4.create(0.800, 0.200, 0.000, 0.000) },
 			bursts              : { values: [
-				{ time: 0, count: 64, cycles: 1, interval: 0.01, probability: 1 },
+				{ time: 0, count: 16, cycles: 1, interval: 0.01, probability: 1 },
 			] },
 			billboard           : true,
-			texture             : { src: 'assets/tex/particles-dust.png' },
-			spriteSheet         : { tilesX: 2, tilesY: 2, framesPerSecond: 10},
+			texture             : { src: 'assets/tex/sprites-dust.png' },
+			spriteSheet         : { tilesX: 6, tilesY: 6, framesPerSecond: 36},
 		})
 
 		utils.timers.setTimeout(() => {
@@ -326,7 +452,7 @@ export namespace ParticleSpawner {
 		ParticleSystem.create(entity, {
 			active              : true,
 			loop                : false,
-			prewarm             : false,
+			prewarm             : true,
 			faceTravelDirection : false,
 			rate                : 0,
 			lifetime            : 2,
@@ -355,57 +481,85 @@ export namespace ParticleSpawner {
 
 	}
 
-	// MARK: Pickups
+
+	// MARK: Fuel
 	export function TriggerPickupFuel(
 		position: Vector3
-	) {
-		TriggerPickup(position, "assets/tex/particles-fuel.png", Color4.fromHexString("#55dd55"), Color4.fromHexString("#ffffff"))
-	}
-	export function TriggerPickupBalloon(
-		position: Vector3
-	) {
-		TriggerPickup(position, "assets/tex/particles-dust.png", Color4.fromHexString("#FFFC00"), Color4.fromHexString("#FF7800"))
-	}
-
-	export function TriggerPickup(
-		position   : Vector3,
-		texture    : string,
-		startColor: Color4 = Color4.fromHexString("#FFFFFF"),
-		endColor  : Color4 = Color4.fromHexString("#FFFFFF"),
 	) {
 		const entity = engine.addEntity()
 		Transform.create(entity, { position: position, rotation: Quaternion.fromEulerDegrees(-90, 0, 0) })
 		ParticleSystem.create(entity, {
 			active              : true,
 			loop                : false,
-			prewarm             : false,
+			prewarm             : true,
 			faceTravelDirection : false,
 			rate                : 0,
-			lifetime            : 0.75,
-			
+			lifetime            : 2,
 			maxParticles        : 300,
-			gravity             : 2,
+			gravity             : 6,
+
 			blendMode           : PBParticleSystem_BlendMode.PSB_ALPHA,
-			shape               : ParticleSystem.Shape.Point({}),
-			initialVelocitySpeed: { start: 7.5, end: 15 },
-			initialSize         : { start: 0.125, end: 1 },
+			shape               : ParticleSystem.Shape.Cone({ angle: 30, radius: 0.2 }),
+
+			initialVelocitySpeed: { start: 12.5, end: 17.5 },
+			initialSize         : { start: 0.25, end: 2 },
 			sizeOverTime        : { start: 1, end: 0 },
-			//rotationOverTime    : { x: 0, y: 0, z: 0, w: 1 },
-			initialColor        : { start: startColor, end: endColor },
-			//colorOverTime       : { start: Color4.create(1.000, 0.800, 0.500, 1.000), end: Color4.create(0.800, 0.200, 0.000, 0.000) },
+			initialColor        : { start: Color4.fromHexString("#55dd55"), end: Color4.fromHexString("#ffffff")},
 			bursts              : { values: [
-				{ time: 0, count: 64, cycles: 1, interval: 0.01, probability: 1 },
+				{ time: 0, count: 32, cycles: 1, interval: 0.01, probability: 1 },
 			] },
 			billboard           : true,
-			texture             : { src: texture },
-			spriteSheet         : { tilesX: 2, tilesY: 2, framesPerSecond: 10},
+			texture             : { src: 'assets/tex/sprites-fuel.png' },
+			spriteSheet         : { tilesX: 6, tilesY: 6, framesPerSecond: 36},
 		})
 
 		utils.timers.setTimeout(() => {
 			ParticleSystem.deleteFrom(entity)
 			engine.removeEntity(entity)
 		}, 2000)
+
 	}
+
+
+	// MARK: Balloon
+	export function TriggerPickupBalloon(
+		position: Vector3
+	) {
+		const entity = engine.addEntity()
+		Transform.create(entity, { position: position, rotation: Quaternion.fromEulerDegrees(-90, 0, 0) })
+		ParticleSystem.create(entity, {
+			active              : true,
+			loop                : false,
+			prewarm             : true,
+			faceTravelDirection : false,
+			rate                : 0,
+			lifetime            : 2,
+			maxParticles        : 300,
+			gravity             : 6,
+
+			blendMode           : PBParticleSystem_BlendMode.PSB_ALPHA,
+			shape               : ParticleSystem.Shape.Cone({ angle: 30, radius: 0.2 }),
+
+			initialVelocitySpeed: { start: 12.5, end: 27.5 },
+			initialSize         : { start: 0.25, end: 3 },
+			sizeOverTime        : { start: 1, end: 0 },
+			initialColor        : { start: Color4.fromHexString("#FFFC00"), end: Color4.fromHexString("#FF7800")},
+			bursts              : { values: [
+				{ time: 0, count: 24, cycles: 1, interval: 0.01, probability: 1 },
+			] },
+			billboard           : true,
+			texture             : { src: 'assets/tex/sprites-fabric.png' },
+			spriteSheet         : { tilesX: 6, tilesY: 6, framesPerSecond: 36},
+		})
+
+		utils.timers.setTimeout(() => {
+			ParticleSystem.deleteFrom(entity)
+			engine.removeEntity(entity)
+		}, 2000)
+
+	}
+
+
 
 	// MARK: Speed Rings
 	export function TriggerPickupSpeedRing(
@@ -413,31 +567,33 @@ export namespace ParticleSpawner {
 		yRot: number,
 	) {
 		const entity = engine.addEntity()
+		const limit: PBParticleSystem_LimitVelocity = { speed: 100 }
 		Transform.create(entity, { position: position, rotation: Quaternion.fromEulerDegrees(-45, yRot, 0) })
 		ParticleSystem.create(entity, {
 			active              : true,
 			loop                : false,
-			prewarm             : false,
+			prewarm             : true,
 			faceTravelDirection : false,
 			rate                : 0,
 			lifetime            : 2,
 			maxParticles        : 200,
 			gravity             : 2,
-			blendMode           : PBParticleSystem_BlendMode.PSB_ADD,
+			blendMode           : PBParticleSystem_BlendMode.PSB_ALPHA,
 			shape               : ParticleSystem.Shape.Cone({ angle: 15, radius: 0.2 }),
-			initialVelocitySpeed: { start: 25, end: 45 },
+			initialVelocitySpeed: { start: 35, end: 75 },
 			
 			initialSize         : { start: 0.25, end: 0.75 },
 			sizeOverTime        : { start: 1, end: 0 },
+			//limitVelocity       : { speed: 10, dampen: 0.1},
 			//rotationOverTime    : { x: 0, y: 0, z: 0, w: 1 },
-			initialColor        : { start: Color4.fromHexString("#00aadd"), end: Color4.fromHexString("#cccccc") },
+			initialColor        : { start: Color4.fromHexString("#aaaaaa"), end: Color4.fromHexString("#ffffff") },
 			//colorOverTime       : { start: Color4.create(1.000, 0.800, 0.500, 1.000), end: Color4.create(0.800, 0.200, 0.000, 0.000) },
 			bursts              : { values: [
 				{ time: 0, count: 64, cycles: 1, interval: 0.01, probability: 1 },
 			] },
 			billboard           : true,
-			texture             : { src: 'assets/tex/particles-dust.png' },
-			spriteSheet         : { tilesX: 2, tilesY: 2, framesPerSecond: 10},
+			texture             : { src: 'assets/tex/sprites-speed.png' },
+			spriteSheet         : { tilesX: 6, tilesY: 6, framesPerSecond: 36},
 		})
 
 		utils.timers.setTimeout(() => {
