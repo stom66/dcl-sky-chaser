@@ -60,3 +60,27 @@ export const guiLabelsAtlas = new TextureAtlas({
 		fuel           : { xStart: 1, yStart: 8 },
 	},
 })
+
+
+// MARK: progressFillAtlas
+/**
+ * Round-timer fill (`progress-fill.png`). Single full-frame cell for
+ * `ProgressBarImage` + `uvCropWithFill` (reveal, not stretch).
+ */
+export const progressFillAtlas = new TextureAtlas({
+	source : 'assets/images/ui/progress-fill.png',
+	columns: 1,
+	rows   : 1,
+})
+
+
+// MARK: fuelFillAtlas
+/**
+ * Fuel-gauge fill (`fuel-fill.png`). Single full-frame cell for
+ * `ProgressBarImage` + `uvCropWithFill` (reveal, not stretch).
+ */
+export const fuelFillAtlas = new TextureAtlas({
+	source : 'assets/images/ui/fuel-fill.png',
+	columns: 1,
+	rows   : 1,
+})

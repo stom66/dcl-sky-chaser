@@ -12,6 +12,7 @@ import {
 	ZoneType,
 } from '@stom66/dcl-ui-component-kit'
 
+import { fuelFillAtlas } from 'src/client/ui/themes/skyChaser/atlases'
 import { C_PlayerFuel, ComponentStore } from 'src/shared/components/componentStore'
 import { ClientEvents, eventBus } from 'src/shared/utils/eventBus'
 
@@ -42,10 +43,10 @@ const ARROW_TOP  = ARROW_ART_TOP * DISPLAY_SCALE
 const ARROW_LEFT = (GAUGE_WIDTH - ARROW_SIZE) / 2
 
 const FUEL_BG_SRC    = 'assets/images/ui/fuel-bg.png'
-const FUEL_FILL_SRC  = 'assets/images/ui/fuel-fill.png'
 const FUEL_FG_SRC    = 'assets/images/ui/fuel-fg.png'
 const FUEL_ARROW_SRC = 'assets/images/ui/fuel-arrow.png'
 
+/** No nine-slice caps — bg/border are full-frame chrome. */
 const FUEL_TEXTURE_SLICES = {
 	top   : 0,
 	right : 0,
@@ -229,10 +230,11 @@ export class FuelLayer extends Layer {
 				borderWidth    = {0}
 				borderRadius   = {0}
 				textureSlices  = {FUEL_TEXTURE_SLICES}
+				atlas          = {fuelFillAtlas}
+				uvCell         = {{ xStart: 1, yStart: 1 }}
 				uvCropWithFill = {true}
 				textures       = {{
 					background: FUEL_BG_SRC,
-					fill      : FUEL_FILL_SRC,
 					border    : FUEL_FG_SRC,
 				}}
 			>

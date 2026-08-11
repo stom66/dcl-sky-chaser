@@ -11,10 +11,11 @@ import {
 	ZoneType,
 } from '@stom66/dcl-ui-component-kit'
 
+import { progressFillAtlas } from 'src/client/ui/themes/skyChaser/atlases'
 import { C_GameData, ComponentStore } from 'src/shared/components/componentStore'
 import { GameSettings } from 'src/shared/settings'
-import { ClientEvents, eventBus } from 'src/shared/utils/eventBus'
 import { clockSync } from 'src/shared/utils/clockSync'
+import { ClientEvents, eventBus } from 'src/shared/utils/eventBus'
 
 
 /** Native art: fg is 2× the bg/fill height (1024×256 vs 1024×128). */
@@ -37,10 +38,10 @@ const BAR_CONTENT_INSET = {
 
 const SECONDS_ICON_HEIGHT = 40
 
-const PROGRESS_BG_SRC   = 'assets/images/ui/progress-bg.png'
-const PROGRESS_FILL_SRC = 'assets/images/ui/progress-fill.png'
-const PROGRESS_FG_SRC   = 'assets/images/ui/progress-fg.png'
+const PROGRESS_BG_SRC = 'assets/images/ui/progress-bg.png'
+const PROGRESS_FG_SRC = 'assets/images/ui/progress-fg.png'
 
+/** No nine-slice caps — bg/border are full-frame chrome. */
 const PROGRESS_TEXTURE_SLICES = {
 	top   : 0,
 	right : 0,
@@ -152,43 +153,43 @@ export class RoundTimerLayer extends Layer {
 
 		return [
 			<Row key="round-timer-root">
-				
 				<Icon
-					key          = "round-timer-icon"
-					src          = {"assets/images/ui/icon-clock.png"}
-					width        = {128}
-					height       = {128}
-					rotate       = {-15}
-					/>
+					key    = "round-timer-icon"
+					src    = {"assets/images/ui/icon-clock.png"}
+					width  = {128}
+					height = {128}
+					rotate = {-15}
+				/>
 
 				<ProgressBarImage
-					key           = "round-timer-bar"
-					id            = "skyChaser-round-timer-bar"
-					value         = {remainingMs}
-					minValue      = {0}
-					maxValue      = {GameSettings.GAME_DURATION}
-					fillFrom      = "left"
+					key            = "round-timer-bar"
+					id             = "skyChaser-round-timer-bar"
+					value          = {remainingMs}
+					minValue       = {0}
+					maxValue       = {GameSettings.GAME_DURATION}
+					fillFrom       = "left"
+					orientation    = "horizontal"
+					width          = {BAR_WIDTH}
+					height         = {BAR_HEIGHT}
+					contentInset   = {BAR_CONTENT_INSET}
+					borderWidth    = {0}
+					borderRadius   = {0}
+					lerpDuration   = {0}
+					textureSlices  = {PROGRESS_TEXTURE_SLICES}
+					atlas          = {progressFillAtlas}
+					uvCell         = {{ xStart: 1, yStart: 1 }}
 					uvCropWithFill = {true}
-					orientation   = "horizontal"
-					width         = {BAR_WIDTH}
-					height        = {BAR_HEIGHT}
-					contentInset  = {BAR_CONTENT_INSET}
-					borderWidth   = {0}
-					borderRadius  = {0}
-					lerpDuration  = {0}
-					textureSlices = {PROGRESS_TEXTURE_SLICES}
-					textures      = {{
+					textures       = {{
 						background: PROGRESS_BG_SRC,
-						fill      : PROGRESS_FILL_SRC,
 						border    : PROGRESS_FG_SRC,
 					}}
-					>
+				>
 					<IconNumber
 						key       = "round-timer-seconds"
 						value     = {secondsLeft}
 						height    = {SECONDS_ICON_HEIGHT}
 						iconColor = {Color4.White()}
-						/>
+					/>
 				</ProgressBarImage>
 			</Row>
 		]
