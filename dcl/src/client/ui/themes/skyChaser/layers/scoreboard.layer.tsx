@@ -86,7 +86,7 @@ type ScoreBoardComponentData = {
 
 // MARK: ScoreboardLayer
 /**
- * In-game scoreboard (Left zone). Shows on `GAME_ACTIVE`, hides on `GAME_END`.
+ * In-game scoreboard (LeftTop zone). Shows on `GAME_ACTIVE`, hides on `GAME_END`.
  * Rows come from `C_GameData.ScoreBoard`.
  */
 export class ScoreboardLayer extends Layer {
@@ -99,11 +99,11 @@ export class ScoreboardLayer extends Layer {
 			canBeHidden: true,
 			startHidden: true,
 			uiTransform: {
-				// Left is a full-height strip (top+bottom pinned). Panel height
-				// comes from the in-flow wrapper in body(), not the Zone.
-				width         : PANEL_WIDTH,
-				justifyContent: 'center',
-				alignItems    : 'flex-start',
+				// LeftTop pins content to the top of the strip; only override width.
+				// Panel height comes from the in-flow wrapper in body(), not the Zone.
+				// scoreboard-bg.png has ~8px transparent left padding — pull zone left to compensate.
+				width : PANEL_WIDTH,
+				margin: { left: -8 },
 			},
 		})
 
@@ -176,7 +176,7 @@ export class ScoreboardLayer extends Layer {
 		const theme = getTheme()
 		const rows  = this.props!.get('rows') as ScoreboardRowData[]
 
-		// Wrapper is in-flow so the Left strip can center a content-sized panel.
+		// Wrapper is in-flow so LeftTop can top-align a content-sized panel.
 		// Absolute chrome must paint this wrapper — not the full-height Zone.
 		return (
 			<Column

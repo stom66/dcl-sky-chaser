@@ -1,5 +1,6 @@
 import { Color4 } from '@dcl/sdk/math'
-import ReactEcs from '@dcl/sdk/react-ecs'
+import { isMobile } from '@dcl/sdk/platform'
+import ReactEcs, { PositionUnit } from '@dcl/sdk/react-ecs'
 import {
 	ButtonImage,
 	Icon,
@@ -18,15 +19,16 @@ import { ClientEvents, eventBus } from 'src/shared/utils/eventBus'
 
 
 /** `btn-wide` frames are 512×128 (4 rows in a 512² sheet) — keep 4:1 on screen. */
-const BUTTON_WIDTH  = "25vw"
-const BUTTON_HEIGHT = "6.25vw"
+const BUTTON_WIDTH_BASE = isMobile() ? 35 : 25
+const BUTTON_WIDTH  = `${BUTTON_WIDTH_BASE}vw` as PositionUnit
+const BUTTON_HEIGHT = `${BUTTON_WIDTH_BASE/4}vw` as PositionUnit
 
 /**
  * "Start Game" label — native strip is 512×128 (4:1), same as each btn-wide row.
  * Centered via a full-bleed flex host (not absolute px) so hover scale keeps it middle.
  */
-const LABEL_WIDTH  = "18vw"
-const LABEL_HEIGHT = "4.5vw"
+const LABEL_WIDTH  = `${BUTTON_WIDTH_BASE*0.6}vw` as PositionUnit
+const LABEL_HEIGHT = `${BUTTON_WIDTH_BASE*0.15}vw` as PositionUnit
 
 
 // MARK: StartButtonLayer

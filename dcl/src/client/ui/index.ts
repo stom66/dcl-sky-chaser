@@ -1,6 +1,7 @@
 import { SetupUiComponentKit } from '@stom66/dcl-ui-component-kit'
 
 import { skyChaser } from 'src/client/ui/themes/skyChaser'
+import { initHints } from 'src/client/ui/themes/skyChaser/hints'
 
 
 // MARK: SetupUI
@@ -12,4 +13,5 @@ export function SetupUI() {
 		theme : skyChaser.theme,
 		layers: skyChaser.layers,
 	})
+	initHints()
 }

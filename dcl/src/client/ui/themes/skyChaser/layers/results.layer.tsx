@@ -5,6 +5,7 @@ import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
 import {
 	atlasIconsFontAwesome,
 	Background,
+	ButtonImageClose,
 	Column,
 	getTheme,
 	Icon,
@@ -86,6 +87,9 @@ const RESULTS_BG_SRC         = 'assets/images/ui/results-bg.png'
 const RESULTS_BG_TOP_PX    = PANEL_NATURAL_HEIGHT * RESULTS_BG_TOP_FRAC
 const RESULTS_BG_BOTTOM_PX = PANEL_NATURAL_HEIGHT * RESULTS_BG_BOTTOM_FRAC
 
+/** Inset from the panel's right edge for the manual close control. */
+const CLOSE_BUTTON_RIGHT = 28
+
 
 // MARK: uvBand
 /**
@@ -145,14 +149,17 @@ export class ResultsLayer extends Layer {
 
 	constructor() {
 		super({
-			id             : 'skyChaser-results',
-			zone           : ZoneType.Default,
-			canBeHidden    : true,
-			startHidden    : true,
-			showCloseButton: true,
-			uiTransform    : {
+			id         : 'skyChaser-results',
+			zone       : ZoneType.Default,
+			canBeHidden: true,
+			startHidden: true,
+			// Zone close is top-right only — recreate inset in body().
+			uiTransform: {
 				width         : PANEL_WIDTH,
 				height        : 'auto',
+				// Keep room for the fixed top+bottom chrome caps; otherwise
+				// overflow:hidden clips the bottom of results-bg.png.
+				minHeight     : RESULTS_BG_TOP_PX + RESULTS_BG_BOTTOM_PX,
 				maxHeight     : '95vh',
 				overflow      : 'hidden',
 				justifyContent: 'flex-start',
@@ -283,6 +290,14 @@ export class ResultsLayer extends Layer {
 		const localUserId = getPlayer()?.userId
 
 		return [
+			<ButtonImageClose
+				key         = "results-close"
+				id          = "btn_close_skyChaser-results"
+				callback    = {() => this.hide()}
+				uiTransform = {{
+					position: { top: 0, right: CLOSE_BUTTON_RIGHT },
+				}}
+			/>,
 			// Manual vertical 3-slice — native nine-slices just stretches this asset.
 			<UiEntity
 				key         = "results-chrome"
@@ -343,7 +358,12 @@ export class ResultsLayer extends Layer {
 				key        = "results-body"
 				cols       = {12}
 				spacing    = {0}
-				padding    = {{ top: 118, right: 92, bottom: 60, left: 92 }}
+				padding    = {{
+					top   : RESULTS_BG_TOP_PX,
+					right : 92,
+					bottom: RESULTS_BG_BOTTOM_PX,
+					left  : 92,
+				}}
 				alignItems = "stretch"
 			>
 				{rows.map((row, index) => this.renderRow(

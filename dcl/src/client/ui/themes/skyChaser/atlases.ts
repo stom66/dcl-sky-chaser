@@ -84,3 +84,48 @@ export const fuelFillAtlas = new TextureAtlas({
 	columns: 1,
 	rows   : 1,
 })
+
+
+// MARK: charsNumbersAtlas
+/**
+ * SkyChaser number / operator atlas (`atlas-chars-numbers.png`).
+ * Same 4×4 layout as the kit default; project art under `assets/images/ui/`.
+ *
+ * Grid (PNG top → bottom):
+ *   / + - ×
+ *   8 9 , :
+ *   4 5 6 7
+ *   0 1 2 3
+ */
+export const charsNumbersAtlas = new TextureAtlas({
+	source : 'assets/images/ui/atlas-chars-numbers.png',
+	columns: 4,
+	rows   : 4,
+	layout : [
+		"/+-×",
+		"89,:",
+		"4567",
+		"0123",
+	],
+	aliases: {
+		'*': '×',
+		'x': '×',
+	},
+	charInsets: {
+		'1': { insetX: 0.3  },
+		',': { insetX: 0.35 },
+		':': { insetX: 0.35 },
+	},
+})
+
+
+// MARK: hintsAtlas
+/**
+ * Tutorial hint strips (`atlas-hints.png`, 1024×2048).
+ * One column, ten rows (UV bottom → top = rows 1…10). Matches old `ui.hints`.
+ */
+export const hintsAtlas = new TextureAtlas({
+	source : 'assets/images/ui/atlas-hints.png',
+	columns: 1,
+	rows   : 10,
+})

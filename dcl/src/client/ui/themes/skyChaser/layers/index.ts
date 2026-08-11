@@ -1,10 +1,12 @@
 import type { Layer } from '@stom66/dcl-ui-component-kit'
 import { toastHostLayer } from '@stom66/dcl-ui-component-kit'
 
+import { comboLayer } from 'src/client/ui/themes/skyChaser/layers/combo.layer'
 import { fuelLayer } from 'src/client/ui/themes/skyChaser/layers/fuel.layer'
 import { howToPlayLayer } from 'src/client/ui/themes/skyChaser/layers/howToPlay.layer'
 import { howToPlayButtonLayer } from 'src/client/ui/themes/skyChaser/layers/howToPlayButton.layer'
 import { loadingLayer } from 'src/client/ui/themes/skyChaser/layers/loading.layer'
+import { pigeonCounterLayer } from 'src/client/ui/themes/skyChaser/layers/pigeonCounter.layer'
 import { resultsLayer } from 'src/client/ui/themes/skyChaser/layers/results.layer'
 import { roundTimerLayer } from 'src/client/ui/themes/skyChaser/layers/roundTimer.layer'
 import { scoreboardLayer } from 'src/client/ui/themes/skyChaser/layers/scoreboard.layer'
@@ -21,8 +23,10 @@ howToPlayLayer.setButtonLayer(howToPlayButtonLayer)
 export const layers: Layer[] = [
 	scoreboardLayer,
 	fuelLayer,
+	comboLayer,
 	startButtonLayer,
 	roundTimerLayer,
+	pigeonCounterLayer,
 	howToPlayLayer,
 	howToPlayButtonLayer,
 	resultsLayer,
