@@ -29,10 +29,10 @@ export const GameSettings = {
 	
 	LOADING_SCREEN_DELAY: IS_DEV ? 3000 : 1000 * 3,
 
-	COUNTDOWN_DURATION  : IS_DEV ? 1000 * 1 : 1000 * 5,
+	COUNTDOWN_DURATION  : IS_DEV ? 1000 * 5 : 1000 * 5,
 	// TEMP: shortened for round-timer UI testing — restore to 60s when done.
-	GAME_DURATION       : IS_DEV ? 1000 * 10 : 1000 * 90, 
-	END_GAME_DURATION   : IS_DEV ? 1000 * 3 : 1000 * 10,
+	GAME_DURATION       : IS_DEV ? 1000 * 90 : 1000 * 90, 
+	END_GAME_DURATION   : IS_DEV ? 1000 * 10 : 1000 * 10,
 
 	COMBO_COOLDOWN_TIME : 1000 * 10,
 	COMBO_MAX_VALUE     : 12,

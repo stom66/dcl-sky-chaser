@@ -52,25 +52,51 @@ const PROGRESS_TEXTURE_SLICES = {
 type RoundTimerProps = {
 	remainingMs : number
 	secondsLeft : number
+	maxMs       : number
+}
+
+type RoundTimerSnapshot = {
+	remainingMs : number
+	maxMs       : number
 }
 
 
-// MARK: getRoundRemainingMs
+// MARK: getRoundTimerSnapshot
 /**
- * Milliseconds left in the active round (from synced `startTime` + `GAME_DURATION`).
+ * Remaining ms and bar max for the current phase: pre-start countdown
+ * (`COUNTDOWN_DURATION`) while `startTime` is still in the future, otherwise
+ * the active round (`GAME_DURATION`).
  */
-function getRoundRemainingMs(gameStartTime: number): number {
-	if (gameStartTime <= 0) return 0
+function getRoundTimerSnapshot(gameStartTime: number): RoundTimerSnapshot {
+	if (gameStartTime <= 0) {
+		return {
+			remainingMs: 0,
+			maxMs      : GameSettings.GAME_DURATION,
+		}
+	}
 
 	const localStart = clockSync.toLocalTime(gameStartTime)
-	return (localStart + GameSettings.GAME_DURATION) - Date.now()
+	const now        = Date.now()
+
+	if (localStart > now) {
+		return {
+			remainingMs: localStart - now,
+			maxMs      : GameSettings.COUNTDOWN_DURATION,
+		}
+	}
+
+	return {
+		remainingMs: (localStart + GameSettings.GAME_DURATION) - now,
+		maxMs      : GameSettings.GAME_DURATION,
+	}
 }
 
 
 // MARK: RoundTimerLayer
 /**
- * BottomCenter round countdown. Image progress bar depletes over `GAME_DURATION`;
- * `IconNumber` shows whole seconds remaining. Shows on `GAME_ACTIVE`, hides on end/idle.
+ * BottomCenter round countdown. Shows during pre-start (`GAME_STARTING`) and
+ * the active round (`GAME_ACTIVE`); hides on end/idle. Progress bar depletes
+ * over `COUNTDOWN_DURATION` then `GAME_DURATION`; `IconNumber` shows seconds left.
  */
 export class RoundTimerLayer extends Layer {
 	private gameStartTime = 0
@@ -90,15 +116,16 @@ export class RoundTimerLayer extends Layer {
 		})
 
 		this.props = new PropsController<RoundTimerProps>({
-			remainingMs : GameSettings.GAME_DURATION,
-			secondsLeft : Math.ceil(GameSettings.GAME_DURATION / 1000),
+			remainingMs : GameSettings.COUNTDOWN_DURATION,
+			secondsLeft : Math.ceil(GameSettings.COUNTDOWN_DURATION / 1000),
+			maxMs       : GameSettings.COUNTDOWN_DURATION,
 		})
 
+		eventBus.on(ClientEvents.GAME_STARTING, () => {
+			this.beginTimer()
+		})
 		eventBus.on(ClientEvents.GAME_ACTIVE, () => {
-			this.gameStartTime = ComponentStore.getGameStartTime()
-			this.refreshRemaining()
-			this.startTick()
-			this.show()
+			this.beginTimer()
 		})
 		eventBus.on(ClientEvents.GAME_END, () => {
 			this.stopTick()
@@ -116,17 +143,29 @@ export class RoundTimerLayer extends Layer {
 	}
 
 
+	// MARK: beginTimer
+	/** Syncs start time, refreshes remaining, starts the tick, and shows the layer. */
+	private beginTimer() {
+		this.gameStartTime = ComponentStore.getGameStartTime()
+		this.refreshRemaining()
+		this.startTick()
+		this.show()
+	}
+
+
 	// MARK: refreshRemaining
-	/** Writes remaining ms / seconds into the props store from the synced start time. */
+	/** Writes remaining ms / seconds / bar max into the props store from synced start time. */
 	private refreshRemaining() {
-		const remainingMs = Math.max(0, getRoundRemainingMs(this.gameStartTime))
+		const snapshot    = getRoundTimerSnapshot(this.gameStartTime)
+		const remainingMs = Math.max(0, snapshot.remainingMs)
 		this.props!.set('remainingMs', remainingMs)
 		this.props!.set('secondsLeft', Math.ceil(remainingMs / 1000))
+		this.props!.set('maxMs', snapshot.maxMs)
 	}
 
 
 	// MARK: startTick
-	/** Per-frame remaining update while the round is active. */
+	/** Per-frame remaining update while countdown or round is visible. */
 	private startTick() {
 		if (this.tickSystem !== null) return
 
@@ -150,6 +189,7 @@ export class RoundTimerLayer extends Layer {
 	protected body() {
 		const remainingMs = this.props!.get('remainingMs') as number
 		const secondsLeft = this.props!.get('secondsLeft') as number
+		const maxMs       = this.props!.get('maxMs') as number
 
 		return [
 			<Row key="round-timer-root">
@@ -166,7 +206,7 @@ export class RoundTimerLayer extends Layer {
 					id             = "skyChaser-round-timer-bar"
 					value          = {remainingMs}
 					minValue       = {0}
-					maxValue       = {GameSettings.GAME_DURATION}
+					maxValue       = {maxMs}
 					fillFrom       = "left"
 					orientation    = "horizontal"
 					width          = {BAR_WIDTH}
