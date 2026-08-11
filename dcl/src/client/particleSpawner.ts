@@ -1,7 +1,10 @@
 import { engine, Entity, InputAction, inputSystem, ParticleSystem, PBParticleSystem_BlendMode, PBParticleSystem_LimitVelocity, PBParticleSystem_SimulationSpace, TextureFilterMode, Transform } from "@dcl/sdk/ecs";
 import { Color4, Quaternion, Vector3 } from "@dcl/sdk/math";
-import { ComponentStore } from "src/shared/components/componentStore";
+import { AssetLoad } from "@dcl/sdk/ecs"
 import * as utils from '@dcl-sdk/utils'
+
+
+import { ComponentStore } from "src/shared/components/componentStore";
 import { ClientEvents, eventBus } from "src/shared/utils/eventBus";
 
 
@@ -55,12 +58,17 @@ export namespace ParticleSpawner {
 		createBoosterWind()
 		createEnvWind()
 
+		preloadAssets()
+
 		const zero = Vector3.Zero()
 
+		
+		// MARK: eventBus binds
 		// Remotely triggered effects
 		eventBus.on(ClientEvents.NOTIFY_TRIGGER, (data)     => {
 			triggerEffect(data?.effect, data?.position ?? zero, data?.direction ?? zero)
 		})
+
 
 		// Locally triggered effects
 		eventBus.on(ClientEvents.PLAYER_COLLIDED_AWNING, (data)     => {
@@ -99,6 +107,8 @@ export namespace ParticleSpawner {
 		engine.addSystem(sys_inputWatcher)
 	}
 
+
+	//MARK: sys_inputWatcher
 	function sys_inputWatcher(dt: number) {
 		const isEPressed = inputSystem.isPressed(InputAction.IA_PRIMARY)
 
@@ -123,6 +133,28 @@ export namespace ParticleSpawner {
 	}
 
 
+	//MARK: preloadAssets
+	function preloadAssets() {
+		AssetLoad.create(engine.RootEntity, {
+		  assets: [
+			"assets/tex/sprites-wind-02.png",
+			"assets/tex/sprites-wind-03.png",
+			"assets/tex/sprites-wind-04.png",
+			"assets/tex/sprites-wind-05.png",
+			"assets/tex/sprites-wind-06.png",
+			"assets/tex/sprites-wind-05.png",
+			"assets/tex/sprites-wind-06.png",
+			"assets/tex/sprites-explosion.png",
+			"assets/tex/sprites-dust.png",
+			"assets/tex/sprites-fuel.png",
+			"assets/tex/sprites-fabric.png",
+			"assets/tex/sprites-speed.png"
+		  ],
+		})
+	}
+
+
+	//MARK: triggerEffect
 	function triggerEffect(
 		effect   : ClientEvents, 
 		position : Vector3, 
@@ -380,7 +412,7 @@ export namespace ParticleSpawner {
 			prewarm             : true,
 			faceTravelDirection : false,
 			rate                : 0,
-			lifetime            : 0.45,
+			lifetime            : 0.35,
 			maxParticles        : 300,
 			gravity             : 2,
 			blendMode           : PBParticleSystem_BlendMode.PSB_ALPHA,

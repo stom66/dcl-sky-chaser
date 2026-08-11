@@ -26,6 +26,7 @@ import { ProjectileManager } from './projectileManager'
 import { spawn } from '~system/PortableExperiences'
 import { SpawnManager } from './spawners/pickupSpawner'
 import { NoticeBoard } from './noticeBoard'
+import { ClientEvents, eventBus } from 'src/shared/utils/eventBus'
 
 
 export function initClient() {
@@ -65,8 +66,8 @@ export function initClient() {
 	function onGameLoaded() {
 		console.log("onGameLoaded")
 		utils.timers.setTimeout(() => {
-			//HideLoading()
-		}, GameSettings.LOADING_SCREEN_DELAY) 
+			eventBus.emit(ClientEvents.LOAD_COMPLETE, {})
+		}, GameSettings.LOADING_SCREEN_DELAY)
 	}
 
 

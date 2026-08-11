@@ -2,7 +2,7 @@ import { MessageType, room } from "src/shared/room"
 import type { NotifyServerTimePayload } from "src/shared/types/shared-types"
 import { clockSync } from "src/shared/utils/clockSync"
 import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
-import { ShowUI } from "./ui/layouts/ui.leaderboardWinner"
+import { ShowUI } from "./ui-old/layouts/ui.leaderboardWinner"
 import { sfx, SoundManager } from "./soundManager"
 import { Vector3 } from "@dcl/sdk/math"
 

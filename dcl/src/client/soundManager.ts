@@ -56,7 +56,7 @@ export namespace SoundManager {
 		})
 		AudioSource.create(bgmEntity, {
 			audioClipUrl: sfx.music[Math.floor(Math.random() * sfx.music.length)],
-			loop        : true,
+			loop        : false,
 			global      : false,
 			playing     : false,
 			volume      : BGM_VOLUME,

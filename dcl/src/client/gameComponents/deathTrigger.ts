@@ -3,7 +3,7 @@ import { Color4, Vector3 } from "@dcl/sdk/math"
 
 import { IS_DEV } from "src/shared/settings"
 
-import { alpha, theme } from "src/client/ui"
+import { alpha, theme } from "src/client/ui-old"
 import { PlayerMover } from "src/client/playerMover"
 
 

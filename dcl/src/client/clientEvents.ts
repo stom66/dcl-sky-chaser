@@ -1,6 +1,8 @@
 
 
 export enum ClientEvents {
+	LOAD_COMPLETE              = "load_Complete",
+
 	NOTIFY_TRIGGER             = "notifyTrigger",         // SERVER  used when server notifies client about a trigger effect
 	NOTIFY_PROJECTILE_FIRED    = "notifyProjectileFired", // Fired by ProjectileManager for LOCAL projectiles
 

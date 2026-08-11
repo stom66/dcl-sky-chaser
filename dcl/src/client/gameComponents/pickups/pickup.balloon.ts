@@ -9,7 +9,7 @@ import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
 
 import { Pickup } from "src/client/gameComponents/pickups/pickup"
 import { sfx, SoundManager } from "src/client/soundManager"
-import { theme } from "src/client/ui"
+import { theme } from "src/client/ui-old"
 
 const MIN_RISE_SPEED = 0.25
 const MAX_RISE_SPEED = 4.0
