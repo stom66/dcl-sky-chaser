@@ -11,6 +11,7 @@ import { resultsLayer } from 'src/client/ui/themes/skyChaser/layers/results.laye
 import { roundTimerLayer } from 'src/client/ui/themes/skyChaser/layers/roundTimer.layer'
 import { scoreboardLayer } from 'src/client/ui/themes/skyChaser/layers/scoreboard.layer'
 import { startButtonLayer } from 'src/client/ui/themes/skyChaser/layers/startButton.layer'
+import { versionLayer } from 'src/client/ui/themes/skyChaser/layers/version.layer'
 
 
 howToPlayLayer.setButtonLayer(howToPlayButtonLayer)
@@ -18,7 +19,8 @@ howToPlayLayer.setButtonLayer(howToPlayButtonLayer)
 
 /**
  * skyChaser layer list.
- * Loading is registered last so it paints above other layers until dismissed.
+ * Loading is near the end so it paints above other layers until dismissed.
+ * Version is last (FullScreen + highest zIndex) so the badge stays on top.
  */
 export const layers: Layer[] = [
 	scoreboardLayer,
@@ -32,4 +34,5 @@ export const layers: Layer[] = [
 	resultsLayer,
 	toastHostLayer,
 	loadingLayer,
+	versionLayer,
 ]
