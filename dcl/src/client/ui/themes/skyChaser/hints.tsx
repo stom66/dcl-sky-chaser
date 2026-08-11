@@ -1,21 +1,25 @@
 import * as utils from '@dcl-sdk/utils'
 import { Color4 } from '@dcl/sdk/math'
-import ReactEcs from '@dcl/sdk/react-ecs'
-import { clearToastGroup, Icon, showToast } from '@stom66/dcl-ui-component-kit'
+import ReactEcs, { PositionUnit } from '@dcl/sdk/react-ecs'
+import { clearToastGroup, Icon, showToast, UiBox } from '@stom66/dcl-ui-component-kit'
 
 import { hintsAtlas } from 'src/client/ui/themes/skyChaser/atlases'
-import { C_GameData, ComponentStore } from 'src/shared/components/componentStore'
+import { ComponentStore } from 'src/shared/components/componentStore'
 import { GameStatus } from 'src/shared/enums'
+import { IS_DEV } from 'src/shared/settings'
 import { ClientEvents, eventBus } from 'src/shared/utils/eventBus'
-
 
 /** Matches old `ui.hints` display size (half of the 1024×~205 atlas row). */
 const HINT_WIDTH  = 512
 const HINT_HEIGHT = 104
+/** Idle dock nudge (past toast `topRight` `right: 25%`). */
+const HINT_OFFSET_LEFT_IDLE  = '25vw'
+/** Tighter nudge while a round is in progress (HUD takes the far-right). */
+const HINT_OFFSET_LEFT_MATCH = '18vw'
 
 const HINT_COUNT                = 10
-const TIME_BETWEEN_HINTS_MS     = 1000 * 30
-const TIME_TO_SHOW_HINT_S       = 7.5
+const TIME_BETWEEN_HINTS_MS     = IS_DEV ? 1000 * 5 : 1000 * 30
+const TIME_TO_SHOW_HINT_S       = IS_DEV ? 2.5 : 7.5
 const SHOW_HINTS_AGAIN_AFTER_MS = 1000 * 60 * 5
 const FIRST_HINT_DELAY_MS       = 1000 * 2
 
@@ -27,6 +31,15 @@ let isInitialized = false
 let nextHintRow   = HINT_COUNT
 let betweenTimer  : number | null = null
 let restartTimer  : number | null = null
+
+
+// MARK: getHintOffsetLeft
+/** Left offset for the current game status (live — toast content re-reads each frame). */
+function getHintOffsetLeft(): PositionUnit {
+	return ComponentStore.getGameStatus() === GameStatus.IDLE
+		? HINT_OFFSET_LEFT_IDLE as PositionUnit
+		: HINT_OFFSET_LEFT_MATCH as PositionUnit
+}
 
 
 // MARK: clearHintTimers
@@ -74,14 +87,24 @@ function showNextHint() {
 		width        : HINT_WIDTH,
 		height       : HINT_HEIGHT,
 		content      : () => (
-			<Icon
-				key       = {`hint-icon-${hintRow}`}
-				src       = {hintsAtlas.source}
-				uvs       = {hintsAtlas.row(hintRow)}
-				width     = "100%"
-				height    = "100%"
-				iconColor = {Color4.White()}
-			/>
+			<UiBox
+				key         = {`hint-offset-${hintRow}`}
+				uiTransform = {{
+					width       : '100%',
+					height      : '100%',
+					positionType: 'relative',
+					position    : { left: getHintOffsetLeft() },
+				}}
+			>
+				<Icon
+					key       = {`hint-icon-${hintRow}`}
+					src       = {hintsAtlas.source}
+					uvs       = {hintsAtlas.row(hintRow)}
+					width     = "100%"
+					height    = "100%"
+					iconColor = {Color4.White()}
+				/>
+			</UiBox>
 		),
 	})
 
@@ -126,20 +149,9 @@ export function disableHints() {
 }
 
 
-// MARK: syncHintsToGameStatus
-/** Hints only while the synced game is idle. */
-function syncHintsToGameStatus() {
-	if (ComponentStore.getGameStatus() === GameStatus.IDLE) {
-		enableHints()
-	} else {
-		disableHints()
-	}
-}
-
-
 // MARK: initHints
 /**
- * Wires hint enable/disable to load + game-status events.
+ * Starts the hint cycle after load (matches old always-on behaviour).
  * Call once after `SetupUiComponentKit` (toast host must be in the layer list).
  */
 export function initHints() {
@@ -147,22 +159,6 @@ export function initHints() {
 	isInitialized = true
 
 	eventBus.on(ClientEvents.LOAD_COMPLETE, () => {
-		syncHintsToGameStatus()
-	})
-	eventBus.on(ClientEvents.GAME_IDLE, () => {
 		enableHints()
-	})
-	eventBus.on(ClientEvents.GAME_STARTING, () => {
-		disableHints()
-	})
-	eventBus.on(ClientEvents.GAME_ACTIVE, () => {
-		disableHints()
-	})
-	eventBus.on(ClientEvents.GAME_END, () => {
-		disableHints()
-	})
-
-	ComponentStore.onComponentChange(C_GameData.GameData, () => {
-		syncHintsToGameStatus()
 	})
 }

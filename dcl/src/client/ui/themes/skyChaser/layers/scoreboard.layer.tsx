@@ -245,9 +245,24 @@ export class ScoreboardLayer extends Layer {
 					cols       = {12}
 					spacing    = {0}
 					padding    = {{ top: 70, right: 34, bottom: 37, left: 34 }}
-					alignItems = "stretch"
+					alignItems = {rows.length === 0 ? 'center' : 'stretch'}
 				>
-					{rows.map((row, index) => this.renderRow(row, index, theme.typography.size.small, theme.colors.light))}
+					{rows.length === 0 ? (
+						<Text
+							key         = "scoreboard-empty"
+							value       = "No scores yet"
+							fontSize    = {theme.typography.size.small}
+							fontColor   = {theme.colors.light}
+							textAlign   = "middle-center"
+							textWrap    = "nowrap"
+							uiTransform = {{
+								width    : 'auto',
+								alignSelf: 'center',
+							}}
+						/>
+					) : (
+						rows.map((row, index) => this.renderRow(row, index, theme.typography.size.small, theme.colors.light))
+					)}
 				</Column>
 			</Column>
 		)

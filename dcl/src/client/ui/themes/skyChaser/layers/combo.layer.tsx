@@ -1,4 +1,3 @@
-import * as utils from '@dcl-sdk/utils'
 import { engine } from '@dcl/sdk/ecs'
 import { Color4 } from '@dcl/sdk/math'
 import ReactEcs from '@dcl/sdk/react-ecs'
@@ -58,21 +57,12 @@ const COMBO_HEIGHT = BAR_WIDTH / 2
 const NUMBER_WIDTH  = 64
 const NUMBER_HEIGHT = 48
 const NUMBER_TOP    = 56
-const NUMBER_LEFT   = 214
+const NUMBER_LEFT   = 210
 
 const COMBO_BG_SRC        = 'assets/images/ui/combo-bg.png'
 const COMBO_BG_MARGIN_TOP = -20
 
 const STACK_HEIGHT = BAR_HEIGHT + COMBO_HEIGHT + COMBO_BG_MARGIN_TOP
-
-/**
- * Set `true` to step combo 1 → `COMBO_MAX_VALUE` (bypasses live `C_Combo`).
- * Kept for layout testing — leave off in normal play.
- */
-const DEBUG_COMBO_ENABLED  = true
-const DEBUG_COMBO_START_MS = 2000
-const DEBUG_COMBO_STEP_MS  = 1000
-const DEBUG_COMBO_HIDE_MS  = 3000
 
 type ComboProps = {
 	value      : number
@@ -88,10 +78,6 @@ type ComboProps = {
 export class ComboLayer extends Layer {
 	private lastUpdatedTime = 0
 	private tickSystem: ((dt: number) => void) | null = null
-
-	private debugStartTimer: number | null = null
-	private debugStepTimer : number | null = null
-	private debugHideTimer : number | null = null
 
 	constructor() {
 		super({
@@ -110,48 +96,24 @@ export class ComboLayer extends Layer {
 		})
 
 		this.props = new PropsController<ComboProps>({
-			value      : 0,
+			value      : 1,
 			remainingMs: GameSettings.COMBO_COOLDOWN_TIME,
 		})
 
 		eventBus.on(ClientEvents.GAME_ACTIVE, () => {
-			if (this.isDebugRunning()) return
 			this.startTick()
 			this.show()
 		})
 		eventBus.on(ClientEvents.GAME_END, () => {
-			if (this.isDebugRunning()) return
 			this.stopTick()
 			this.hide()
 		})
 
 		ComponentStore.onComponentChange(C_Combo.Combo, (data) => {
-			if (this.isDebugRunning()) return
-
 			this.props!.set('value', data?.value ?? 0)
 			this.lastUpdatedTime = data?.lastUpdatedTime ?? 0
 			this.refreshRemaining()
 		})
-
-		if (DEBUG_COMBO_ENABLED) this.startDebugComboCycle()
-	}
-
-
-	// MARK: isDebugRunning
-	/** True while any debug timer is active (blocks live combo updates). */
-	private isDebugRunning(): boolean {
-		return this.debugStartTimer !== null
-			|| this.debugStepTimer  !== null
-			|| this.debugHideTimer  !== null
-	}
-
-
-	// MARK: setCombo
-	/** Writes combo value, resets cooldown clock, and refreshes the bar. */
-	setCombo(value: number) {
-		this.props!.set('value', value)
-		this.lastUpdatedTime = Date.now()
-		this.refreshRemaining()
 	}
 
 
@@ -192,48 +154,6 @@ export class ComboLayer extends Layer {
 		if (this.tickSystem === null) return
 		engine.removeSystem(this.tickSystem)
 		this.tickSystem = null
-	}
-
-
-	// MARK: startDebugComboCycle
-	/**
-	 * DEBUG: after a short delay sets combo to 1, then +1/s until `COMBO_MAX_VALUE`,
-	 * then hides. Enable via `DEBUG_COMBO_ENABLED`.
-	 */
-	startDebugComboCycle() {
-		if (!DEBUG_COMBO_ENABLED) return
-		if (this.isDebugRunning()) return
-
-		this.debugStartTimer = utils.timers.setTimeout(() => {
-			this.debugStartTimer = null
-			this.startTick()
-			this.setCombo(1)
-			this.show()
-
-			this.debugStepTimer = utils.timers.setInterval(() => {
-				const next = (this.props!.get('value') as number) + 1
-				this.setCombo(next)
-
-				if (next >= GameSettings.COMBO_MAX_VALUE) {
-					this.stopDebugComboCycle()
-					this.debugHideTimer = utils.timers.setTimeout(() => {
-						this.debugHideTimer = null
-						this.stopTick()
-						this.hide()
-					}, DEBUG_COMBO_HIDE_MS)
-				}
-			}, DEBUG_COMBO_STEP_MS)
-		}, DEBUG_COMBO_START_MS)
-	}
-
-
-	// MARK: stopDebugComboCycle
-	/** DEBUG: clears the step interval so the hide delay (or live updates) can continue. */
-	stopDebugComboCycle() {
-		if (this.debugStepTimer !== null) {
-			utils.timers.clearInterval(this.debugStepTimer)
-			this.debugStepTimer = null
-		}
 	}
 
 

@@ -364,15 +364,30 @@ export class ResultsLayer extends Layer {
 					bottom: RESULTS_BG_BOTTOM_PX,
 					left  : 92,
 				}}
-				alignItems = "stretch"
+				alignItems = {rows.length === 0 ? 'center' : 'stretch'}
 			>
-				{rows.map((row, index) => this.renderRow(
-					row,
-					index,
-					theme.typography.size.default,
-					theme.colors.light,
-					localUserId,
-				))}
+				{rows.length === 0 ? (
+					<Text
+						key         = "results-empty"
+						value       = "There are no results."
+						fontSize    = {theme.typography.size.default}
+						fontColor   = {theme.colors.light}
+						textAlign   = "middle-center"
+						textWrap    = "nowrap"
+						uiTransform = {{
+							width    : 'auto',
+							alignSelf: 'center',
+						}}
+					/>
+				) : (
+					rows.map((row, index) => this.renderRow(
+						row,
+						index,
+						theme.typography.size.default,
+						theme.colors.light,
+						localUserId,
+					))
+				)}
 			</Column>,
 		]
 	}
