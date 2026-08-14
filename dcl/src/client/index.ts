@@ -27,10 +27,11 @@ import { spawn } from '~system/PortableExperiences'
 import { SpawnManager } from './spawners/pickupSpawner'
 import { NoticeBoard } from './noticeBoard'
 import { ClientEvents, eventBus } from 'src/shared/utils/eventBus'
+import { FireworkLauncher } from './fireworkLauncher'
 
 
 export function initClient() {
-	
+
 	// MARK: Enter Scene Trigger
 	var hasEnteredScene = false
 	onEnterScene((player) => {
@@ -39,30 +40,34 @@ export function initClient() {
 		if (!IS_DEV) DiscordWebhooks.newPlayer(player.name, player.userId)
 	})
 
-	// MARK: Wait for Load
-	function sys_waitForLoad() {
-		// Wait for userData to be available
-		let userData = getPlayer()
-		if(!userData)                                  {console.log("waitForLoad: userData");                   return}
 
-		// Wait for them to have entered the scene
-		if (!hasEnteredScene)                          {console.log("waitForLoad: onEnterScene");               return}
+	// MARK: waitForSceneReady
+	/**
+	 * Resolves once the local player, camera, and network sync are available.
+	 */
+	function waitForSceneReady(): Promise<void> {
+		return new Promise((resolve) => {
+			function sys_waitForLoad() {
+				if (!getPlayer())                                  { console.log("waitForLoad: userData");           return }
+				if (!hasEnteredScene)                              { console.log("waitForLoad: onEnterScene");       return }
+				if (!isStateSyncronized())                         { console.log("waitForLoad: isStateSyncronized"); return }
+				if (!Transform.getOrNull(engine.PlayerEntity))     { console.log("waitForLoad: PlayerEntity");       return }
+				if (!Transform.getOrNull(engine.CameraEntity))     { console.log("waitForLoad: CameraEntity");       return }
 
-		// wait for components to sync
-		if (!isStateSyncronized())                     {console.log("waitForLoad: isStateSyncronized");         return}
+				engine.removeSystem(sys_waitForLoad)
+				resolve()
+			}
 
-		// Wait for the player entity and camera to be present
-		if (!Transform.getOrNull(engine.PlayerEntity)) {console.log("waitForLoad: PlayerEntity");               return}
-		if (!Transform.getOrNull(engine.CameraEntity)) {console.log("waitForLoad: CameraEntity");               return}
-
-		if (!ComponentManager.isReady())               {console.log("waitForLoad: ComponentManager not ready"); return}
-
-		engine.removeSystem(sys_waitForLoad)
-
-		onGameLoaded()
+			engine.addSystem(sys_waitForLoad)
+		})
 	}
 
+
 	// MARK: On Game Loaded
+	/**
+	 * Emits LOAD_COMPLETE after the loading-screen delay.
+	 * Call only after SetupUI so layer constructors have already subscribed.
+	 */
 	function onGameLoaded() {
 		console.log("onGameLoaded")
 		utils.timers.setTimeout(() => {
@@ -71,44 +76,44 @@ export function initClient() {
 	}
 
 
-
 	// MARK: Client Store
 	void ClientStore.getInstance()
 	ClientHandler.init()
-
-	// MARK: Component Store
 	ComponentManager.init()
-	void ComponentManager.onClientReady().then(async () => {
-		// Delay loading anything which requires the component until here
+
+	// Scene gate + component gate — then one sequential init path.
+	// SetupUI runs first so LOAD_COMPLETE subscribers exist before onGameLoaded.
+	void Promise.all([
+		waitForSceneReady(),
+		ComponentManager.onClientReady(),
+	]).then(async () => {
 		ComponentStore.init()
 		GameStateManager.init()
+
+		const { SetupUI } = await import('src/client/ui-screen')
+		SetupUI()
 
 		LocomotionController.init()
 		ComboManager.init()
 		SoundManager.init()
 		BoosterInput.init()
-		
+
 		SpawnManager.init()
 		ParticleSpawner.init()
 		TriggerSpawner.spawnTriggers()
-		
+
 		UILeaderboard.init()
 		BeaconManager.init()
-		
+
 		BirdSpawner.init()
 		Light.init()
-		
+
 		BounceSpawner.init()
-		
+
 		ProjectileManager.init()
 		NoticeBoard.init()
+		FireworkLauncher.init()
 
-		const { SetupUI } = await import('src/client/ui-screen')
-		SetupUI()
+		onGameLoaded()
 	})
-
-
-	// Load game specific stuff
-
-	engine.addSystem(sys_waitForLoad)
 }

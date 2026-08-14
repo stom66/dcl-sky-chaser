@@ -402,7 +402,9 @@ export namespace ParticleSpawner {
 
 	// MARK: Explosion
 	export function TriggerExplosion(
-		position: Vector3
+		position   : Vector3,
+		maxVelocity: number = 40,
+		maxSize    : number = 8
 	) {
 		const entity = engine.addEntity()
 		Transform.create(entity, { position: position, rotation: Quaternion.fromEulerDegrees(-90, 0, 0) })
@@ -417,8 +419,8 @@ export namespace ParticleSpawner {
 			gravity             : 2,
 			blendMode           : PBParticleSystem_BlendMode.PSB_ALPHA,
 			shape               : ParticleSystem.Shape.Point({}),
-			initialVelocitySpeed: { start: 10, end: 40 },
-			initialSize         : { start: 0.5, end: 8 },
+			initialVelocitySpeed: { start: 10, end: maxVelocity },
+			initialSize         : { start: 0.5, end: maxSize },
 			sizeOverTime        : { start: 1, end: 0 },
 			initialColor        : { start: Color4.fromHexString("#ffffff"), end: Color4.fromHexString("#cccccc") },
 			//colorOverTime       : { start: Color4.create(1.000, 0.800, 0.500, 1.000), end: Color4.create(0.800, 0.200, 0.000, 0.000) },

@@ -2,6 +2,7 @@ import type { Layer } from '@stom66/dcl-ui-component-kit'
 import { toastHostLayer } from '@stom66/dcl-ui-component-kit'
 
 import { comboLayer } from 'src/client/ui/themes/skyChaser/layers/combo.layer'
+import { debugLayer } from 'src/client/ui/themes/skyChaser/layers/debug.layer'
 import { fuelLayer } from 'src/client/ui/themes/skyChaser/layers/fuel.layer'
 import { howToPlayLayer } from 'src/client/ui/themes/skyChaser/layers/howToPlay.layer'
 import { howToPlayButtonLayer } from 'src/client/ui/themes/skyChaser/layers/howToPlayButton.layer'
@@ -32,6 +33,7 @@ export const layers: Layer[] = [
 	howToPlayLayer,
 	howToPlayButtonLayer,
 	resultsLayer,
+	...(debugLayer ? [debugLayer] : []),
 	toastHostLayer,
 	loadingLayer,
 	versionLayer,

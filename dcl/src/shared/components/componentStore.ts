@@ -449,16 +449,20 @@ export namespace ComponentStore {
 		const entity = ComponentManager.tryGetComponentEntity()
 		if (entity === undefined) return []
 
-		const c = C_Leaderboards.leaderboardAllTime.get(entity)
-		return [...(c?.scores ?? [])]
+		const c = C_Leaderboards.leaderboardAllTime.getOrNull(entity)
+		if (c === null) return []
+
+		return [...(c.scores ?? [])]
 	}
 
 	export function getLeaderboardWeekly(): Omit<LeaderboardEntry, 'lastUpdated'>[] {
 		const entity = ComponentManager.tryGetComponentEntity()
 		if (entity === undefined) return []
 
-		const c = C_Leaderboards.leaderboardWeekly.get(entity)
-		return [...(c?.scores ?? [])]
+		const c = C_Leaderboards.leaderboardWeekly.getOrNull(entity)
+		if (c === null) return []
+
+		return [...(c.scores ?? [])]
 	}
 
 

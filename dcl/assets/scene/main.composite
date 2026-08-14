@@ -751,6 +751,27 @@
             "parent": 534
           }
         },
+        "545": {
+          "json": {
+            "position": {
+              "x": 269.75,
+              "y": 63,
+              "z": 261
+            },
+            "rotation": {
+              "x": 0,
+              "y": 0.1202961727976799,
+              "z": 0,
+              "w": 0.9927380681037903
+            },
+            "scale": {
+              "x": 2.284083843231201,
+              "y": 2.284083843231201,
+              "z": 2.284083843231201
+            },
+            "parent": 0
+          }
+        },
         "547": {
           "json": {
             "position": {
@@ -954,6 +975,28 @@
                 "speed": 1,
                 "loop": false,
                 "shouldReset": false
+              }
+            ]
+          }
+        },
+        "545": {
+          "json": {
+            "states": [
+              {
+                "clip": "Action",
+                "playing": false,
+                "weight": -1,
+                "speed": 1,
+                "loop": false,
+                "shouldReset": true
+              },
+              {
+                "clip": "Idle",
+                "playing": true,
+                "weight": -1,
+                "speed": 1,
+                "loop": true,
+                "shouldReset": true
               }
             ]
           }
@@ -1186,6 +1229,13 @@
             "invisibleMeshesCollisionMask": 3
           }
         },
+        "545": {
+          "json": {
+            "src": "assets/models/firework-button.gltf",
+            "visibleMeshesCollisionMask": 0,
+            "invisibleMeshesCollisionMask": 3
+          }
+        },
         "547": {
           "json": {
             "src": "assets/models/world.gltf",
@@ -1380,6 +1430,11 @@
             "value": "Cactus 4_2"
           }
         },
+        "545": {
+          "json": {
+            "value": "firework-button.gltf"
+          }
+        },
         "547": {
           "json": {
             "value": "world.gltf"
@@ -1417,7 +1472,8 @@
               "Tag Group 3",
               "Tag Group 4",
               "PosterPigeonDeluxe",
-              "PosterFlagTag"
+              "PosterFlagTag",
+              "fireworkButton"
             ]
           }
         },
@@ -1432,6 +1488,13 @@
           "json": {
             "tags": [
               "PosterPigeonDeluxe"
+            ]
+          }
+        },
+        "545": {
+          "json": {
+            "tags": [
+              "fireworkButton"
             ]
           }
         }
@@ -1450,9 +1513,9 @@
         "serializationType": "map"
       },
       "data": {
-        "0": {
+        "545": {
           "json": {
-            "gizmo": 0
+            "gizmo": 1
           }
         }
       }
@@ -1511,7 +1574,8 @@
                   535,
                   547,
                   548,
-                  518
+                  518,
+                  545
                 ]
               },
               {
@@ -1691,6 +1755,10 @@
               {
                 "entity": 543,
                 "children": []
+              },
+              {
+                "entity": 545,
+                "children": []
               }
             ]
           }
@@ -1811,6 +1879,9 @@
           "json": {}
         },
         "544": {
+          "json": {}
+        },
+        "545": {
           "json": {}
         },
         "547": {
