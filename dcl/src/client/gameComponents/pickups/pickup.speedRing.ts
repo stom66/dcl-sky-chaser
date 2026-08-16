@@ -1,6 +1,7 @@
 import { EasingFunction, engine, Entity, GltfContainer, Physics, Transform, TriggerArea, triggerAreaEventsSystem, Tween } from "@dcl/sdk/ecs"
 import { Quaternion, Vector3 } from "@dcl/sdk/math"
 import * as utils from '@dcl-sdk/utils'
+import { isMobile } from "@dcl/sdk/platform"
 
 import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
 
@@ -14,6 +15,8 @@ export class PickupSpeedRing extends Pickup {
 	private animateDurationActivate : number = 3000
 	private animateDurationDeactivate: number = 1000
 
+	private MODEL_SUFFIX = isMobile() ? "_mobile" : "_desktop"
+
 	// MARK: constructor
 	constructor(
 		public defaultPosition: Vector3,
@@ -21,7 +24,7 @@ export class PickupSpeedRing extends Pickup {
 		super(defaultPosition)
 
 		GltfContainer.create(this.rootEntity, {
-			src: "assets/models/boostRing.gltf"
+			src: `assets/models/boostRing${this.MODEL_SUFFIX}.gltf`
 		})
 		utils.timers.setTimeout(() => {
 			Tween.setScale(this.rootEntity, Vector3.Zero(), Vector3.One(), Math.random() * 1600 + 200, EasingFunction.EF_EASEOUTBACK)

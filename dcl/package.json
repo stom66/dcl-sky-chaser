@@ -5,7 +5,7 @@
   "scripts": {
     "start": "sdk-commands start",
     "startClient": "sdk-commands start --explorer-alpha",
-	"startHammurabi": "npx --yes @dcl/hammurabi-server@next --realm=http://127.0.0.1:8000",
+    "startHammurabi": "npx --yes @dcl/hammurabi-server@next --realm=http://127.0.0.1:8000",
     "build:ci": "sdk-commands build",
     "deploy:prod": "sdk-commands deploy -t linker-server.decentraland.org --skip-validations true",
     "deploy:testing": "sdk-commands deploy -t linker-server.decentraland.today --skip-validations true",
@@ -21,8 +21,9 @@
   },
   "dependencies": {
     "@dcl-sdk/utils": "^1.4.0",
-    "@dcl/js-runtime": "7.25.1-30310486734.commit-5ffe873",
-    "@dcl/sdk": "7.25.1-30310486734.commit-5ffe873"
+    "@dcl/js-runtime": "7.26.1-31714079767.commit-96e9a29",
+    "@dcl/sdk": "7.26.1-31714079767.commit-96e9a29",
+    "@stom66/dcl-ui-component-kit": "^0.1.13"
   },
   "bundleDependencies": [],
   "engines": {

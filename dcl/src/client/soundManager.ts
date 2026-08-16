@@ -1,5 +1,7 @@
 import * as utils from '@dcl-sdk/utils'
 import { AudioSource, engine, Entity, MeshRenderer, Transform, TriggerArea, triggerAreaEventsSystem } from '@dcl/sdk/ecs'
+import { AssetLoad } from "@dcl/sdk/ecs"
+
 
 import { eventBus, ClientEvents } from 'src/shared/utils/eventBus'
 
@@ -25,6 +27,7 @@ export namespace SoundManager {
 	type BgmFadePhase            = 'idle' | 'fadingIn' | 'fadingOut'
 	let bgmFadePhase             : BgmFadePhase           = 'idle'    // current fade phase
 	let bgmEntity                : Entity                             // background music entity
+	let preloadEntity            : Entity                             // preload entity
 	let fadeElapsed              = 0                                  // elapsed time since last fade change (used by systemUpdateSound)
 	let fadeFromDistance         = BGM_FADE_FAR                       // distance at the start of the current fade segment
 	let fadeToDistance           = BGM_FADE_NEAR                      // distance at the end of the current fade segment
@@ -49,6 +52,8 @@ export namespace SoundManager {
 
 		// BGM is parented to the camera and faded by distance — mutating AudioSource.volume
 		// while playing restarts the clip in the current client (sounds like rapid ticks).
+		preloadEntity = engine.addEntity()
+
 		bgmEntity = engine.addEntity()
 		Transform.create(bgmEntity, {
 			parent  : engine.CameraEntity,
@@ -56,7 +61,7 @@ export namespace SoundManager {
 		})
 		AudioSource.create(bgmEntity, {
 			audioClipUrl: sfx.music[Math.floor(Math.random() * sfx.music.length)],
-			loop        : true,
+			loop        : false,
 			global      : false,
 			playing     : false,
 			volume      : BGM_VOLUME,
@@ -132,11 +137,23 @@ export namespace SoundManager {
 	 * {@link playSound} can retrigger without loading at play time.
 	 */
 	function preloadSfx(): void {
-		for (const paths of Object.values(sfx)) {
-			for (const soundPath of paths) {
-				getOrCreatePreloadedClipEntity(soundPath)
-			}
-		}
+		// map eveyr value, from sfx, to an array we can pass
+		const sfxArray = Object.values(sfx).reduce(
+			(acc, val) => acc.concat(val),
+			[]
+		)
+
+		console.log('SoundManager: preloadSfx: preloading', sfxArray.length, 'sfx')
+		AssetLoad.create(preloadEntity, {
+			assets: sfxArray,
+		})
+
+		//for (const paths of Object.values(sfx)) {
+		//	for (const soundPath of paths) {
+		//		
+		//		getOrCreatePreloadedClipEntity(soundPath)
+		//	}
+		//}
 	}
 
 

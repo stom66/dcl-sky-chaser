@@ -3,9 +3,13 @@ import { movePlayerTo } from "~system/RestrictedActions"
 
 export namespace PlayerMover {
 
-	const spawnPosition = Vector3.create(256, 66, 256)
+	/** Scene-relative top spawn (teleport + debug firework origin). */
+	export const spawnPosition = Vector3.create(256, 66, 256)
 
-    export function movePlayerToSpawn() {
+
+	// MARK: movePlayerToSpawn
+	/** Teleports the local player to {@link spawnPosition}. */
+	export function movePlayerToSpawn() {
 		movePlayerTo({ newRelativePosition: spawnPosition })
-    }
+	}
 }

@@ -751,6 +751,27 @@
             "parent": 534
           }
         },
+        "546": {
+          "json": {
+            "position": {
+              "x": 254.89999389648438,
+              "y": 63.040000915527344,
+              "z": 244.22000122070312
+            },
+            "scale": {
+              "x": 1.399999976158142,
+              "y": 1.399999976158142,
+              "z": 1.399999976158142
+            },
+            "rotation": {
+              "x": 0,
+              "y": 0.7071067690849304,
+              "z": 0,
+              "w": 0.7071067690849304
+            },
+            "parent": 0
+          }
+        },
         "547": {
           "json": {
             "position": {
@@ -789,6 +810,69 @@
               "y": 1,
               "z": 0,
               "w": 0
+            },
+            "parent": 0
+          }
+        },
+        "549": {
+          "json": {
+            "position": {
+              "x": 272.70001220703125,
+              "y": 53.90999984741211,
+              "z": 248.4199981689453
+            },
+            "scale": {
+              "x": 1.7999999523162842,
+              "y": 1.7999999523162842,
+              "z": 1
+            },
+            "rotation": {
+              "x": 0,
+              "y": 0.37832552194595337,
+              "z": 0,
+              "w": 0.9256726503372192
+            },
+            "parent": 0
+          }
+        },
+        "550": {
+          "json": {
+            "position": {
+              "x": 170.2899932861328,
+              "y": 117.08999633789062,
+              "z": 224.74000549316406
+            },
+            "scale": {
+              "x": 1.7999999523162842,
+              "y": 1,
+              "z": 1
+            },
+            "rotation": {
+              "x": 0,
+              "y": 0.1257661134004593,
+              "z": 0,
+              "w": -0.9920599460601807
+            },
+            "parent": 0
+          }
+        },
+        "131624": {
+          "json": {
+            "position": {
+              "x": 269.7034606933594,
+              "y": 63,
+              "z": 260.25531005859375
+            },
+            "rotation": {
+              "x": 0,
+              "y": -0.048095203936100006,
+              "z": 0,
+              "w": 0.9988427758216858
+            },
+            "scale": {
+              "x": 2.25,
+              "y": 2.25,
+              "z": 2.25
             },
             "parent": 0
           }
@@ -951,6 +1035,28 @@
                 "clip": "Pigeon1.002-Armature_Prop2",
                 "playing": false,
                 "weight": 1,
+                "speed": 1,
+                "loop": false,
+                "shouldReset": false
+              }
+            ]
+          }
+        },
+        "131624": {
+          "json": {
+            "states": [
+              {
+                "clip": "Action",
+                "playing": false,
+                "weight": -1,
+                "speed": 1,
+                "loop": false,
+                "shouldReset": false
+              },
+              {
+                "clip": "Idle",
+                "playing": false,
+                "weight": -1,
                 "speed": 1,
                 "loop": false,
                 "shouldReset": false
@@ -1186,6 +1292,13 @@
             "invisibleMeshesCollisionMask": 3
           }
         },
+        "546": {
+          "json": {
+            "src": "assets/models/binoculars.gltf",
+            "visibleMeshesCollisionMask": 0,
+            "invisibleMeshesCollisionMask": 3
+          }
+        },
         "547": {
           "json": {
             "src": "assets/models/world.gltf",
@@ -1196,6 +1309,27 @@
         "548": {
           "json": {
             "src": "assets/models/tower.gltf",
+            "visibleMeshesCollisionMask": 0,
+            "invisibleMeshesCollisionMask": 3
+          }
+        },
+        "549": {
+          "json": {
+            "src": "assets/models/binoculars.gltf",
+            "visibleMeshesCollisionMask": 0,
+            "invisibleMeshesCollisionMask": 3
+          }
+        },
+        "550": {
+          "json": {
+            "src": "assets/models/binoculars.gltf",
+            "visibleMeshesCollisionMask": 0,
+            "invisibleMeshesCollisionMask": 3
+          }
+        },
+        "131624": {
+          "json": {
+            "src": "assets/models/firework-button-new.gltf",
             "visibleMeshesCollisionMask": 0,
             "invisibleMeshesCollisionMask": 3
           }
@@ -1380,6 +1514,11 @@
             "value": "Cactus 4_2"
           }
         },
+        "546": {
+          "json": {
+            "value": "binoculars.gltf"
+          }
+        },
         "547": {
           "json": {
             "value": "world.gltf"
@@ -1388,6 +1527,21 @@
         "548": {
           "json": {
             "value": "tower.gltf"
+          }
+        },
+        "549": {
+          "json": {
+            "value": "binoculars.gltf_2"
+          }
+        },
+        "550": {
+          "json": {
+            "value": "binoculars.gltf_3"
+          }
+        },
+        "131624": {
+          "json": {
+            "value": "firework-button-new.gltf"
           }
         }
       }
@@ -1417,7 +1571,9 @@
               "Tag Group 3",
               "Tag Group 4",
               "PosterPigeonDeluxe",
-              "PosterFlagTag"
+              "PosterFlagTag",
+              "fireworkButton",
+              "spectatorMode"
             ]
           }
         },
@@ -1432,6 +1588,34 @@
           "json": {
             "tags": [
               "PosterPigeonDeluxe"
+            ]
+          }
+        },
+        "546": {
+          "json": {
+            "tags": [
+              "spectatorMode"
+            ]
+          }
+        },
+        "549": {
+          "json": {
+            "tags": [
+              "spectatorMode"
+            ]
+          }
+        },
+        "550": {
+          "json": {
+            "tags": [
+              "spectatorMode"
+            ]
+          }
+        },
+        "131624": {
+          "json": {
+            "tags": [
+              "fireworkButton"
             ]
           }
         }
@@ -1450,9 +1634,9 @@
         "serializationType": "map"
       },
       "data": {
-        "0": {
+        "131624": {
           "json": {
-            "gizmo": 0
+            "gizmo": 1
           }
         }
       }
@@ -1511,7 +1695,11 @@
                   535,
                   547,
                   548,
-                  518
+                  518,
+                  546,
+                  549,
+                  550,
+                  131624
                 ]
               },
               {
@@ -1691,6 +1879,22 @@
               {
                 "entity": 543,
                 "children": []
+              },
+              {
+                "entity": 546,
+                "children": []
+              },
+              {
+                "entity": 549,
+                "children": []
+              },
+              {
+                "entity": 550,
+                "children": []
+              },
+              {
+                "entity": 131624,
+                "children": []
               }
             ]
           }
@@ -1813,10 +2017,22 @@
         "544": {
           "json": {}
         },
+        "546": {
+          "json": {}
+        },
         "547": {
           "json": {}
         },
         "548": {
+          "json": {}
+        },
+        "549": {
+          "json": {}
+        },
+        "550": {
+          "json": {}
+        },
+        "131624": {
           "json": {}
         }
       }

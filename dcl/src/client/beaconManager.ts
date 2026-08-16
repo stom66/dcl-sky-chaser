@@ -48,13 +48,16 @@ export namespace BeaconManager {
 		elapsed += dt
 
 		let offset = 0
-		for (const [player, root] of beaconMap) {
+		for (const [player, root] of Array.from(beaconMap)) {
 			offset += 0.2
 			let intensity = Math.sin(elapsed * 5) + 1 * 0.5 + 0.5 + offset
 
 			const rT = Transform.getMutableOrNull(root)
 			const pT = Transform.getOrNull(player)
-			if (!rT || !pT) continue
+			if (!rT || !pT) {
+				destroyBeacon(player)
+				continue
+			}
 
 			rT.position = pT.position
 
@@ -196,6 +199,34 @@ export namespace BeaconManager {
 		if (yOffset < 0) arrowUpPool.push(arrow)
 
 		return arrow
+	}
+
+
+	// MARK: destroyBeacon
+	/**
+	 * Removes one player's beacon (root, mesh, and parented arrows).
+	 */
+	function destroyBeacon(player: Entity) {
+		const root = beaconMap.get(player)
+		if (!root) return
+
+		for (const pool of [arrowUpPool, arrowDownPool]) {
+			for (let i = pool.length - 1; i >= 0; i--) {
+				const t = Transform.getOrNull(pool[i])
+				if (t?.parent !== root) continue
+				engine.removeEntity(pool[i])
+				pool.splice(i, 1)
+			}
+		}
+
+		const beacon = beaconMeshMap.get(root)
+		if (beacon) {
+			engine.removeEntity(beacon)
+			beaconMeshMap.delete(root)
+		}
+
+		engine.removeEntity(root)
+		beaconMap.delete(player)
 	}
 
 

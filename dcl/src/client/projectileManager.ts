@@ -1,11 +1,14 @@
-import { Quaternion, Vector3 } from "@dcl/sdk/math"
-import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
-import { ClientMessaging } from "./clientMessaging"
 import { engine, Entity, InputAction, inputSystem, Material, MeshRenderer, Transform } from "@dcl/sdk/ecs"
-import { Projectile } from "./gameComponents/projectile"
-import { GameSettings } from "src/shared/settings"
+import { Quaternion, Vector3 } from "@dcl/sdk/math"
 import { getUserData } from "~system/UserIdentity"
+
+import { ComponentStore } from "src/shared/components/componentStore"
+import { GameSettings } from "src/shared/settings"
+import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
 import { userProfileCache } from "src/shared/utils/userProfileCache"
+
+import { ClientMessaging } from "./clientMessaging"
+import { Projectile } from "./gameComponents/projectile"
 import { sfx, SoundManager } from "./soundManager"
 
 export namespace ProjectileManager {
@@ -97,6 +100,8 @@ export namespace ProjectileManager {
 	}
 
 	function sys_inputWatcher(dt: number) {
+		if (ComponentStore.getSpectatorModeEnabled()) return
+		
 		isFPressed     = inputSystem.isPressed(InputAction.IA_SECONDARY)
 
 		if (isFPressed && gameIsActive) {

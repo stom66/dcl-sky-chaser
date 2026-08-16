@@ -1,5 +1,6 @@
 import { ColliderLayer, EasingFunction, engine, Entity, GltfContainer, MeshCollider, Physics, Transform, TransformType, TriggerArea, triggerAreaEventsSystem, Tween } from "@dcl/sdk/ecs"
 import { Quaternion, Vector3 } from "@dcl/sdk/math"
+import { isMobile } from "@dcl/sdk/platform"
 import * as utils from '@dcl-sdk/utils'
 
 import { ComponentStore } from "src/shared/components/componentStore"
@@ -31,6 +32,8 @@ export class PickupFuel extends Pickup {
 
 	private meshScaleV3   : Vector3 = Vector3.create(this.meshScale, this.meshScale, this.meshScale)
 	private triggerScaleV3: Vector3 = Vector3.create(this.triggerScale, this.triggerScale, this.triggerScale)
+	
+	private MODEL_SUFFIX = isMobile() ? "_mobile" : "_desktop"
 
 
 	// MARK: constructor
@@ -40,7 +43,7 @@ export class PickupFuel extends Pickup {
 		super(defaultPosition)
 
 		GltfContainer.create(this.rootEntity, {
-			src                       : "assets/models/fuel.gltf",
+			src                       : `assets/models/fuel${this.MODEL_SUFFIX}.gltf`,
 			visibleMeshesCollisionMask: ColliderLayer.CL_POINTER
 		})
 		MeshCollider.setSphere(this.rootEntity, ColliderLayer.CL_CUSTOM2)
@@ -52,7 +55,7 @@ export class PickupFuel extends Pickup {
 		this.childEntity = engine.addEntity()
 		Transform.create(this.childEntity, { parent: this.rootEntity })
 		GltfContainer.create(this.childEntity, {
-			src                       : "assets/models/fuelTop.gltf",
+			src                       : `assets/models/fuelTop${this.MODEL_SUFFIX}.gltf`,
 			visibleMeshesCollisionMask: ColliderLayer.CL_POINTER
 		})
 		FuelPickupChildComponent.create(this.childEntity, {})
