@@ -12,7 +12,8 @@ import {
 } from '@stom66/dcl-ui-component-kit'
 
 import { charsNumbersAtlas, progressFillAtlas } from 'src/client/ui/themes/skyChaser/atlases'
-import { C_Combo, ComponentStore } from 'src/shared/components/componentStore'
+import { C_Combo, C_SpectatorMode, ComponentStore } from 'src/shared/components/componentStore'
+import { GameStatus } from 'src/shared/enums'
 import { GameSettings } from 'src/shared/settings'
 import { ClientEvents, eventBus } from 'src/shared/utils/eventBus'
 
@@ -102,7 +103,7 @@ export class ComboLayer extends Layer {
 
 		eventBus.on(ClientEvents.GAME_ACTIVE, () => {
 			this.startTick()
-			this.show()
+			this.syncVisibility()
 		})
 		eventBus.on(ClientEvents.GAME_END, () => {
 			this.stopTick()
@@ -114,6 +115,24 @@ export class ComboLayer extends Layer {
 			this.lastUpdatedTime = data?.lastUpdatedTime ?? 0
 			this.refreshRemaining()
 		})
+		ComponentStore.onComponentChange(C_SpectatorMode.SpectatorMode, () => {
+			this.syncVisibility()
+		})
+	}
+
+
+	// MARK: syncVisibility
+	/** Shows during an active round unless spectating. */
+	private syncVisibility() {
+		if (ComponentStore.getSpectatorModeEnabled()) {
+			this.hide()
+			return
+		}
+		if (ComponentStore.getGameStatus() === GameStatus.ACTIVE) {
+			this.show()
+		} else {
+			this.hide()
+		}
 	}
 
 

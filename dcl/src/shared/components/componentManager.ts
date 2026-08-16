@@ -26,6 +26,9 @@ export * as C_PigeonCounter from "src/shared/components/pigeonCounter"
 import * as C_PlayerStats from "src/shared/components/playerStats"
 export * as C_PlayerStats from "src/shared/components/playerStats"
 
+import * as C_SpectatorMode from "src/shared/components/spectatorMode"
+export * as C_SpectatorMode from "src/shared/components/spectatorMode"
+
 import { PlayerStatsRecord } from "src/shared/metrics/playerStats"
 
 /**
@@ -154,6 +157,9 @@ export namespace ComponentManager {
 				status  : [false, false, false, false, false, false, false, false, false, false],
 				count   : 0,
 				maxCount: 10,
+			})
+			C_SpectatorMode.SpectatorMode.createOrReplace(entity, {
+				enabled: false,
 			})
 		}
 	}

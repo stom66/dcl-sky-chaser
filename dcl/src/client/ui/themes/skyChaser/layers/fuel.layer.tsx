@@ -13,7 +13,8 @@ import {
 } from '@stom66/dcl-ui-component-kit'
 
 import { fuelFillAtlas } from 'src/client/ui/themes/skyChaser/atlases'
-import { C_PlayerFuel, ComponentStore } from 'src/shared/components/componentStore'
+import { C_PlayerFuel, C_SpectatorMode, ComponentStore } from 'src/shared/components/componentStore'
+import { GameStatus } from 'src/shared/enums'
 import { ClientEvents, eventBus } from 'src/shared/utils/eventBus'
 
 
@@ -119,7 +120,7 @@ export class FuelLayer extends Layer {
 		})
 
 		eventBus.on(ClientEvents.GAME_ACTIVE, () => {
-			this.show()
+			this.syncVisibility()
 		})
 		eventBus.on(ClientEvents.GAME_END, () => {
 			this.hide()
@@ -129,8 +130,26 @@ export class FuelLayer extends Layer {
 			if (this.debugFuelTimer !== null) return
 			this.setFuel(data?.value ?? 0, data?.maxValue ?? 100)
 		})
+		ComponentStore.onComponentChange(C_SpectatorMode.SpectatorMode, () => {
+			this.syncVisibility()
+		})
 
 		// if (DEBUG_FUEL_ENABLED) this.startDebugFuelCycle()
+	}
+
+
+	// MARK: syncVisibility
+	/** Shows during an active round unless spectating. */
+	private syncVisibility() {
+		if (ComponentStore.getSpectatorModeEnabled()) {
+			this.hide()
+			return
+		}
+		if (ComponentStore.getGameStatus() === GameStatus.ACTIVE) {
+			this.show()
+		} else {
+			this.hide()
+		}
 	}
 
 

@@ -13,7 +13,7 @@ import {
 
 import { ClientMessaging } from 'src/client/clientMessaging'
 import { btnWideAtlas, guiLabelsAtlas } from 'src/client/ui/themes/skyChaser/atlases'
-import { C_GameData, ComponentStore } from 'src/shared/components/componentStore'
+import { C_GameData, C_SpectatorMode, ComponentStore } from 'src/shared/components/componentStore'
 import { GameStatus } from 'src/shared/enums'
 import { ClientEvents, eventBus } from 'src/shared/utils/eventBus'
 
@@ -71,14 +71,21 @@ export class StartButtonLayer extends Layer {
 		ComponentStore.onComponentChange(C_GameData.GameData, () => {
 			this.syncVisibilityToGameStatus()
 		})
+		ComponentStore.onComponentChange(C_SpectatorMode.SpectatorMode, () => {
+			this.syncVisibilityToGameStatus()
+		})
 
 		this.syncVisibilityToGameStatus()
 	}
 
 
 	// MARK: syncVisibilityToGameStatus
-	/** Shows only while the synced game status is idle. */
+	/** Shows only while idle and not spectating. */
 	private syncVisibilityToGameStatus() {
+		if (ComponentStore.getSpectatorModeEnabled()) {
+			this.hide()
+			return
+		}
 		if (ComponentStore.getGameStatus() === GameStatus.IDLE) {
 			this.show()
 		} else {

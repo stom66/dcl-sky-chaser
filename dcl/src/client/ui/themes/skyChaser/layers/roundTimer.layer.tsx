@@ -12,7 +12,8 @@ import {
 } from '@stom66/dcl-ui-component-kit'
 
 import { progressFillAtlas } from 'src/client/ui/themes/skyChaser/atlases'
-import { C_GameData, ComponentStore } from 'src/shared/components/componentStore'
+import { C_GameData, C_SpectatorMode, ComponentStore } from 'src/shared/components/componentStore'
+import { GameStatus } from 'src/shared/enums'
 import { GameSettings } from 'src/shared/settings'
 import { clockSync } from 'src/shared/utils/clockSync'
 import { ClientEvents, eventBus } from 'src/shared/utils/eventBus'
@@ -140,16 +141,35 @@ export class RoundTimerLayer extends Layer {
 			this.gameStartTime = data?.startTime ?? 0
 			this.refreshRemaining()
 		})
+		ComponentStore.onComponentChange(C_SpectatorMode.SpectatorMode, () => {
+			this.syncVisibility()
+		})
 	}
 
 
 	// MARK: beginTimer
-	/** Syncs start time, refreshes remaining, starts the tick, and shows the layer. */
+	/** Syncs start time, refreshes remaining, starts the tick, and shows unless spectating. */
 	private beginTimer() {
 		this.gameStartTime = ComponentStore.getGameStartTime()
 		this.refreshRemaining()
 		this.startTick()
-		this.show()
+		this.syncVisibility()
+	}
+
+
+	// MARK: syncVisibility
+	/** Shows during countdown/round unless spectating. */
+	private syncVisibility() {
+		if (ComponentStore.getSpectatorModeEnabled()) {
+			this.hide()
+			return
+		}
+		const status = ComponentStore.getGameStatus()
+		if (status === GameStatus.STARTING || status === GameStatus.ACTIVE) {
+			this.show()
+		} else {
+			this.hide()
+		}
 	}
 
 

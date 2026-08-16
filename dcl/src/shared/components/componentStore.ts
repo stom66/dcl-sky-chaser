@@ -5,7 +5,7 @@ import { GameStatus } from "src/shared/enums"
 import { GameDataSnapshot } from "src/shared/types/shared-types"
 
 import { LeaderboardEntry } from "src/shared/classes/leaderboard"
-import { ComponentManager, C_Combo, C_GameData, C_Leaderboards, C_MostWanted, C_PigeonCounter, C_PlayerFuel, C_PlayerStats } from "src/shared/components/componentManager"
+import { ComponentManager, C_Combo, C_GameData, C_Leaderboards, C_MostWanted, C_PigeonCounter, C_PlayerFuel, C_PlayerStats, C_SpectatorMode } from "src/shared/components/componentManager"
 import { createEmptyMostWanted, MostWantedState } from "src/shared/components/mostWanted"
 import { PlayerStatsRecord } from "src/shared/metrics/playerStats"
 import { GameSettings } from "src/shared/settings"
@@ -19,6 +19,7 @@ export * as C_MostWanted from "src/shared/components/mostWanted"
 export * as C_PigeonCounter from "src/shared/components/pigeonCounter"
 export * as C_PlayerFuel from "src/shared/components/playerFuel"
 export * as C_PlayerStats from "src/shared/components/playerStats"
+export * as C_SpectatorMode from "src/shared/components/spectatorMode"
 /**
  * Data-access wrapper around the synced components. Reads work on both
  * server and client; writes are gated by `isServer()` and silently no-op on
@@ -52,6 +53,7 @@ export namespace ComponentStore {
 		C_Leaderboards.leaderboardWeekly,
 		C_MostWanted.MostWanted,
 		C_PigeonCounter.PigeonCounter,
+		C_SpectatorMode.SpectatorMode,
 	] as const
 
 	const watchers = new Map<
@@ -355,6 +357,34 @@ export namespace ComponentStore {
 		c.value += amount
 	}
 
+
+
+	// MARK: SpectatorMode
+	/**
+	 * Returns whether local spectate mode is enabled.
+	 */
+	export function getSpectatorModeEnabled(): boolean {
+		const entity = ComponentManager.tryGetComponentEntity()
+		if (entity === undefined) return false
+
+		const c = C_SpectatorMode.SpectatorMode.getOrNull(entity)
+		return c?.enabled ?? false
+	}
+
+
+	// MARK: setSpectatorModeEnabled
+	/**
+	 * Sets whether local spectate mode is enabled. Client-only component.
+	 */
+	export function setSpectatorModeEnabled(enabled: boolean): void {
+		const entity = ComponentManager.tryGetComponentEntity()
+		if (entity === undefined) return
+
+		const c = C_SpectatorMode.SpectatorMode.getMutableOrNull(entity)
+		if (c === null) return
+
+		c.enabled = enabled
+	}
 
 
 	// MARK: Combo

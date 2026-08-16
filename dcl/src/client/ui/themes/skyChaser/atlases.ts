@@ -39,18 +39,31 @@ export const btnWideAtlas = new TextureAtlas({
 })
 
 
+// MARK: btnHowToPlayAtlas
+/**
+ * How To Play toggle chrome (`btn-howToPlay.png`).
+ * One column; four state rows UV bottom → top = blank / pressed / hover / default
+ * (PNG top → bottom = default / hover / pressed / blank). Each cell is 256×256.
+ */
+export const btnHowToPlayAtlas = new TextureAtlas({
+	source : 'assets/images/ui/btn-howToPlay.png',
+	columns: 1,
+	rows   : 4,
+})
+
+
 // MARK: guiLabelsAtlas
 /**
  * GUI label strips (`atlas-gui-labels.png`).
- * One column, eight rows (UV bottom → top). `startGame` matches old
- * `AtlasLabelsRowIndex.START_GAME` (0-based row 4 from bottom → UV yStart 5).
+ * One column, eight rows (UV bottom → top). PNG top → bottom:
+ * fuel / point / combo / startGame / zoom / gameStarting / gameInProgress / exitSpectate.
  */
 export const guiLabelsAtlas = new TextureAtlas({
 	source : 'assets/images/ui/atlas-gui-labels.png',
 	columns: 1,
 	rows   : 8,
 	named  : {
-		unknown        : { xStart: 1, yStart: 1 },
+		exitSpectate   : { xStart: 1, yStart: 1 },
 		gameInProgress : { xStart: 1, yStart: 2 },
 		gameStarting   : { xStart: 1, yStart: 3 },
 		zoom           : { xStart: 1, yStart: 4 },

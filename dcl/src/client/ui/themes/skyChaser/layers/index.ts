@@ -11,6 +11,7 @@ import { pigeonCounterLayer } from 'src/client/ui/themes/skyChaser/layers/pigeon
 import { resultsLayer } from 'src/client/ui/themes/skyChaser/layers/results.layer'
 import { roundTimerLayer } from 'src/client/ui/themes/skyChaser/layers/roundTimer.layer'
 import { scoreboardLayer } from 'src/client/ui/themes/skyChaser/layers/scoreboard.layer'
+import { spectateLayer } from 'src/client/ui/themes/skyChaser/layers/spectate.layer'
 import { startButtonLayer } from 'src/client/ui/themes/skyChaser/layers/startButton.layer'
 import { versionLayer } from 'src/client/ui/themes/skyChaser/layers/version.layer'
 
@@ -28,6 +29,7 @@ export const layers: Layer[] = [
 	fuelLayer,
 	comboLayer,
 	startButtonLayer,
+	spectateLayer,
 	roundTimerLayer,
 	pigeonCounterLayer,
 	howToPlayLayer,

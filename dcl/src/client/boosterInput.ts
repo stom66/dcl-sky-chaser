@@ -25,11 +25,11 @@ export namespace BoosterInput {
 		isEPressed     = inputSystem.isPressed(InputAction.IA_PRIMARY)
 
 		const fuelLevel = ComponentStore.getFuelValue().value
-		if (isEPressed && gameIsActive && fuelLevel > 0) {
+		if (isEPressed && !ComponentStore.getSpectatorModeEnabled() && gameIsActive && fuelLevel > 0) {
 			ComponentStore.decreaseFuelValue(GameSettings.FUEL_DRAIN_RATE * dt)
 			LocomotionController.applyBoostForwardUp(64 * dt, -15)
-		} else if (isEPressed && !gameIsActive) {
-			LocomotionController.applyBoostForwardUp(64 * dt, -15)			
+		} else if (isEPressed && !ComponentStore.getSpectatorModeEnabled() && !gameIsActive) {
+			LocomotionController.applyBoostForwardUp(64 * dt, -15)
 		}
 
 		// Slowly refill fuel up to max
