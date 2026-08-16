@@ -1,15 +1,17 @@
 import { ColliderLayer, EasingFunction, engine, Entity, GltfContainer, Material, MeshCollider, MeshRenderer, Transform, TriggerArea, triggerAreaEventsSystem, Tween } from "@dcl/sdk/ecs"
-import { Quaternion, Vector3 } from "@dcl/sdk/math"
+import { Color4, Quaternion, Vector3 } from "@dcl/sdk/math"
 import * as utils from '@dcl-sdk/utils'
+import { isMobile } from "@dcl/sdk/platform"
 
-import { ComponentStore } from "src/shared/components/componentStore"
 import { BalloonPickup as BalloonPickupComponent } from "src/shared/components/balloonPickup"
+import { ComponentStore } from "src/shared/components/componentStore"
 import { ProjectileComponent } from "src/shared/components/projectile"
 import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
 
 import { Pickup } from "src/client/gameComponents/pickups/pickup"
 import { sfx, SoundManager } from "src/client/soundManager"
-import { theme } from "src/client/ui-old"
+
+const TRIGGER_DEBUG_COLOR = Color4.fromHexString('#F0BB18ff')
 
 const MIN_RISE_SPEED = 0.25
 const MAX_RISE_SPEED = 4.0
@@ -22,6 +24,8 @@ export class PickupBalloon extends Pickup {
 	private defaultValue   : number  = 1
 	private triggerScale   : number  = 3.5
 	private SHOW_TRIGGER   : boolean = false
+
+	private MODEL_SUFFIX = isMobile() ? "_mobile" : "_desktop"
 
 	// MARK: constructor
 	constructor(
@@ -41,7 +45,7 @@ export class PickupBalloon extends Pickup {
 
 		GltfContainer.create(this.rootEntity, {
 			//src: `assets/models/balloon_0${this.randomIndex}.gltf`
-			src: `assets/models/balloon_new.gltf`
+			src: `assets/models/balloon${this.MODEL_SUFFIX}.gltf`
 		})
 		MeshCollider.setSphere(this.rootEntity, ColliderLayer.CL_CUSTOM2)
 
@@ -81,14 +85,14 @@ export class PickupBalloon extends Pickup {
 		if (this.SHOW_TRIGGER) {
 			MeshRenderer.setSphere(this.triggerEntity)
 			Material.setPbrMaterial(this.triggerEntity, { 
-				albedoColor      : theme.colors.warning,
-				emissiveColor    : theme.colors.warning,
+				albedoColor      : TRIGGER_DEBUG_COLOR,
+				emissiveColor    : TRIGGER_DEBUG_COLOR,
 				emissiveIntensity: 0.2
 			})
 			MeshRenderer.setSphere(this.triggerEntity2)
 			Material.setPbrMaterial(this.triggerEntity2, { 
-				albedoColor      : theme.colors.warning,
-				emissiveColor    : theme.colors.warning,
+				albedoColor      : TRIGGER_DEBUG_COLOR,
+				emissiveColor    : TRIGGER_DEBUG_COLOR,
 				emissiveIntensity: 0.2
 			})
 

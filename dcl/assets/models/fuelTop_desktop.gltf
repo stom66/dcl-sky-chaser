@@ -1,6 +1,6 @@
 {
 	"asset":{
-		"generator":"Khronos glTF Blender I/O v4.5.51",
+		"generator":"Khronos glTF Blender I/O v5.2.39",
 		"version":"2.0"
 	},
 	"scene":0,
@@ -20,24 +20,16 @@
 	],
 	"materials":[
 		{
-			"emissiveFactor":[
-				1,
-				1,
-				1
-			],
-			"emissiveTexture":{
-				"index":0
-			},
 			"name":"Barrel",
 			"normalTexture":{
-				"index":1
+				"index":0
 			},
 			"pbrMetallicRoughness":{
 				"baseColorTexture":{
-					"index":2
+					"index":1
 				},
 				"metallicRoughnessTexture":{
-					"index":3
+					"index":2
 				}
 			}
 		}
@@ -72,18 +64,9 @@
 		{
 			"sampler":0,
 			"source":2
-		},
-		{
-			"sampler":0,
-			"source":3
 		}
 	],
 	"images":[
-		{
-			"mimeType":"image/png",
-			"name":"fuel_v2_Barrel_Emissive",
-			"uri":"tex/fuel_v2_Barrel_Emissive.png"
-		},
 		{
 			"mimeType":"image/png",
 			"name":"fuel_v2_Barrel_Normal",
@@ -104,14 +87,14 @@
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":373,
+			"count":335,
 			"max":[
-				0.43591442704200745,
+				0.4349304735660553,
 				0.5296775698661804,
 				0.4908667802810669
 			],
 			"min":[
-				-0.435914546251297,
+				-0.43493059277534485,
 				0.43369588255882263,
 				-0.28528687357902527
 			],
@@ -120,71 +103,71 @@
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":373,
+			"count":335,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":373,
+			"count":335,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":3,
 			"componentType":5121,
-			"count":373,
+			"count":335,
 			"normalized":true,
 			"type":"VEC4"
 		},
 		{
 			"bufferView":4,
 			"componentType":5123,
-			"count":373,
+			"count":335,
 			"normalized":true,
 			"type":"VEC4"
 		},
 		{
 			"bufferView":5,
 			"componentType":5123,
-			"count":936,
+			"count":864,
 			"type":"SCALAR"
 		}
 	],
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":4476,
+			"byteLength":4020,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":4476,
-			"byteOffset":4476,
+			"byteLength":4020,
+			"byteOffset":4020,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":2984,
-			"byteOffset":8952,
+			"byteLength":2680,
+			"byteOffset":8040,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":1492,
-			"byteOffset":11936,
+			"byteLength":1340,
+			"byteOffset":10720,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":2984,
-			"byteOffset":13428,
+			"byteLength":2680,
+			"byteOffset":12060,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":1872,
-			"byteOffset":16412,
+			"byteLength":1728,
+			"byteOffset":14740,
 			"target":34963
 		}
 	],
@@ -196,8 +179,8 @@
 	],
 	"buffers":[
 		{
-			"byteLength":18284,
-			"uri":"fuelTop.bin"
+			"byteLength":16468,
+			"uri":"fuelTop_desktop.bin"
 		}
 	]
 }

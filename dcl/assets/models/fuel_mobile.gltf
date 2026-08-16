@@ -1,6 +1,6 @@
 {
 	"asset":{
-		"generator":"Khronos glTF Blender I/O v4.5.51",
+		"generator":"Khronos glTF Blender I/O v5.2.39",
 		"version":"2.0"
 	},
 	"scene":0,
@@ -16,40 +16,32 @@
 	"nodes":[
 		{
 			"mesh":0,
-			"name":"barrel"
+			"name":"barrel.002"
 		},
 		{
 			"mesh":1,
-			"name":"rotor.hub"
+			"name":"rotor.hub.002"
 		}
 	],
 	"materials":[
 		{
-			"emissiveFactor":[
-				1,
-				1,
-				1
-			],
-			"emissiveTexture":{
-				"index":0
-			},
 			"name":"Barrel",
 			"normalTexture":{
-				"index":1
+				"index":0
 			},
 			"pbrMetallicRoughness":{
 				"baseColorTexture":{
-					"index":2
+					"index":1
 				},
 				"metallicRoughnessTexture":{
-					"index":3
+					"index":2
 				}
 			}
 		}
 	],
 	"meshes":[
 		{
-			"name":"Cylinder.006",
+			"name":"Cylinder.008",
 			"primitives":[
 				{
 					"attributes":{
@@ -65,7 +57,7 @@
 			]
 		},
 		{
-			"name":"Cylinder.009",
+			"name":"Cylinder.010",
 			"primitives":[
 				{
 					"attributes":{
@@ -93,18 +85,9 @@
 		{
 			"sampler":0,
 			"source":2
-		},
-		{
-			"sampler":0,
-			"source":3
 		}
 	],
 	"images":[
-		{
-			"mimeType":"image/png",
-			"name":"fuel_v2_Barrel_Emissive",
-			"uri":"tex/fuel_v2_Barrel_Emissive.png"
-		},
 		{
 			"mimeType":"image/png",
 			"name":"fuel_v2_Barrel_Normal",
@@ -125,171 +108,171 @@
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":1024,
+			"count":660,
 			"max":[
-				0.4697571098804474,
+				0.46894267201423645,
 				0.37146028876304626,
-				0.4697571098804474
+				0.46894267201423645
 			],
 			"min":[
-				-0.4697571098804474,
+				-0.46894267201423645,
 				-0.6472935676574707,
-				-0.4697571098804474
+				-0.46894267201423645
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":1024,
+			"count":660,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":1024,
+			"count":660,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":3,
 			"componentType":5121,
-			"count":1024,
+			"count":660,
 			"normalized":true,
 			"type":"VEC4"
 		},
 		{
 			"bufferView":4,
 			"componentType":5123,
-			"count":1024,
+			"count":660,
 			"normalized":true,
 			"type":"VEC4"
 		},
 		{
 			"bufferView":5,
 			"componentType":5123,
-			"count":2760,
+			"count":1788,
 			"type":"SCALAR"
 		},
 		{
 			"bufferView":6,
 			"componentType":5126,
-			"count":202,
+			"count":70,
 			"max":[
 				0.08659473806619644,
 				0.5701729655265808,
-				0.08668452501296997
+				0.0750729888677597
 			],
 			"min":[
 				-0.08674456924200058,
 				0.37270015478134155,
-				-0.08665478229522705
+				-0.07504325360059738
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":7,
 			"componentType":5126,
-			"count":202,
+			"count":70,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":8,
 			"componentType":5126,
-			"count":202,
+			"count":70,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":9,
 			"componentType":5121,
-			"count":202,
+			"count":70,
 			"normalized":true,
 			"type":"VEC4"
 		},
 		{
 			"bufferView":10,
 			"componentType":5123,
-			"count":202,
+			"count":70,
 			"normalized":true,
 			"type":"VEC4"
 		},
 		{
 			"bufferView":11,
 			"componentType":5123,
-			"count":642,
+			"count":240,
 			"type":"SCALAR"
 		}
 	],
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":12288,
+			"byteLength":7920,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":12288,
-			"byteOffset":12288,
+			"byteLength":7920,
+			"byteOffset":7920,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":8192,
-			"byteOffset":24576,
+			"byteLength":5280,
+			"byteOffset":15840,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":4096,
-			"byteOffset":32768,
+			"byteLength":2640,
+			"byteOffset":21120,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":8192,
-			"byteOffset":36864,
+			"byteLength":5280,
+			"byteOffset":23760,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":5520,
-			"byteOffset":45056,
+			"byteLength":3576,
+			"byteOffset":29040,
 			"target":34963
 		},
 		{
 			"buffer":0,
-			"byteLength":2424,
-			"byteOffset":50576,
+			"byteLength":840,
+			"byteOffset":32616,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":2424,
-			"byteOffset":53000,
+			"byteLength":840,
+			"byteOffset":33456,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":1616,
-			"byteOffset":55424,
+			"byteLength":560,
+			"byteOffset":34296,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":808,
-			"byteOffset":57040,
+			"byteLength":280,
+			"byteOffset":34856,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":1616,
-			"byteOffset":57848,
+			"byteLength":560,
+			"byteOffset":35136,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":1284,
-			"byteOffset":59464,
+			"byteLength":480,
+			"byteOffset":35696,
 			"target":34963
 		}
 	],
@@ -301,8 +284,8 @@
 	],
 	"buffers":[
 		{
-			"byteLength":60748,
-			"uri":"fuel.bin"
+			"byteLength":36176,
+			"uri":"fuel_mobile.bin"
 		}
 	]
 }
