@@ -1,0 +1,31 @@
+---
+description: All ECS component data is created, read, and written through ComponentManager + ComponentStore — never from feature modules or UI.
+alwaysApply: true
+---
+
+# Component architecture
+
+`ComponentManager` owns entity lifecycle and default seeding. `ComponentStore` is the only API for reading or writing component fields. Other modules (UI, spectate, fuel UI, spawners, …) talk to the store, not to each other and not to `engine.defineComponent` instances directly.
+
+Local / client-only components follow the same path as synced ones. **Not synced** means: omit from `syncEntity` / `syncedComponents`. It does **not** mean: create on `engine.PlayerEntity`, skip the store, or expose getters on the feature module.
+
+## Adding a component
+
+1. `engine.defineComponent` in `dcl/src/shared/components/<name>.ts`
+2. Import / re-export from `componentManager.ts`
+3. Seed defaults in `seedComponentDefaults()` (client branch if local-only; server branch if synced)
+4. If synced: add to `syncedComponents` (never for local-only)
+5. Re-export from `componentStore.ts`, add to the store `components` watch list, add `get*` / `set*` (client writes OK for local-only; server-gated writes for synced)
+6. Feature code calls `ComponentStore.*` only
+
+```ts
+// BAD — feature module owns the component
+SpectatorMode.createOrReplace(engine.PlayerEntity, { enabled: false })
+SpectatorMode.getOrNull(engine.PlayerEntity)?.enabled
+
+// GOOD — same as fuel / combo
+ComponentStore.getSpectatorModeEnabled()
+ComponentStore.setSpectatorModeEnabled(true)
+```
+
+Domain actions (toggle camera, spend fuel) stay on feature modules. Those modules still read/write state through the store. UI that only needs a value uses the store, not the feature module.
