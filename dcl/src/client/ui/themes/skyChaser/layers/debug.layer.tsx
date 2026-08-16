@@ -11,9 +11,10 @@ import {
 	ZoneType,
 } from '@stom66/dcl-ui-component-kit'
 
+import { IS_DEV } from 'src/shared/settings'
+
 import { FireworkLauncher } from 'src/client/fireworkLauncher'
 import { PlayerMover } from 'src/client/playerMover'
-import { IS_DEV } from 'src/shared/settings'
 
 
 const PANEL_WIDTH = 220

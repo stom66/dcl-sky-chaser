@@ -6,28 +6,35 @@ import * as utils from "@dcl-sdk/utils"
 import { ComponentManager } from 'src/shared/components/componentManager'
 import { ComponentStore } from 'src/shared/components/componentStore'
 import { GameSettings, IS_DEV, SceneSettings } from "src/shared/settings"
+import { ClientEvents, eventBus } from 'src/shared/utils/eventBus'
+import { DiscordWebhooks } from 'src/shared/utils/discord-webhooks'
 
 import { ClientHandler } from 'src/client/clientHandler'
 import { ClientStore } from 'src/client/clientStore'
-import { TriggerSpawner } from './spawners/triggerSpawner'
-import { LocomotionController } from './locomotionController'
+import { GameStateManager } from './gameStateManager'
+
+import { SetupUI } from 'src/client/ui'
 import { SoundManager } from './soundManager'
+
+import { Light } from './light'
+import { UILeaderboard } from './ui-leaderboard'
+import { FireworkLauncher } from './fireworkLauncher'
+import { SpectateMode } from './spectate-mode'
+import { NoticeBoard } from './noticeBoard'
+
+import { BirdSpawner } from './spawners/birdSpawner'
+import { BounceSpawner } from './spawners/bounceSpawner'
+import { ParticleSpawner } from './particleSpawner'
+import { ProjectileManager } from './projectileManager'
+import { SpawnManager } from './spawners/pickupSpawner'
+import { TriggerSpawner } from './spawners/triggerSpawner'
+
+
+import { BeaconManager } from './beaconManager'
 import { BoosterInput } from './boosterInput'
 import { ComboManager } from './comboManager'
-import { ParticleSpawner } from './particleSpawner'
-import { DiscordWebhooks } from 'src/shared/utils/discord-webhooks'
-import { GameStateManager } from './gameStateManager'
-import { UILeaderboard } from './ui-leaderboard'
-import { BeaconManager } from './beaconManager'
-import { BirdSpawner } from './spawners/birdSpawner'
-import { Light } from './light'
-import { BounceSpawner } from './spawners/bounceSpawner'
-import { ProjectileManager } from './projectileManager'
-import { spawn } from '~system/PortableExperiences'
-import { SpawnManager } from './spawners/pickupSpawner'
-import { NoticeBoard } from './noticeBoard'
-import { ClientEvents, eventBus } from 'src/shared/utils/eventBus'
-import { FireworkLauncher } from './fireworkLauncher'
+import { LocomotionController } from './locomotionController'
+
 
 
 export function initClient() {
@@ -75,6 +82,9 @@ export function initClient() {
 		}, GameSettings.LOADING_SCREEN_DELAY)
 	}
 
+	// Load the UI first, so we get the loading screen
+	SetupUI()
+
 
 	// MARK: Client Store
 	void ClientStore.getInstance()
@@ -90,8 +100,6 @@ export function initClient() {
 		ComponentStore.init()
 		GameStateManager.init()
 
-		const { SetupUI } = await import('src/client/ui-screen')
-		SetupUI()
 
 		LocomotionController.init()
 		ComboManager.init()
@@ -113,6 +121,7 @@ export function initClient() {
 		ProjectileManager.init()
 		NoticeBoard.init()
 		FireworkLauncher.init()
+		SpectateMode.init()
 
 		onGameLoaded()
 	})
