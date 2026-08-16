@@ -3,8 +3,8 @@ import { Color4, Vector3 } from "@dcl/sdk/math"
 
 import { IS_DEV } from "src/shared/settings"
 
-import { alpha, theme } from "src/client/ui-old"
 import { PlayerMover } from "src/client/playerMover"
+import { alpha, theme } from "@stom66/dcl-ui-component-kit"
 
 
 export class DeathTrigger {
@@ -25,17 +25,17 @@ export class DeathTrigger {
 			}
 		})
 
-		if (IS_DEV) {
-			//MeshRenderer.setBox(this.entity)
-			//Material.setBasicMaterial(this.entity, {
-			//	diffuseColor: alpha(theme.colors.danger, 0.25)
-			//})
-		}
+		/* if (IS_DEV) {
+			MeshRenderer.setBox(this.entity)
+			Material.setBasicMaterial(this.entity, {
+				diffuseColor: alpha(theme.colors.danger, 0.25)
+			})
+		} */
 	}
 
 	onTriggerEnter() {
 		console.log("DeathTrigger: Player entered")
 		PlayerMover.movePlayerToSpawn()
-		// TODO: show a death UI
+		// TODO: show a death UI?
 	}
 }
