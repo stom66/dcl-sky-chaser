@@ -6,7 +6,7 @@ export const CONFIG = {
 	// Model settings
 	CREATOR_HUB_MODEL_TAG            : "spectatorMode", // Creator Hub tag that toggles spectate mode
 	MAX_INTERACTION_DISTANCE         : 8,                // Maximum distance the player can be from the model to interact with it
-	INTERACTION_HOVER_TEXT           : "Interact",       // Hover text shown on the tagged model
+	INTERACTION_HOVER_TEXT           : "Use the Pigeon-Peeker 3000",       // Hover text shown on the tagged model
 
 	// Camera settings — 32x32 parcels (base 0,0; parcels 0..31 x, -1..30 z)
 	CAMERA_PIVOT_POINT               : Vector3.create(256, 80, 256),
