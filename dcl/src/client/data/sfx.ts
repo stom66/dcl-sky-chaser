@@ -3,6 +3,11 @@ export const sfx = {
 	fireworkButton: [
 		"assets/sfx/firework_button.mp3",
 	],
+	fireworkLaunch: [
+		"assets/sfx/firework_soundA.wav",
+		"assets/sfx/firework_soundB.wav",
+		"assets/sfx/firework_soundC.wav",
+	],
 	leaderboard: [
 		"assets/sfx/leaderboard_01.mp3",
 		"assets/sfx/leaderboard_02.mp3",

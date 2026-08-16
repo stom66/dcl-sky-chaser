@@ -19,16 +19,26 @@ export namespace ParticleSpawner {
 	var isEnabled = false
 
 	const BOOSTER_WIND_SPRITES = [
-		'assets/tex/sprites-wind-02.png',
-		'assets/tex/sprites-wind-03.png',
-		'assets/tex/sprites-wind-04.png',
-		'assets/tex/sprites-wind-05.png',
-		'assets/tex/sprites-wind-06.png',
+		'assets/sprites/sprites-wind-02.png',
+		'assets/sprites/sprites-wind-03.png',
+		'assets/sprites/sprites-wind-04.png',
+		'assets/sprites/sprites-wind-05.png',
+		'assets/sprites/sprites-wind-06.png',
 	]
 
 	const ENV_WIND_SPRITES = [
-		'assets/tex/sprites-wind-05.png',
-		'assets/tex/sprites-wind-06.png',
+		'assets/sprites/sprites-wind-05.png',
+		'assets/sprites/sprites-wind-06.png',
+	]
+
+	const COLOR_PALETTE = [
+		Color4.Red(),
+		Color4.Green(),
+		Color4.Blue(),
+		Color4.Yellow(),
+		Color4.Purple(),
+		Color4.Magenta(),
+		Color4.Teal(),
 	]
 
 	export function init() {
@@ -137,18 +147,20 @@ export namespace ParticleSpawner {
 	function preloadAssets() {
 		AssetLoad.create(engine.RootEntity, {
 		  assets: [
-			"assets/tex/sprites-wind-02.png",
-			"assets/tex/sprites-wind-03.png",
-			"assets/tex/sprites-wind-04.png",
-			"assets/tex/sprites-wind-05.png",
-			"assets/tex/sprites-wind-06.png",
-			"assets/tex/sprites-wind-05.png",
-			"assets/tex/sprites-wind-06.png",
-			"assets/tex/sprites-explosion.png",
-			"assets/tex/sprites-dust.png",
-			"assets/tex/sprites-fuel.png",
-			"assets/tex/sprites-fabric.png",
-			"assets/tex/sprites-speed.png"
+			"assets/sprites/sprites-dust.png",
+			"assets/sprites/sprites-explosion.png",
+			"assets/sprites/sprites-fabric.png",
+			"assets/sprites/sprites-fireworkd.png",
+			"assets/sprites/sprites-fuel.png",
+			"assets/sprites/sprites-sparkles.png",
+			"assets/sprites/sprites-speed.png",
+			"assets/sprites/sprites-wind-02.png",
+			"assets/sprites/sprites-wind-03.png",
+			"assets/sprites/sprites-wind-04.png",
+			"assets/sprites/sprites-wind-05.png",
+			"assets/sprites/sprites-wind-06.png",
+			"assets/sprites/sprites-wind-05.png",
+			"assets/sprites/sprites-wind-06.png",
 		  ],
 		})
 	}
@@ -271,13 +283,13 @@ export namespace ParticleSpawner {
 			loop                : true,
 			prewarm             : false,
 			faceTravelDirection : false,
-			rate                : 10,
+			rate                : 20,
 			lifetime            : 3,
 			maxParticles        : 200,
 			gravity             : 0,
 			blendMode           : PBParticleSystem_BlendMode.PSB_ADD,
 			shape               : ParticleSystem.Shape.Box({
-				size: Vector3.create(7, 4, 1)
+				size: Vector3.create(19, 10, 1)
 			}),
 			initialVelocitySpeed: {
 				start: 12.5,
@@ -428,7 +440,7 @@ export namespace ParticleSpawner {
 				{ time: 0, count: 48, cycles: 1, interval: 0.01, probability: 1 },
 			] },
 			billboard           : true,
-			texture             : { src: 'assets/tex/sprites-explosion.png' },
+			texture             : { src: 'assets/sprites/sprites-explosion.png' },
 			spriteSheet         : { tilesX: 6, tilesY: 6, framesPerSecond: 36},
 			rotationOverTime    : { x: 0, y: 0, z: 0, w: 1 },
 		})
@@ -466,7 +478,7 @@ export namespace ParticleSpawner {
 				{ time: 0, count: 16, cycles: 1, interval: 0.01, probability: 1 },
 			] },
 			billboard           : true,
-			texture             : { src: 'assets/tex/sprites-dust.png' },
+			texture             : { src: 'assets/sprites/sprites-dust.png' },
 			spriteSheet         : { tilesX: 6, tilesY: 6, framesPerSecond: 36},
 		})
 
@@ -504,8 +516,50 @@ export namespace ParticleSpawner {
 				{ time: 0, count: 32, cycles: 6, interval: 0.8, probability: 1 },
 			] },
 			billboard           : true,
-			texture             : { src: 'assets/tex/particles-pigeons.png' },
+			texture             : { src: 'assets/sprites/sprites-pigeons.png' },
 			spriteSheet         : { tilesX: 2, tilesY: 2, framesPerSecond: 10},
+		})
+
+		utils.timers.setTimeout(() => {
+			ParticleSystem.deleteFrom(entity)
+			engine.removeEntity(entity)
+		}, 2000)
+
+	}
+
+
+	// MARK: Fireworks
+	export function TriggerFireworks(
+		position: Vector3
+	) {
+		const entity = engine.addEntity()
+
+		// create a random bright
+		const randomColor = COLOR_PALETTE[Math.floor(Math.random() * COLOR_PALETTE.length)]
+
+		Transform.create(entity, { position: position })
+		ParticleSystem.create(entity, {
+			active              : true,
+			loop                : false,
+			rate                : 0,
+			lifetime            : 0.5,
+			maxParticles        : 300,
+			gravity             : 6,
+
+			blendMode           : PBParticleSystem_BlendMode.PSB_ADD,
+			shape               : ParticleSystem.Shape.Point(),
+
+			initialVelocitySpeed: { start: 5, end: 50 },
+			initialSize         : { start: 0.25, end: 2 },
+			sizeOverTime        : { start: 1, end: 1 },
+			initialColor        : { start: randomColor, end: randomColor},
+			bursts              : { values: [
+				{ time: 0, count: 32, cycles: 1, interval: 0.01, probability: 1 },
+			] },
+			billboard           : true,
+			texture             : { src: 'assets/sprites/sprites-firework.png' },
+			
+			spriteSheet         : { tilesX: 4, tilesY: 4, framesPerSecond: 32},
 		})
 
 		utils.timers.setTimeout(() => {
@@ -543,7 +597,7 @@ export namespace ParticleSpawner {
 				{ time: 0, count: 32, cycles: 1, interval: 0.01, probability: 1 },
 			] },
 			billboard           : true,
-			texture             : { src: 'assets/tex/sprites-fuel.png' },
+			texture             : { src: 'assets/sprites/sprites-fuel.png' },
 			spriteSheet         : { tilesX: 6, tilesY: 6, framesPerSecond: 36},
 		})
 
@@ -582,7 +636,7 @@ export namespace ParticleSpawner {
 				{ time: 0, count: 24, cycles: 1, interval: 0.01, probability: 1 },
 			] },
 			billboard           : true,
-			texture             : { src: 'assets/tex/sprites-fabric.png' },
+			texture             : { src: 'assets/sprites/sprites-fabric.png' },
 			spriteSheet         : { tilesX: 6, tilesY: 6, framesPerSecond: 36},
 		})
 
@@ -626,7 +680,7 @@ export namespace ParticleSpawner {
 				{ time: 0, count: 64, cycles: 1, interval: 0.01, probability: 1 },
 			] },
 			billboard           : true,
-			texture             : { src: 'assets/tex/sprites-speed.png' },
+			texture             : { src: 'assets/sprites/sprites-speed.png' },
 			spriteSheet         : { tilesX: 6, tilesY: 6, framesPerSecond: 36},
 		})
 
