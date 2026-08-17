@@ -121,27 +121,6 @@
             "parent": 535
           }
         },
-        "515": {
-          "json": {
-            "position": {
-              "x": 0,
-              "y": 0,
-              "z": 0
-            },
-            "scale": {
-              "x": 1,
-              "y": 1,
-              "z": 1
-            },
-            "rotation": {
-              "x": 0,
-              "y": 1,
-              "z": 0,
-              "w": 0
-            },
-            "parent": 0
-          }
-        },
         "516": {
           "json": {
             "position": {
@@ -856,6 +835,27 @@
             "parent": 0
           }
         },
+        "551": {
+          "json": {
+            "position": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "rotation": {
+              "x": 0,
+              "y": 1,
+              "z": 0,
+              "w": 0
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            },
+            "parent": 0
+          }
+        },
         "66081": {
           "json": {
             "position": {
@@ -931,76 +931,6 @@
             ]
           }
         },
-        "515": {
-          "json": {
-            "states": [
-              {
-                "clip": "Armature.001Action",
-                "playing": false,
-                "weight": 1,
-                "speed": 1,
-                "loop": false,
-                "shouldReset": false
-              },
-              {
-                "clip": "Armature.002Action",
-                "playing": true,
-                "weight": 1,
-                "speed": 1,
-                "loop": true,
-                "shouldReset": false
-              },
-              {
-                "clip": "ArmatureAction",
-                "playing": false,
-                "weight": 1,
-                "speed": 1,
-                "loop": false,
-                "shouldReset": false
-              },
-              {
-                "clip": "Pigeon1",
-                "playing": false,
-                "weight": 1,
-                "speed": 1,
-                "loop": false,
-                "shouldReset": false
-              },
-              {
-                "clip": "Pigeon1.001",
-                "playing": false,
-                "weight": 1,
-                "speed": 1,
-                "loop": false,
-                "shouldReset": false
-              },
-              {
-                "clip": "Pigeon1.001-Armature_Prop2",
-                "playing": false,
-                "weight": 1,
-                "speed": 1,
-                "loop": false,
-                "shouldReset": false
-              },
-              {
-                "clip": "Pigeon1.002",
-                "playing": false,
-                "weight": 1,
-                "speed": 1,
-                "loop": false,
-                "shouldReset": false
-              },
-              {
-                "clip": "Pigeon1.002-Armature_Prop2",
-                "playing": false,
-                "weight": 1,
-                "speed": 1,
-                "loop": false,
-                "shouldReset": false
-              }
-            ]
-          }
-        },
         "517": {
           "json": {
             "states": [
@@ -1063,6 +993,20 @@
             ]
           }
         },
+        "551": {
+          "json": {
+            "states": [
+              {
+                "clip": "windVane",
+                "playing": true,
+                "weight": 1,
+                "speed": 1,
+                "loop": true,
+                "shouldReset": false
+              }
+            ]
+          }
+        },
         "197160": {
           "json": {
             "states": [
@@ -1113,13 +1057,6 @@
         "514": {
           "json": {
             "src": "assets/asset-packs/round_rug/Carpet_01/Carpet_01.glb",
-            "visibleMeshesCollisionMask": 0,
-            "invisibleMeshesCollisionMask": 3
-          }
-        },
-        "515": {
-          "json": {
-            "src": "assets/models/windVane.gltf",
             "visibleMeshesCollisionMask": 0,
             "invisibleMeshesCollisionMask": 3
           }
@@ -1348,6 +1285,13 @@
             "invisibleMeshesCollisionMask": 3
           }
         },
+        "551": {
+          "json": {
+            "src": "assets/models/windVane.gltf",
+            "visibleMeshesCollisionMask": 0,
+            "invisibleMeshesCollisionMask": 3
+          }
+        },
         "66081": {
           "json": {
             "src": "assets/models/binoculars.gltf",
@@ -1390,11 +1334,6 @@
         "514": {
           "json": {
             "value": "Round Rug"
-          }
-        },
-        "515": {
-          "json": {
-            "value": "windVane.gltf"
           }
         },
         "516": {
@@ -1567,6 +1506,11 @@
             "value": "binoculars.gltf_3"
           }
         },
+        "551": {
+          "json": {
+            "value": "windVane.gltf_2"
+          }
+        },
         "66081": {
           "json": {
             "value": "binoculars.gltf_4"
@@ -1674,7 +1618,7 @@
         "serializationType": "map"
       },
       "data": {
-        "0": {
+        "551": {
           "json": {
             "gizmo": 0
           }
@@ -1729,7 +1673,7 @@
                 "children": [
                   513,
                   517,
-                  515,
+                  551,
                   516,
                   534,
                   535,
@@ -1757,10 +1701,6 @@
               },
               {
                 "entity": 517,
-                "children": []
-              },
-              {
-                "entity": 515,
                 "children": []
               },
               {
@@ -1940,6 +1880,10 @@
               {
                 "entity": 66081,
                 "children": []
+              },
+              {
+                "entity": 551,
+                "children": []
               }
             ]
           }
@@ -1970,9 +1914,6 @@
           "json": {}
         },
         "514": {
-          "json": {}
-        },
-        "515": {
           "json": {}
         },
         "516": {
@@ -2075,6 +2016,9 @@
           "json": {}
         },
         "550": {
+          "json": {}
+        },
+        "551": {
           "json": {}
         },
         "66081": {

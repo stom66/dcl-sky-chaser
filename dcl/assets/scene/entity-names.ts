@@ -44,5 +44,6 @@ export enum EntityNames {
   tower_gltf = "tower.gltf",
   windSock_gltf = "windSock.gltf",
   windVane_gltf = "windVane.gltf",
+  windVane_gltf_2 = "windVane.gltf_2",
   world_gltf = "world.gltf",
 } 
