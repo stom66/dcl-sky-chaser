@@ -1,6 +1,6 @@
 import { Color4 } from '@dcl/sdk/math'
 import ReactEcs from '@dcl/sdk/react-ecs'
-import { Background, Layer, ZoneType } from '@stom66/dcl-ui-component-kit'
+import { Background, ButtonImageClose, Layer, ZoneType } from '@stom66/dcl-ui-component-kit'
 
 import { ClientEvents, eventBus } from 'src/shared/utils/eventBus'
 
@@ -23,10 +23,10 @@ export class HowToPlayLayer extends Layer {
 			zone           : ZoneType.Default,
 			canBeHidden    : true,
 			startHidden    : true,
-			showCloseButton: true,
+			showCloseButton: false,
 			uiTransform    : {
-				width         : 1200,
-				height        : 800,
+				width         : "120vh",
+				height        : "80vh",
 				justifyContent: 'center',
 				alignItems    : 'center',
 			},
@@ -88,6 +88,23 @@ export class HowToPlayLayer extends Layer {
 				backgroundColor = {Color4.White()}
 				borderRadius    = {0}
 				borderWidth     = {0}
+				// Keep world clicks blocked by the panel, but don't sit above the close control.
+				uiTransform     = {{
+					zIndex: 0,
+				}}
+			/>,
+			<ButtonImageClose
+				id              = "howToPlay-close"
+				key             = "howToPlay-close"
+				backgroundColor = {Color4.White()}
+				borderRadius    = {0}
+				borderWidth     = {0}
+				callback        = {() => this.hide()}
+				uiTransform     = {{
+					positionType: 'absolute',
+					position    : { top: 0, right: 0 },
+					zIndex      : 1001,
+				}}
 			/>,
 		]
 	}

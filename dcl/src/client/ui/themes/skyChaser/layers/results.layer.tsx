@@ -290,14 +290,6 @@ export class ResultsLayer extends Layer {
 		const localUserId = getPlayer()?.userId
 
 		return [
-			<ButtonImageClose
-				key         = "results-close"
-				id          = "btn_close_skyChaser-results"
-				callback    = {() => this.hide()}
-				uiTransform = {{
-					position: { top: 0, right: CLOSE_BUTTON_RIGHT },
-				}}
-			/>,
 			// Manual vertical 3-slice — native nine-slices just stretches this asset.
 			<UiEntity
 				key         = "results-chrome"
@@ -389,6 +381,15 @@ export class ResultsLayer extends Layer {
 					))
 				)}
 			</Column>,
+			// After chrome/body so mobile hit-testing (sibling order) can reach it.
+			<ButtonImageClose
+				key         = "results-close"
+				id          = "btn_close_skyChaser-results"
+				callback    = {() => this.hide()}
+				uiTransform = {{
+					position: { top: 0, right: CLOSE_BUTTON_RIGHT },
+				}}
+			/>,
 		]
 	}
 
