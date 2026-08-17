@@ -1,5 +1,5 @@
 import * as utils from '@dcl-sdk/utils'
-import { AudioSource, engine, Entity, MeshRenderer, Transform, TriggerArea, triggerAreaEventsSystem } from '@dcl/sdk/ecs'
+import { AudioSource, engine, Entity, MeshRenderer, SystemFn, Transform, TriggerArea, triggerAreaEventsSystem } from '@dcl/sdk/ecs'
 import { AssetLoad } from "@dcl/sdk/ecs"
 
 
@@ -7,6 +7,7 @@ import { eventBus, ClientEvents } from 'src/shared/utils/eventBus'
 
 import { sfx } from 'src/client/data/sfx'
 import { Vector2, Vector3 } from '@dcl/sdk/math'
+import { timers } from 'src/shared/utils/timers'
 export { sfx } from 'src/client/data/sfx'
 
 export namespace SoundManager {
@@ -298,6 +299,7 @@ export namespace SoundManager {
 	): void {
 		const list = typeof sound === 'string' ? [sound] : sound
 
+		// Choose a NEW random sound
 		let randomSound: string
 		if (list.length === 1) {
 			randomSound = list[0]
@@ -308,6 +310,7 @@ export namespace SoundManager {
 		}
 		lastPlayedSfx = randomSound
 
+		// GET or CREATE a new sound entity
 		let soundEntity: Entity
 		if (parentEntity) {
 			const parentT = Transform.getOrNull(parentEntity)
@@ -325,34 +328,54 @@ export namespace SoundManager {
 			soundEntity = getOrCreatePreloadedClipEntity(randomSound)
 		}
 
+		// Get a reference to the AudioSource component
 		const audioSrc = AudioSource.getMutableOrNull(soundEntity)
 		if (!audioSrc) {
 			console.error('SoundManager: playSound: AudioSource missing for clip:', randomSound)
 			return
 		}
 
+		// BE KIND: stop and rewind
 		audioSrc.playing     = false
 		audioSrc.currentTime = 0
 
-		if (maxDistance && parentEntity) {
-			const playerPos = Transform.getOrNull(engine.PlayerEntity)?.position
-			const parentPos = Transform.getOrNull(parentEntity)?.position
-			if (!playerPos || !parentPos) return
 
-			const x = playerPos.x - parentPos.x
-			const z = playerPos.z - parentPos.z
-			const distance = Math.sqrt(x * x + z * z)
-			if (distance < maxDistance) {
-				const vol = (audioSrc.volume ?? SFX_ENTITY_VOLUME) * (1 - distance / maxDistance)
-				console.log(`SoundManager: playSound: ${randomSound} at volume`, vol)
-				audioSrc.volume = vol
+		// Adjust volume based on distance
+		// BUG here, sets volume once based on player inital distance 
+		// doesn't change during playback which is noticeable when moving during longer files
+		let sysDistanceVoulme: SystemFn | undefined = undefined
+		if (maxDistance && parentEntity) {
+			const maxDistanceSquared = maxDistance * maxDistance
+			sysDistanceVoulme = (dt: number) => {
+				const playerPos = Transform.getOrNull(engine.PlayerEntity)?.position
+				const parentPos = Transform.getOrNull(parentEntity)?.position
+				if (!playerPos || !parentPos) return
+
+				const x = playerPos.x - parentPos.x
+				const z = playerPos.z - parentPos.z
+				const distanceSquared = (x * x) + (z * z)
+				if (distanceSquared < maxDistanceSquared) {
+					const vol = (audioSrc.volume ?? SFX_ENTITY_VOLUME) * (1 - distanceSquared / maxDistanceSquared)
+					audioSrc.volume = vol
+				}
 			}
+			engine.addSystem(sysDistanceVoulme)
 		}
 
-		utils.timers.setTimeout(() => {
+		// Play the sound effect
+		timers.setTimeout(() => {
 			const audio = AudioSource.getMutableOrNull(soundEntity)
 			if (audio) audio.playing = true
 		}, 50)
+
+		// Remove the system and, if required, remove the new entity
+		timers.setTimeout(() => {
+			if (sysDistanceVoulme) engine.removeSystem(sysDistanceVoulme)
+				
+			// If we created a new entity, remove it
+			if (parentEntity) engine.removeEntity(soundEntity)
+
+		}, 10 * 1000)
 	}
 
 
