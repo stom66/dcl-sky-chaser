@@ -12,6 +12,7 @@ import { PlayerStatsEnum } from "src/shared/metrics/playerStats"
 import { ClientMessaging } from "src/client/clientMessaging"
 import { Pickup } from "src/client/gameComponents/pickups/pickup"
 import { sfx, SoundManager } from "src/client/soundManager"
+import { showFuelToast } from "src/client/ui/themes/skyChaser/pickupToasts"
 
 const EXPLOSION_RADIUS_SQUARED = 30 * 30
 
@@ -115,6 +116,7 @@ export class PickupFuel extends Pickup {
 			position: this.getPosition(),
 			amount  : value
 		})
+		showFuelToast(value)
 	}
 
 

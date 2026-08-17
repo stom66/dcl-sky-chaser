@@ -132,6 +132,27 @@ export const charsNumbersAtlas = new TextureAtlas({
 })
 
 
+// MARK: toastPickupAtlas
+/**
+ * In-match pickup toast chrome (`toast-pickup.png`).
+ * One column, four rows (UV bottom → top). PNG top → bottom:
+ * strike / score / combo / fuel.
+ *
+ * Stubbed until the PNG is exported into `assets/images/ui/`.
+ */
+export const toastPickupAtlas = new TextureAtlas({
+	source : 'assets/images/ui/toast-pickups.png',
+	columns: 1,
+	rows   : 4,
+	named  : {
+		score : { xStart: 1, yStart: 1 },
+		combo : { xStart: 1, yStart: 2 },
+		fuel  : { xStart: 1, yStart: 3 },
+		strike: { xStart: 1, yStart: 4 },
+	},
+})
+
+
 // MARK: hintsAtlas
 /**
  * Tutorial hint strips (`atlas-hints.png`, 1024×2048).

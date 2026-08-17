@@ -15,6 +15,7 @@ import { IS_DEV } from 'src/shared/settings'
 
 import { FireworkLauncher } from 'src/client/fireworkLauncher'
 import { PlayerMover } from 'src/client/playerMover'
+import { showComboToast, showFuelToast, showScoreToast, showStrikeToast } from 'src/client/ui/themes/skyChaser/pickupToasts'
 
 
 const PANEL_WIDTH = 220
@@ -79,6 +80,38 @@ export class DebugLayer extends Layer {
 						FireworkLauncher.spawnParticleFirework(
 							Vector3.clone(PlayerMover.spawnPosition),
 						)
+					}}
+				/>
+				<ButtonText
+					id        = "btn_debug_toastScore"
+					textLabel = "toast score +1"
+					cols      = {12}
+					callback  = {() => {
+						showScoreToast(1)
+					}}
+				/>
+				<ButtonText
+					id        = "btn_debug_toastCombo"
+					textLabel = "toast combo +1"
+					cols      = {12}
+					callback  = {() => {
+						showComboToast(1)
+					}}
+				/>
+				<ButtonText
+					id        = "btn_debug_toastFuel"
+					textLabel = "toast fuel +30"
+					cols      = {12}
+					callback  = {() => {
+						showFuelToast(30)
+					}}
+				/>
+				<ButtonText
+					id        = "btn_debug_toastStrike"
+					textLabel = "toast strike +1"
+					cols      = {12}
+					callback  = {() => {
+						showStrikeToast(1)
 					}}
 				/>
 			</Column>,

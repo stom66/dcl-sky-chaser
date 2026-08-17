@@ -3,10 +3,12 @@ import { Quaternion, Vector3 } from "@dcl/sdk/math"
 import * as utils from '@dcl-sdk/utils'
 import { isMobile } from "@dcl/sdk/platform"
 
+import { ComponentStore } from "src/shared/components/componentStore"
 import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
 
 import { Pickup } from "src/client/gameComponents/pickups/pickup"
 import { sfx, SoundManager } from "src/client/soundManager"
+import { showComboToast } from "src/client/ui/themes/skyChaser/pickupToasts"
 
 // MARK: SpeedRingPickup
 export class PickupSpeedRing extends Pickup {
@@ -76,11 +78,18 @@ export class PickupSpeedRing extends Pickup {
 		Physics.applyImpulseToPlayer(playerForward, 64)
 		SoundManager.playSound(sfx.swish)
 
-		const yRot = Quaternion.toEulerAngles(playerTransform.rotation).y
+		const yRot        = Quaternion.toEulerAngles(playerTransform.rotation).y
+		const comboBefore = ComponentStore.getComboValue()
+
 		eventBus.emit(ClientEvents.PLAYER_COLLIDED_RING, {
 			position: playerTransform.position,
 			yRot    : yRot
 		})
+
+		const comboAfter = ComponentStore.getComboValue()
+		if (comboAfter > comboBefore) {
+			showComboToast(1)
+		}
 	}
 
 

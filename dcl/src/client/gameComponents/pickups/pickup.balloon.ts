@@ -10,6 +10,7 @@ import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
 
 import { Pickup } from "src/client/gameComponents/pickups/pickup"
 import { sfx, SoundManager } from "src/client/soundManager"
+import { showScoreToast } from "src/client/ui/themes/skyChaser/pickupToasts"
 
 const TRIGGER_DEBUG_COLOR = Color4.fromHexString('#F0BB18ff')
 
@@ -128,12 +129,14 @@ export class PickupBalloon extends Pickup {
 	// MARK: onHitByPlayer
 	onHitByPlayer() : void {
 		console.log("PickupBalloon: onHitByPlayer: Player entered")
-		const combo = ComponentStore.getComboValue()
+		const combo  = ComponentStore.getComboValue()
+		const points = this.getValue() * combo
 
 		eventBus.emit(ClientEvents.PLAYER_COLLIDED_BALLOON, {
 			position: this.getPosition(),
-			points  : this.getValue() * combo
+			points  : points
 		})
+		showScoreToast(points)
 	}
 
 
@@ -141,15 +144,20 @@ export class PickupBalloon extends Pickup {
 	onHitByProjectile(
 		entity: Entity,
 	) : void {
-		const owner = ProjectileComponent.getOrNull(entity)?.owner ?? ""
-		const combo = ComponentStore.getComboValue()
+		const owner  = ProjectileComponent.getOrNull(entity)?.owner ?? ""
+		const combo  = ComponentStore.getComboValue()
+		const points = this.getValue() * combo
 
 		eventBus.emit(ClientEvents.PROJECTILE_HIT_BALLOON, {
-			points          : this.getValue() * combo,
+			points          : points,
 			position        : this.getPosition(),
 			projectileEntity: entity,
 			projectileOwner : owner
 		})
+
+		if (owner === "") {
+			showScoreToast(points)
+		}
 
 		// Allow players to get points from SHOOTING balloons as well
 /* 		if (owner === "") {
