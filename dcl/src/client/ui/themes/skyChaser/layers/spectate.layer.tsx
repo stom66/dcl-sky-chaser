@@ -7,6 +7,8 @@ import {
 	ButtonImage,
 	Column,
 	getTheme,
+	getUVCell,
+	getUVRow,
 	Icon,
 	Layer,
 	Row,
@@ -35,8 +37,10 @@ const LABEL_HEIGHT = `${BUTTON_WIDTH_BASE * 0.15}vw` as PositionUnit
 /** Placeholder strip — drop `spectate-controls.png` in when the art is ready. */
 //const CONTROLS_WIDTH  = isMobile() ? 70 : 50
 const CONTROLS_WIDTH  = 512
-const CONTROLS_HEIGHT = CONTROLS_WIDTH * 0.3
-const CONTROLS_SRC    = 'assets/images/ui/spectate-bg.png'
+const CONTROLS_HEIGHT = CONTROLS_WIDTH * 0.5 * (3/5)
+
+const CONTROLS_SRC_PLAYER  = 'assets/images/ui/spectate-bg.png'
+const CONTROLS_SRC_DEFAULT = 'assets/images/ui/spectate-bg-raise.png'
 
 
 // MARK: getCurrentTargetLabel
@@ -51,6 +55,12 @@ function getCurrentTargetLabel(): string {
 	return `${name || userId}`
 }
 
+function getBackgroundImage(): string {
+	const userId = SM_PlayerRoster.getCurrentPlayerUserId()
+	if (!userId) return CONTROLS_SRC_DEFAULT
+
+	return CONTROLS_SRC_PLAYER
+}
 
 // MARK: SpectateLayer
 /**
@@ -106,12 +116,19 @@ export class SpectateLayer extends Layer {
 			>
 				<Background
 					key             = "spectate-controls-bg"
-					textureSrc      = {CONTROLS_SRC}
+					textureSrc      = {getBackgroundImage()}
 					backgroundColor = {Color4.White()}
 					borderWidth     = {0}
 					borderRadius    = {0}
-					uiBackground={{
-						textureMode: 'center',
+					uiBackground    = {{
+						textureMode: 'stretch',
+						uvs        : getUVCell({
+							xStart: 1, 
+							xTotal: 1, 
+							yStart: 2, 
+							yEnd  : 4,
+							yTotal: 5
+						})
 					}}
 				/>
 				<Row>
