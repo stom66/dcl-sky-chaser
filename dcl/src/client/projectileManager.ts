@@ -12,7 +12,7 @@ import { Projectile } from "./gameComponents/projectile"
 import { sfx, SoundManager } from "./soundManager"
 
 export namespace ProjectileManager {
-	const ProjectilePool: Projectile[] = []
+	const ProjectilePool     : Projectile[] = []
 	const ProjectileEntityMap: Map<Entity, Projectile> = new Map()
 
 	var isFPressed      : Boolean      = false
@@ -21,6 +21,8 @@ export namespace ProjectileManager {
 
 	const HIDE_LOCATION = Vector3.create(128, -100, 128)
 
+
+	// MARK: init
 	export function init() {
 		eventBus.on(ClientEvents.NOTIFY_PROJECTILE_FIRED, (data) => { 
 			fireProjectile(data.position, data.direction, data.owner) 
@@ -41,14 +43,26 @@ export namespace ProjectileManager {
 /* 		eventBus.on(ClientEvents.GAME_ACTIVE, () => {
 			gameIsActive = true
 		})
-		eventBus.on(ClientEvents.GAME_END, () => {
-			gameIsActive = false
-		}) */
+			*/
+		// Cleanupo the pool when the game ends
+		eventBus.on(ClientEvents.GAME_IDLE, () => {
+			cleanPool()
+		})
 
 		engine.addSystem(sys_updateProjectiles)
 		engine.addSystem(sys_inputWatcher)
 	}
 
+	function cleanPool() {
+		for (const projectile of ProjectilePool) {
+			if (!projectile.isActive()) {
+				projectile.Destroy()
+			}
+		}
+	}
+
+
+	// MARK: requestProjectile
 	// Triggered when local or server players request a projectile
 	function requestProjectile(data: { position: Vector3, direction: Vector3, owner?: string }) {
 		console.log('ProjectileManager: requestProjectile: data', data)
@@ -56,6 +70,8 @@ export namespace ProjectileManager {
 		eventBus.emit(ClientEvents.PROJECTILE_FIRED, data) // indirectly call the spawnProjectile function below
 	}
 
+
+	// MARK: fireProjectile
 	// Get a pooled projectile, or create a new one if none are available
 	function fireProjectile(
 		origin   : Vector3, 
@@ -73,6 +89,8 @@ export namespace ProjectileManager {
 
 	}
 
+
+	// MARK: getIdleProjectile
 	function getIdleProjectile() : Projectile | null {
 		for (const projectile of ProjectilePool) {
 			if (!projectile.isActive()) {
@@ -82,6 +100,8 @@ export namespace ProjectileManager {
 		return null
 	}
 
+
+	// MARK: disableProjectile
 	function disableProjectile(
 		entity: Entity
 	) : void {
@@ -91,6 +111,8 @@ export namespace ProjectileManager {
 		}
 	}
 
+
+	// MARK: sys_updateProjectiles
 	function sys_updateProjectiles(dt: number) : void {
 		for (const projectile of ProjectilePool) {
 			if (projectile.isActive()) {
@@ -99,6 +121,8 @@ export namespace ProjectileManager {
 		}
 	}
 
+
+	// MARK: sys_inputWatcher
 	function sys_inputWatcher(dt: number) {
 		if (ComponentStore.getSpectatorModeEnabled()) return
 		
