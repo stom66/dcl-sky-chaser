@@ -35,9 +35,14 @@ import { BoosterInput } from './boosterInput'
 import { ComboManager } from './comboManager'
 import { LocomotionController } from './locomotionController'
 
-
+var loadingNow = ""
+export function getLoadingNow() {
+	return loadingNow === "" ? "?" : loadingNow
+}
 
 export function initClient() {
+
+	loadingNow = "initClient"
 
 	// MARK: Enter Scene Trigger
 	var hasEnteredScene = false
@@ -55,11 +60,17 @@ export function initClient() {
 	function waitForSceneReady(): Promise<void> {
 		return new Promise((resolve) => {
 			function sys_waitForLoad() {
+				loadingNow = "!getPlayer()"
 				if (!getPlayer())                                  { console.log("waitForLoad: userData");           return }
+				loadingNow = "!onEnterScene()"
 				if (!hasEnteredScene)                              { console.log("waitForLoad: onEnterScene");       return }
+				loadingNow = "!isStateSyncronized()"
 				if (!isStateSyncronized())                         { console.log("waitForLoad: isStateSyncronized"); return }
+				loadingNow = "!engine.playerEntity"
 				if (!Transform.getOrNull(engine.PlayerEntity))     { console.log("waitForLoad: PlayerEntity");       return }
+				loadingNow = "!engine.playerCamera"
 				if (!Transform.getOrNull(engine.CameraEntity))     { console.log("waitForLoad: CameraEntity");       return }
+				loadingNow = "Resolving promises..."
 
 				engine.removeSystem(sys_waitForLoad)
 				resolve()

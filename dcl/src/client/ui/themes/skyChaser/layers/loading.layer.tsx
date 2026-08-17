@@ -4,13 +4,18 @@ import ReactEcs from '@dcl/sdk/react-ecs'
 import {
 	atlasIconsFontAwesome,
 	Icon,
+	Label,
 	Layer,
 	Spinner,
+	Text,
+	theme,
 	UiBox,
 	ZoneType,
 } from '@stom66/dcl-ui-component-kit'
+import { getLoadingNow } from 'src/client'
 
 import { ClientEvents, eventBus } from 'src/shared/utils/eventBus'
+import { timers } from 'src/shared/utils/timers'
 
 
 /** Artboard size of `loading-fg.png`. */
@@ -23,13 +28,22 @@ const SPINNER_ART_CENTER_X = 760 / 2
 const SPINNER_ART_CENTER_Y = 244 / 2
 
 /** Display size in vw (25% wide, half that tall → keeps 2:1 art ratio). */
-const FG_WIDTH_VW  = isMobile() ? 35 : 25
-const FG_HEIGHT_VW = FG_WIDTH_VW * (FG_ART_HEIGHT / FG_ART_WIDTH)
+const FG_WIDTH_VW       = isMobile() ? 35: 25
+const FG_HEIGHT_VW      = FG_WIDTH_VW * (FG_ART_HEIGHT / FG_ART_WIDTH)
 
-const SPINNER_WIDTH_VW = (SPINNER_ART_SIZE / FG_ART_WIDTH) * FG_WIDTH_VW
+const SPINNER_WIDTH_VW  = (SPINNER_ART_SIZE / FG_ART_WIDTH) * FG_WIDTH_VW
 const SPINNER_HEIGHT_VW = (SPINNER_ART_SIZE / FG_ART_HEIGHT) * FG_HEIGHT_VW
-const SPINNER_LEFT_VW = ((SPINNER_ART_CENTER_X - SPINNER_ART_SIZE / 2) / FG_ART_WIDTH) * FG_WIDTH_VW
-const SPINNER_TOP_VW  = ((SPINNER_ART_CENTER_Y - SPINNER_ART_SIZE / 2) / FG_ART_HEIGHT) * FG_HEIGHT_VW
+const SPINNER_LEFT_VW   = ((SPINNER_ART_CENTER_X - SPINNER_ART_SIZE / 2) / FG_ART_WIDTH) * FG_WIDTH_VW
+const SPINNER_TOP_VW    = ((SPINNER_ART_CENTER_Y - SPINNER_ART_SIZE / 2) / FG_ART_HEIGHT) * FG_HEIGHT_VW
+
+
+/** Show "Loading failed" element  after delay*/
+const LOADING_FAILED_TIMEOUT = 1000 * 6
+let LOADING_FAILED_VISIBLE = false
+timers.setTimeout(() => {
+	LOADING_FAILED_VISIBLE = true
+}, LOADING_FAILED_TIMEOUT)
+
 
 
 // MARK: LoadingLayer
@@ -67,13 +81,16 @@ export class LoadingLayer extends Layer {
 	protected body() {
 		return [
 			<UiBox
-				key         = "loading-fg"
-				width       = {`${FG_WIDTH_VW}vw`}
-				height      = {`${FG_HEIGHT_VW}vw`}
-				borderWidth = {0}
-				overflow    = "hidden"
-				margin      = {{ top: "17%" }}
-				uiBackground = {{
+				key            = "loading-fg"
+				width          = {`${FG_WIDTH_VW}vw`}
+				height         = {`${FG_HEIGHT_VW}vw`}
+				borderWidth    = {0}
+				overflow       = "visible"
+				margin         = {{ top: "17%" }}
+				alignContent   = 'center'
+				alignItems     = 'center'
+				justifyContent = 'center'
+				uiBackground   = {{
 					texture    : { src: 'assets/images/ui/loading-fg.png', wrapMode: 'clamp' },
 					textureMode: 'stretch',
 					color      : Color4.White(),
@@ -101,6 +118,21 @@ export class LoadingLayer extends Layer {
 						height = {`${SPINNER_HEIGHT_VW}vw`}
 					/>
 				</Spinner>
+
+				<Label
+					key             = "loading-failed"
+					fontSize        = {theme.typography.size.small}
+					backgroundColor = {theme.colors.warning}
+					uiTransform     = {{
+						display     : LOADING_FAILED_VISIBLE ? 'flex': 'none',
+						positionType: 'absolute',
+						position    : {
+							bottom: '-8%',
+							//left  : '25%',
+						}
+					}}
+					value={`Loading failed: ${getLoadingNow()}`}
+				></Label>
 			</UiBox>,
 		]
 	}
