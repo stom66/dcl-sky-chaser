@@ -21,7 +21,7 @@ const HINT_COUNT                = 10
 const TIME_BETWEEN_HINTS_MS     = IS_DEV ? 1000 * 5 : 1000 * 30
 const TIME_TO_SHOW_HINT_S       = IS_DEV ? 2.5 : 7.5
 const SHOW_HINTS_AGAIN_AFTER_MS = 1000 * 60 * 5
-const FIRST_HINT_DELAY_MS       = 1000 * 2
+const FIRST_HINT_DELAY_MS       = 1000 * 20
 
 const TOAST_GROUP = 'skyChaser-hints'
 
