@@ -1,5 +1,6 @@
 import { Billboard, BillboardMode, engine, Entity, Material, MaterialTransparencyMode, MeshRenderer, PlayerIdentityData, Transform } from "@dcl/sdk/ecs"
 import { Color4, Quaternion, Vector3 } from "@dcl/sdk/math"
+import { getPlayer } from "@dcl/sdk/players"
 import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
 
 export namespace BeaconManager {
@@ -52,9 +53,10 @@ export namespace BeaconManager {
 			offset += 0.2
 			let intensity = Math.sin(elapsed * 5) + 1 * 0.5 + 0.5 + offset
 
-			const rT = Transform.getMutableOrNull(root)
-			const pT = Transform.getOrNull(player)
-			if (!rT || !pT) {
+			const rT       = Transform.getMutableOrNull(root)
+			const pT       = Transform.getOrNull(player)
+			const identity = PlayerIdentityData.getOrNull(player)
+			if (!rT || !pT || !identity) {
 				destroyBeacon(player)
 				continue
 			}
@@ -134,13 +136,23 @@ export namespace BeaconManager {
 	function createBeacons() {
 		destroyBeacons()
 
+		const localUserId = getPlayer()?.userId?.toLowerCase()
+
 		// Loop through all players and create a beacon for each player
 		for (const [entity, data, transform] of engine.getEntitiesWith(
 			PlayerIdentityData,
 			Transform
 		)) {
-			// Ignore ourselves
+			// Ignore ourselves (PlayerEntity and any duplicate identity entity for the local address)
 			if (entity === engine.PlayerEntity) continue // DEBUG: comment this out to force a beacon on yourself
+
+			const address = data.address?.toLowerCase()
+			if (!address || address === localUserId) continue
+
+			// DCL can expose more than one entity per address; only track the canonical one.
+			// The extras are often frozen at the scene spawn and look like orphan beacons.
+			const canonical = getPlayer({ userId: address })?.entity
+			if (!canonical || entity !== canonical) continue
 
 			// Unscaled root so arrow local offsets are true meters, not scaled by the tall beacon
 			const root = engine.addEntity()
