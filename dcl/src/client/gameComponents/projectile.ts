@@ -28,7 +28,7 @@ export class Projectile {
 		this.lifetime  = GameSettings.PROJECTILE_LIFETIME
 		this.owner     = ""
 
-		this.entity = engine.addEntity()
+		this.entity    = engine.addEntity()
 
 		Transform.create(this.entity, { 
 			position: origin, 
@@ -52,6 +52,7 @@ export class Projectile {
 			this.onTriggerEnter(e.trigger?.entity as Entity | undefined)
 		})
 	}
+
 
 	createParticleSystem() {
 		if (!this.entity) return
@@ -94,6 +95,7 @@ export class Projectile {
 			},
 		})
 	}
+
 
 	// MARK: onTriggerEnter
 	onTriggerEnter(triggerEntity: Entity | undefined) : void {
@@ -147,6 +149,7 @@ export class Projectile {
 		this.createParticleSystem()
 	}
 
+
 	// MARK: MoveForward
 	public MoveForward(dt: number) : void {
 		this.age += dt
@@ -163,6 +166,7 @@ export class Projectile {
 		t.position = newPosition
 	}
 
+
 	// MARK: Disable
 	Disable() : void {
 		const t = Transform.getMutableOrNull(this.entity)
@@ -177,6 +181,17 @@ export class Projectile {
 
 		ParticleSystem.deleteFrom(this.entity)
 	}
+
+
+	// MARK: Destroy
+	Destroy() : void {
+		//ParticleSystem.deleteFrom(this.entity)
+		//GltfContainer.deleteFrom(this.entity)
+		//MeshCollider.deleteFrom(this.entity)
+
+		engine.removeEntity(this.entity)
+	}
+
 
 	// MARK: onHitPlayer
 	onHitPlayer() : void {
