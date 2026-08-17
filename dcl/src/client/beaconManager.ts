@@ -8,7 +8,7 @@ export namespace BeaconManager {
 
 	const arrowSpeed = 20
 
-	const beaconScale = Vector3.create(1.5, 92, 1.5)
+	const beaconScale = Vector3.create(1.5, 48, 1.5)
 	const arrowScale  = Vector3.create(2.2, 2.2, 2.2)
 	const halfHeight  = beaconScale.y / 2
 
