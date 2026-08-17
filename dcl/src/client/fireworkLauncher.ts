@@ -11,8 +11,6 @@ import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
 
 export namespace FireworkLauncher {
 
-	const timeLastPlayed: Map<Entity, number> = new Map()
-
 	const ANIMATION_ACTION_NAME     = "Action"
 	const CH_TAG_NAME               = "fireworkButton"
 
