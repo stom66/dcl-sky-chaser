@@ -9,6 +9,7 @@ import {
 	getTheme,
 	Icon,
 	Layer,
+	Row,
 	sizeValueToPixels,
 	Text,
 	UiBox,
@@ -47,7 +48,7 @@ function getCurrentTargetLabel(): string {
 	if (!userId) return 'None'
 
 	const name = getPlayer({ userId: userId.toLowerCase() })?.name?.trim()
-	return `Current target: ${name || userId}`
+	return `${name || userId}`
 }
 
 
@@ -95,8 +96,13 @@ export class SpectateLayer extends Layer {
 				width          = {`${CONTROLS_WIDTH}`}
 				height         = {`${CONTROLS_HEIGHT}`}
 				alignItems     = "center"
+				alignContent   = 'center'
 				justifyContent = "flex-end"
 				padding        = {{ bottom: 8 }}
+				uiTransform={{
+					alignItems    : 'center',
+					justifyContent: 'center',
+				}}
 			>
 				<Background
 					key             = "spectate-controls-bg"
@@ -108,14 +114,23 @@ export class SpectateLayer extends Layer {
 						textureMode: 'center',
 					}}
 				/>
-				<Text
-					key       = "spectate-target"
-					value     = {targetLabel}
-					fontSize  = {theme.typography.size.small}
-					fontColor = {theme.colors.light}
-					textAlign = "middle-center"
-					textWrap  = "nowrap"
-				/>
+				<Row>
+					<Column cols={6} />
+					<Column cols={6}>
+						<Text
+							key       = "spectate-target"
+							value     = {targetLabel}
+							fontSize  = {theme.typography.size.default}
+							fontColor = {theme.colors.light}
+							textAlign = "middle-left"
+							textWrap  = "nowrap"
+							uiTransform={{
+								margin: { bottom: 25 },
+							}}
+						/>
+					</Column>
+					
+				</Row>
 			</Column>,
 			<ButtonImage
 				key      = "spectate-exit-button"
