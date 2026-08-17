@@ -10,6 +10,7 @@ import { GameSettings } from 'src/shared/settings'
 import { LeaderboardManager } from "src/server/leaderboardManager"
 import { isBlockedPlayer } from "src/server/metrics/blocklist"
 import { Metrics } from "src/server/metrics/client"
+import { PlayerStatsTracker } from "src/server/metrics/playerStats"
 import { MostWantedManager } from "src/server/mostWantedManager"
 import { ServerMessaging } from "src/server/serverMessaging"
 
@@ -27,6 +28,7 @@ export namespace serverHandler {
 	export function resetGameCreator(): void {
 		currentGameCreatorUserId = undefined
 	}
+
 
 	// MARK: Init
 	export function init() {
@@ -51,6 +53,7 @@ export namespace serverHandler {
 	function getGameEntryType(playerId: string): Metrics.GameEntryType {
 		return playerId.toLowerCase() === currentGameCreatorUserId?.toLowerCase() ? "created" : "joined"
 	}
+
 
 	// MARK: Request NewGame
 	export async function handleRequestNewGame(data: any, context: any) {
@@ -88,6 +91,7 @@ export namespace serverHandler {
 
 		Metrics.incrementPlayerStat(userId, data.stat, data.amount)
 	}
+
 
 	// MARK: Start New Game
 	function StartNewGame() {
@@ -128,14 +132,29 @@ export namespace serverHandler {
 		}
 	}
 
+
 	// MARK: On Game End
 	async function OnGameEnd() {
-		// Submit scores to leaderboards
-		const scores                = ComponentStore.getPlayerScores()
-		const leaderboardAllTime    = await LeaderboardManager.getLeaderboardAllTime()
-		const leaderboardWeekly     = await LeaderboardManager.getLeaderboardWeekly()
-		const allTimeScores         : LeaderboardScore[] = []
-		const weeklyScores          : LeaderboardScore[] = []
+		const scores = ComponentStore.getPlayerScores()
+
+		// Snapshot per-game hit counts before any await / cleanup. The in-memory
+		// tracker is the source of truth; ComponentStore copies are for client sync.
+		let maxPlayersShot       = 0
+		let maxPlayersShotUserId = ""
+
+		for (const score of scores) {
+			const numPlayersShot = PlayerStatsTracker.getGameStats(score.userId).projectilesHitPlayers
+			console.log('OnGameEnd: player shots', score.userId, numPlayersShot)
+			if (numPlayersShot > maxPlayersShot) {
+				maxPlayersShot       = numPlayersShot
+				maxPlayersShotUserId = score.userId
+			}
+		}
+
+		const leaderboardAllTime = await LeaderboardManager.getLeaderboardAllTime()
+		const leaderboardWeekly  = await LeaderboardManager.getLeaderboardWeekly()
+		const allTimeScores      : LeaderboardScore[] = []
+		const weeklyScores       : LeaderboardScore[] = []
 
 		// Get the previous highest leaderboard scores before this round is submitted.
 		const lbAlltimeHighestScore = leaderboardAllTime.reduce((max, entry) => Math.max(max, entry.score), 0)
@@ -159,9 +178,6 @@ export namespace serverHandler {
 			if (score.score > lbAlltimeHighestScore) {
 				// We no longer send an event to the player, isjntead we upadte this in the client component
 				ComponentStore.flagPlayerAsNewHighscore(score.userId)
-				/* room.send(MessageType.NOTIFY_LEADERBOARD_WINNER_ALL_TIME, {
-					sentAt: Date.now()
-				}, { to: [score.userId] }) */
 			}
 
 			weeklyScores.push({
@@ -172,9 +188,6 @@ export namespace serverHandler {
 
 			if (score.score > lbWeeklyHighestScore) {
 				ComponentStore.flagPlayerAsNewHighscore(score.userId)
-				/* room.send(MessageType.NOTIFY_LEADERBOARD_WINNER_WEEKLY, {
-					sentAt: Date.now()
-				}, { to: [score.userId] }) */
 			}
 		}
 
@@ -184,8 +197,17 @@ export namespace serverHandler {
 		ComponentStore.setGameStatus(GameStatus.ENDING)
 
 		Metrics.trackGameEnded(ComponentStore.getGameStartTime(), ComponentStore.getPlayers(), scores[0]?.userId)
+
+		if (maxPlayersShot > 0) {
+			MostWantedManager.setWantedForMurder(maxPlayersShotUserId)
+			console.log('OnGameEnd: set wanted for murder', maxPlayersShotUserId, 'shots', maxPlayersShot)
+		} else {
+			console.log('OnGameEnd: no murder wanted — no player hits this round')
+		}
+
 		resetGameCreator()
 	}
+
 
 	// MARK: On Game Reset
 	function OnGameReset() {
@@ -219,6 +241,7 @@ export namespace serverHandler {
 		//Metrics.trackTriggerEffect(userId, data.effect, data.position, data.direction)
 	}
 
+
 	// MARK: On Found All Pigeons
 	function handleRequestFoundAllPigeons(data: any, context: any) {
 		const userId = getUserId(context)
@@ -232,7 +255,6 @@ export namespace serverHandler {
 
 		MostWantedManager.setWantedForPigeons(userId)
 	}
-
 
 
 	// MARK: On Projectile
@@ -292,4 +314,5 @@ export namespace serverHandler {
 		Metrics.incrementPlayerStat(projectileOwner, PlayerStatsEnum.KNOCKBACKS_DEALT_BY_EXPLOSIONS)
 		Metrics.incrementPlayerStat(recipientUserId, PlayerStatsEnum.KNOCKBACKS_FROM_OTHER_EXPLOSIONS)
 	}
+
 }
