@@ -4,9 +4,9 @@ export const sfx = {
 		"assets/sfx/firework_button.mp3",
 	],
 	fireworkLaunch: [
-		"assets/sfx/firework_soundA.wav",
-		"assets/sfx/firework_soundB.wav",
-		"assets/sfx/firework_soundC.wav",
+		"assets/sfx/firework_soundA.mp3",
+		"assets/sfx/firework_soundB.mp3",
+		"assets/sfx/firework_soundC.mp3",
 	],
 	leaderboard: [
 		"assets/sfx/leaderboard_01.mp3",

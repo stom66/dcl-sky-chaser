@@ -43,7 +43,6 @@ export enum EntityNames {
   noticeBoard_pigeonDeluxe_gltf = "noticeBoard-pigeonDeluxe.gltf",
   tower_gltf = "tower.gltf",
   windSock_gltf = "windSock.gltf",
-  windVane_gltf = "windVane.gltf",
   windVane_gltf_2 = "windVane.gltf_2",
   world_gltf = "world.gltf",
 } 
