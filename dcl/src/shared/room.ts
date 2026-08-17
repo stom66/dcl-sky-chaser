@@ -22,6 +22,7 @@ export enum MessageType {
 	NOTIFY_LEADERBOARD_WINNER_ALL_TIME = "notifyLeaderboardWinnerAllTime",
 	NOTIFY_TRIGGER_EFFECT              = "notifyTriggerEffect",
 	NOTIFY_PROJECTILE                  = "notifyProjectile",
+	NOTIFY_HIT_LANDED                  = "notifyHitLanded",
 	NOTIFY_FIREWORK_LAUNCHED           = "notifyFireworkLaunched",
 }
 
@@ -80,6 +81,9 @@ const Messages = {
 		position : Schemas.Vector3,
 		direction: Schemas.Vector3,
 		owner    : Schemas.String,
+	}),
+	[MessageType.NOTIFY_HIT_LANDED]: Schemas.Map({
+		userId: Schemas.String,
 	}),
 	[MessageType.NOTIFY_FIREWORK_LAUNCHED]: Schemas.Map({
 		userId  : Schemas.String,

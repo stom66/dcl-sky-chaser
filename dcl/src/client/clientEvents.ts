@@ -8,6 +8,7 @@ export enum ClientEvents {
 
 	NOTIFY_TRIGGER             = "notifyTrigger",         // SERVER  used when server notifies client about a trigger effect
 	NOTIFY_PROJECTILE_FIRED    = "notifyProjectileFired", // Fired by ProjectileManager for LOCAL projectiles
+	NOTIFY_HIT_LANDED          = "notifyHitLanded",       // SERVER  shooter is told their projectile hit another player
 	NOTIFY_FIREWORK_LAUNCHED   = "notifyFireworkLaunched",
 
 	GAME_IDLE                  = "game_Idle",

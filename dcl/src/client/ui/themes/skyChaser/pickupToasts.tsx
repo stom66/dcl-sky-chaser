@@ -2,6 +2,8 @@ import { Color4 } from '@dcl/sdk/math'
 import ReactEcs from '@dcl/sdk/react-ecs'
 import { Icon, IconNumber, showToast, UiBox } from '@stom66/dcl-ui-component-kit'
 
+import { ClientEvents, eventBus } from 'src/shared/utils/eventBus'
+
 import { charsNumbersAtlas, toastPickupAtlas } from 'src/client/ui/themes/skyChaser/atlases'
 
 
@@ -22,7 +24,10 @@ const NUMBER_OFFSET_LEFT: Record<PickupToastKind, number> = {
 
 const TIME_TO_SHOW_S = 1.5
 
-const TOAST_GROUP = 'skyChaser-pickup'
+const TOAST_GROUP         = 'skyChaser-pickup'
+const STRIKE_TOAST_POINTS = 1
+
+let isInitialized = false
 
 
 // MARK: formatPickupAmount
@@ -133,4 +138,19 @@ export function showFuelToast(amount: number): void {
 /** Bird-strike pickup toast (`toast-pickup` strike row). */
 export function showStrikeToast(amount: number): void {
 	showPickupToast('strike', amount)
+}
+
+
+// MARK: initPickupToasts
+/**
+ * Listens for shooter hit-landed notifications after the toast host is mounted.
+ * Call once after `SetupUiComponentKit`.
+ */
+export function initPickupToasts() {
+	if (isInitialized) return
+	isInitialized = true
+
+	eventBus.on(ClientEvents.NOTIFY_HIT_LANDED, () => {
+		showStrikeToast(STRIKE_TOAST_POINTS)
+	})
 }

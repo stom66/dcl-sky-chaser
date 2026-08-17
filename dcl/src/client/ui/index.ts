@@ -2,6 +2,7 @@ import { SetupUiComponentKit } from '@stom66/dcl-ui-component-kit'
 
 import { skyChaser } from 'src/client/ui/themes/skyChaser'
 import { initHints } from 'src/client/ui/themes/skyChaser/hints'
+import { initPickupToasts } from 'src/client/ui/themes/skyChaser/pickupToasts'
 
 
 // MARK: SetupUI
@@ -14,4 +15,5 @@ export function SetupUI() {
 		layers: skyChaser.layers,
 	})
 	initHints()
+	initPickupToasts()
 }

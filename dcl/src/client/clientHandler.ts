@@ -11,6 +11,7 @@ export namespace ClientHandler {
 		room.onMessage(MessageType.NOTIFY_SERVER_TIME, (data) => { handleNotifyServerTime(data) })
 		room.onMessage(MessageType.NOTIFY_TRIGGER_EFFECT, (data) => { handleNotifyTriggerEffect(data) })
 		room.onMessage(MessageType.NOTIFY_PROJECTILE, (data) => { handleNotifyProjectile(data) })
+		room.onMessage(MessageType.NOTIFY_HIT_LANDED, (data) => { handleNotifyHitLanded(data) })
 		room.onMessage(MessageType.NOTIFY_FIREWORK_LAUNCHED, (data) => { handleNotifyFireworkLaunched(data) })
 	}
 
@@ -32,6 +33,14 @@ export namespace ClientHandler {
 		console.log('ClientHandler: handleNotifyProjectile: data', data)
 		eventBus.emit(ClientEvents.NOTIFY_PROJECTILE_FIRED, {position: data.position, direction: data.direction, owner: data.owner })
 	}
+
+
+	// MARK: Hit Landed
+	function handleNotifyHitLanded(data: { userId: string }) {
+		console.log('ClientHandler: handleNotifyHitLanded: data', data)
+		eventBus.emit(ClientEvents.NOTIFY_HIT_LANDED, { userId: data.userId })
+	}
+
 
 	// MARK: Firework Launched
 	function handleNotifyFireworkLaunched(data: { userId: string, entityId: string }) {

@@ -302,6 +302,10 @@ export namespace serverHandler {
 		Metrics.incrementPlayerStat(projectileOwner, PlayerStatsEnum.PROJECTILES_HIT_PLAYERS)
 		Metrics.incrementPlayerStat(recipientUserId, PlayerStatsEnum.PROJECTILES_HIT_BY_PLAYERS)
 		ComponentStore.incrementPlayerScore(projectileOwner, 1)
+
+		room.send(MessageType.NOTIFY_HIT_LANDED, {
+			userId: recipientUserId
+		}, { to: [projectileOwner] })
 	}
 
 
