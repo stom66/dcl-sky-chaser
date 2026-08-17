@@ -122,7 +122,13 @@ export namespace ParticleSpawner {
 	function sys_inputWatcher(dt: number) {
 		const isEPressed = inputSystem.isPressed(InputAction.IA_PRIMARY)
 
-		if (isEPressed && !isEnabled) {
+		const spectatorModeEnabled = ComponentStore.getSpectatorModeEnabled()
+		if (spectatorModeEnabled) return
+
+		
+		const fuelLevel = ComponentStore.getFuelValue().value
+
+		if (isEPressed && !isEnabled && fuelLevel > 1) {
 			isEnabled = true
 			console.log("ParticleSpawner: setting active to true")
 			enableBooster()
@@ -135,8 +141,7 @@ export namespace ParticleSpawner {
 		}
 		
 		if (isEPressed && isEnabled) {
-			const fuelLevel = ComponentStore.getFuelValue().value
-			if (fuelLevel <= 0) {
+			if (fuelLevel <= 1) {
 				disableBooster()
 			}
 		}
