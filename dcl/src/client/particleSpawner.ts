@@ -156,6 +156,7 @@ export namespace ParticleSpawner {
 			"assets/sprites/sprites-explosion.png",
 			"assets/sprites/sprites-fabric.png",
 			"assets/sprites/sprites-fireworkd.png",
+			"assets/sprites/sprites-feathers.png",
 			"assets/sprites/sprites-fuel.png",
 			"assets/sprites/sprites-sparkles.png",
 			"assets/sprites/sprites-speed.png",
@@ -529,6 +530,51 @@ export namespace ParticleSpawner {
 			ParticleSystem.deleteFrom(entity)
 			engine.removeEntity(entity)
 		}, 2000)
+
+	}
+
+
+	// MARK: Feathers
+	export function TriggerFeathers(
+		position: Vector3
+	) {
+		const total = 32
+		const variations = 4 // total must be divisible by variations
+
+		for (let i = 0; i < (variations); i++) {
+			const entity = engine.addEntity()
+
+			Transform.create(entity, { position: position, rotation: Quaternion.fromEulerDegrees(-90, 0, 0) })
+			ParticleSystem.create(entity, {
+				active              : true,
+				loop                : false,
+				rate                : 0,
+				lifetime            : 0.5,
+				maxParticles        : 300,
+				gravity             : 6,
+
+				blendMode           : PBParticleSystem_BlendMode.PSB_ADD,
+				shape               : ParticleSystem.Shape.Cone({ angle: 15, radius: 0.2 }),
+
+				initialVelocitySpeed: { start: 5, end: 12.5 },
+				initialSize         : { start: 0.1, end: 0.35 },
+				sizeOverTime        : { start: 1, end: 1 },
+				rotationOverTime    : { x: 0, y: 0, z: 0, w: 1 },
+				initialRotation     : Quaternion.fromEulerDegrees(0, 0, Math.random() * 360),
+				bursts              : { values: [
+					{ time: 0, count: (total/variations), cycles: 1, interval: 0.01, probability: 1 },
+				] },
+				billboard           : true,
+				texture             : { src: 'assets/sprites/sprites-feathers.png' },
+				
+				spriteSheet         : { tilesX: 4, tilesY: 4, framesPerSecond: 32},
+			})
+
+			utils.timers.setTimeout(() => {
+				ParticleSystem.deleteFrom(entity)
+				engine.removeEntity(entity)
+			}, 2000)
+		}
 
 	}
 

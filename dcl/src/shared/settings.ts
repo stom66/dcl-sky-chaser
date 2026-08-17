@@ -43,7 +43,9 @@ export const GameSettings = {
 
 	PROJECTILE_SPEED    : 30, // units per second
 	PROJECTILE_COOLDOWN : 1000 * 1,
-	PROJECTILE_LIFETIME : 3 // seconds, not ms,
+	PROJECTILE_LIFETIME : 3, // seconds, not ms,
+
+	FIREWORK_LAUNCH_COOLDOWN: 1000 * 10,
 } as const
 
 export const ServerSettings = {

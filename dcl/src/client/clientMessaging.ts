@@ -61,6 +61,16 @@ export namespace ClientMessaging {
 	}
 
 
+	// MARK: RequestLaunchFirework
+	/**
+	 * Requests that the firework launcher be launched.
+	 */
+	export function RequestLaunchFirework(entityId: string): void {
+		console.log('ClientMessaging: RequestLaunchFirework')
+		room.send(MessageType.REQUEST_LAUNCH_FIREWORK, { entityId })
+	}
+
+
 
 
 	eventBus.on(ClientEvents.PLAYER_FOUND_ALL_PIGEONS, (data) => { handleFoundAllPigeons() })

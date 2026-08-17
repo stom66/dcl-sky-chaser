@@ -6,6 +6,8 @@ import { timers } from "src/shared/utils/timers"
 
 import { ParticleSpawner } from "./particleSpawner"
 import { sfx, SoundManager } from "./soundManager"
+import { ClientMessaging } from "./clientMessaging"
+import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
 
 export namespace FireworkLauncher {
 
@@ -17,9 +19,12 @@ export namespace FireworkLauncher {
 	const ORIGIN_PARTICLE           = Vector3.create(-0.02363	, 0.837015, 0)
 
 	const PARTICLE_DELAY            = 3.5 // seconds
-	const COOLDOWN_TIME             = 10  // seconds
 	const MAX_INTERACTION_DISTANCE  = IS_DEV ? 20 : 3
 
+	const entityIdMap: Map<string, Entity> = new Map()
+
+
+	// MARK: init
     export function init() {
         console.log('fireworkLauncher: init()')
 
@@ -29,6 +34,7 @@ export namespace FireworkLauncher {
 		
 		for (const entity of entities) {
 			// Add a pointerSystem so players can interact with it
+			entityIdMap.set(entity.toString(), entity)
 
 			pointerEventsSystem.onPointerDown({
 				entity: entity,
@@ -38,18 +44,26 @@ export namespace FireworkLauncher {
 					maxDistance: MAX_INTERACTION_DISTANCE
 				}
 			}, () => {
-				launchFirework(entity)
+				requestLaunchFirework(entity)
 			})
 		}
+
+		eventBus.on(ClientEvents.NOTIFY_FIREWORK_LAUNCHED, (data) => { 
+			const entity = entityIdMap.get(data.entityId)
+			if (!entity) return
+			launchFirework(entity) 
+		})
     }
 
+	function requestLaunchFirework(entity: Entity) {
+		console.log('requestLaunchFirework')
+		ClientMessaging.RequestLaunchFirework(entity.toString())
+	}
+
+
+	// MARK: launchFirework
 	function launchFirework(entity: Entity) {
 		console.log('launchFirework')
-
-		const t = timeLastPlayed.get(entity) || 0
-		if (t + (COOLDOWN_TIME * 1000) > Date.now()) return
-
-		timeLastPlayed.set(entity, Date.now())
 
 		// Trigger the animation
 		Animator.playSingleAnimation(entity, ANIMATION_ACTION_NAME, true)
@@ -70,6 +84,7 @@ export namespace FireworkLauncher {
 	}
 
 
+	// MARK: spawnParticleFirework
 	export function spawnParticleFirework(worldPos: Vector3) {
 		const LIFESPAN = 1.5
 		const RISE_SPEED = 20
@@ -93,6 +108,7 @@ export namespace FireworkLauncher {
 
 		// First we bounce up, slow, then rocket upwards
 		Tween.setMove(pRoot, worldPos, firstWaypoint, LIFESPAN * 1000 * r1, EasingFunction.EF_EASEOUTBACK)
+		ParticleSpawner.TriggerFeathers(Vector3.center(worldPos, firstWaypoint))
 
 		
 		const particleSmokeTrail = engine.addEntity()

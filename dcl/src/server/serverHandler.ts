@@ -20,6 +20,8 @@ export namespace serverHandler {
 	const projectileCooldowns: Map<string, number> = new Map()
 	let currentGameCreatorUserId: string | undefined
 
+	const fireworkCooldowns: Map<string, number> = new Map()
+
 
 	// MARK: ResetGameCreator
 	/**
@@ -40,6 +42,7 @@ export namespace serverHandler {
 		room.onMessage(MessageType.REQUEST_PROJECTILE, (data, context) => handleRequestProjectile(data, context))
 		room.onMessage(MessageType.REQUEST_PROJECTILE_PLAYER_HIT, (data, context) => handleRequestProjectilePlayerHit(data, context))
 		room.onMessage(MessageType.REQUEST_EXPLOSION_KNOCKBACK, (data, context) => handleRequestExplosionKnockback(data, context))
+		room.onMessage(MessageType.REQUEST_LAUNCH_FIREWORK, (data, context) => handleRequestLaunchFirework(data, context))
 	}
 
 
@@ -313,6 +316,22 @@ export namespace serverHandler {
 
 		Metrics.incrementPlayerStat(projectileOwner, PlayerStatsEnum.KNOCKBACKS_DEALT_BY_EXPLOSIONS)
 		Metrics.incrementPlayerStat(recipientUserId, PlayerStatsEnum.KNOCKBACKS_FROM_OTHER_EXPLOSIONS)
+	}
+
+
+	// MARK: On Launch Firework
+	function handleRequestLaunchFirework(data: any, context: any) {
+		const userId = getUserId(context)
+		console.log('handleRequestLaunchFirework: userId', userId)
+
+		const last = fireworkCooldowns.get(data.entityId) ?? 0
+
+		if (Date.now() - last > GameSettings.FIREWORK_LAUNCH_COOLDOWN) {
+			fireworkCooldowns.set(data.entityId, Date.now())
+			room.send(MessageType.NOTIFY_FIREWORK_LAUNCHED, { userId, entityId: data.entityId })
+		} else {
+			console.log('handleRequestLaunchFirework: cooldown not ready, skipping')
+		}
 	}
 
 }

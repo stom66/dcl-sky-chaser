@@ -5,6 +5,7 @@ import { sfx, SoundManager } from "src/client/soundManager"
 import { ComponentStore } from "src/shared/components/componentStore"
 import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
 import * as utils from '@dcl-sdk/utils'
+import { ParticleSpawner } from "../particleSpawner"
 
 
 export namespace BirdSpawner {
@@ -153,8 +154,10 @@ export namespace BirdSpawner {
 		const t = Transform.getOrNull(bird)
 		if (t) {
 			eventBus.emit(ClientEvents.PLAYER_TOUCHED_PIGEON, { position: t.position })
+			ParticleSpawner.TriggerFeathers(Vector3.add(t.position, Vector3.create(0, 0.65, 0)))
 		} else {
 			eventBus.emit(ClientEvents.PLAYER_TOUCHED_PIGEON, undefined)
 		}
+
 	}
 }

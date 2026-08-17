@@ -15,11 +15,14 @@ export enum MessageType {
 	REQUEST_PROJECTILE_PLAYER_HIT      = 'requestProjectilePlayerHit',
 	REQUEST_EXPLOSION_KNOCKBACK        = 'requestExplosionKnockback',
 
+	REQUEST_LAUNCH_FIREWORK              = 'requestLaunchFirework',
+
 	NOTIFY_SERVER_TIME                 = "notifyServerTime",
 	NOTIFY_LEADERBOARD_WINNER_WEEKLY   = "notifyLeaderboardWinnerWeekly",
 	NOTIFY_LEADERBOARD_WINNER_ALL_TIME = "notifyLeaderboardWinnerAllTime",
 	NOTIFY_TRIGGER_EFFECT              = "notifyTriggerEffect",
 	NOTIFY_PROJECTILE                  = "notifyProjectile",
+	NOTIFY_FIREWORK_LAUNCHED           = "notifyFireworkLaunched",
 }
 
 // MARK: Schema constant
@@ -53,6 +56,9 @@ const Messages = {
 	[MessageType.REQUEST_EXPLOSION_KNOCKBACK]: Schemas.Map({
 		projectileOwner: Schemas.String
 	}),
+	[MessageType.REQUEST_LAUNCH_FIREWORK]: Schemas.Map({
+		entityId: Schemas.String,
+	}),
 
 
 	// Sent by server
@@ -74,6 +80,10 @@ const Messages = {
 		position : Schemas.Vector3,
 		direction: Schemas.Vector3,
 		owner    : Schemas.String,
+	}),
+	[MessageType.NOTIFY_FIREWORK_LAUNCHED]: Schemas.Map({
+		userId  : Schemas.String,
+		entityId: Schemas.String,
 	}),
 }
 
