@@ -145,10 +145,10 @@ export const toastPickupAtlas = new TextureAtlas({
 	columns: 1,
 	rows   : 4,
 	named  : {
-		score : { xStart: 1, yStart: 1 },
-		combo : { xStart: 1, yStart: 2 },
-		fuel  : { xStart: 1, yStart: 3 },
-		strike: { xStart: 1, yStart: 4 },
+		score : { xStart: 1, yStart: 4 },
+		combo : { xStart: 1, yStart: 3 },
+		fuel  : { xStart: 1, yStart: 2 },
+		strike: { xStart: 1, yStart: 1 },
 	},
 })
 
