@@ -19,7 +19,7 @@ const EXPLOSION_RADIUS_SQUARED = 30 * 30
 // MARK: PickupFuel
 export class PickupFuel extends Pickup {
 	private childEntity   : Entity
-	private triggerEntity : Entity
+	private triggerEntity : Entity | undefined
 
 	private defaultValue  : number  = 30
 	private spinSpeed     : number  = 360
@@ -60,20 +60,6 @@ export class PickupFuel extends Pickup {
 			visibleMeshesCollisionMask: ColliderLayer.CL_POINTER
 		})
 		FuelPickupChildComponent.create(this.childEntity, {})
-
-		// Trigger entity - for player interaction
-		this.triggerEntity = engine.addEntity()
-		Transform.create(this.triggerEntity, {
-			parent: this.rootEntity,
-			scale : this.triggerScaleV3
-		})
-		TriggerArea.setSphere(this.triggerEntity, ColliderLayer.CL_PLAYER | ColliderLayer.CL_CUSTOM1)
-		triggerAreaEventsSystem.onTriggerEnter(this.triggerEntity, (e) => {
-			const triggerEntity = e.trigger?.entity as Entity | undefined
-			if (!triggerEntity) return
-
-			this.TryTriggerPickup(triggerEntity)
-		})
 	}
 
 
@@ -158,6 +144,29 @@ export class PickupFuel extends Pickup {
 	}
 
 
+	createTriggers() {
+		if (this.triggerEntity) return
+
+		// Trigger entity - for player interaction
+		this.triggerEntity = engine.addEntity()
+		Transform.create(this.triggerEntity, {
+			parent: this.rootEntity,
+			scale : this.triggerScaleV3
+		})
+		TriggerArea.setSphere(this.triggerEntity, ColliderLayer.CL_PLAYER | ColliderLayer.CL_CUSTOM1)
+		triggerAreaEventsSystem.onTriggerEnter(this.triggerEntity, (e) => {
+			const triggerEntity = e.trigger?.entity as Entity | undefined
+			if (!triggerEntity) return
+
+			this.TryTriggerPickup(triggerEntity)
+		})
+	}
+
+	destroyTriggers() {
+		if (this.triggerEntity) engine.removeEntity(this.triggerEntity)
+	}
+
+
 	// MARK: onActivate
 	protected onActivate(
 		position: Vector3,
@@ -183,12 +192,16 @@ export class PickupFuel extends Pickup {
 		if (!component) return
 
 		component.amount = value
+
+		this.createTriggers()
 	}
 
 
 	// MARK: onDeactivate
 	protected onDeactivate(silent: boolean) : void {
 		Tween.setScale(this.rootEntity, this.meshScaleV3, Vector3.Zero(), 200, EasingFunction.EF_EASEBOUNCE)
+
+		this.destroyTriggers()
 	}
 
 

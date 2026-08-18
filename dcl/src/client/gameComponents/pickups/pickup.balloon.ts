@@ -19,8 +19,8 @@ const MAX_RISE_SPEED = 4.0
 
 // MARK: PickupBalloon
 export class PickupBalloon extends Pickup {
-	private triggerEntity  : Entity
-	private triggerEntity2 : Entity
+	private triggerEntity  : Entity | undefined
+	private triggerEntity2 : Entity | undefined
 
 	private defaultValue   : number  = 1
 	private triggerScale   : number  = 3.5
@@ -50,54 +50,6 @@ export class PickupBalloon extends Pickup {
 		})
 		MeshCollider.setSphere(this.rootEntity, ColliderLayer.CL_CUSTOM2)
 
-		// First Trigger - top - larger, covers the ballooon
-		this.triggerEntity = engine.addEntity()
-		Transform.create(this.triggerEntity, { 
-			parent: this.rootEntity, 
-			scale: Vector3.create(this.triggerScale, this.triggerScale, this.triggerScale) 
-		})
-
-		TriggerArea.setSphere(this.triggerEntity, ColliderLayer.CL_PLAYER | ColliderLayer.CL_CUSTOM1)
-		triggerAreaEventsSystem.onTriggerEnter(this.triggerEntity, (e) => {
-			const triggerEntity = e.trigger?.entity as Entity | undefined
-			if (!triggerEntity) return
-
-			this.TryTriggerPickup(triggerEntity)
-		})
-
-		
-		// Second Trigger - bottom - covers the package
-		this.triggerEntity2 = engine.addEntity()
-		Transform.create(this.triggerEntity2, { 
-			parent: this.rootEntity, 
-			position: Vector3.create(0, -3, 0),
-			scale: Vector3.create(this.triggerScale * 0.65, this.triggerScale * 0.65, this.triggerScale * 0.65) 
-		})
-
-		TriggerArea.setSphere(this.triggerEntity2, ColliderLayer.CL_PLAYER | ColliderLayer.CL_CUSTOM1)
-		triggerAreaEventsSystem.onTriggerEnter(this.triggerEntity2, (e) => {
-			const triggerEntity = e.trigger?.entity as Entity | undefined
-			if (!triggerEntity) return
-
-			this.TryTriggerPickup(triggerEntity)
-		})
-
-		// Debug visibility
-		if (this.SHOW_TRIGGER) {
-			MeshRenderer.setSphere(this.triggerEntity)
-			Material.setPbrMaterial(this.triggerEntity, { 
-				albedoColor      : TRIGGER_DEBUG_COLOR,
-				emissiveColor    : TRIGGER_DEBUG_COLOR,
-				emissiveIntensity: 0.2
-			})
-			MeshRenderer.setSphere(this.triggerEntity2)
-			Material.setPbrMaterial(this.triggerEntity2, { 
-				albedoColor      : TRIGGER_DEBUG_COLOR,
-				emissiveColor    : TRIGGER_DEBUG_COLOR,
-				emissiveIntensity: 0.2
-			})
-
-		}
 	}
 
 
@@ -170,6 +122,64 @@ export class PickupBalloon extends Pickup {
 		} */
 	}
 
+	createTriggers() {
+		if (this.triggerEntity || this.triggerEntity2) return
+
+		// First Trigger - top - larger, covers the ballooon
+		this.triggerEntity = engine.addEntity()
+		Transform.create(this.triggerEntity, { 
+			parent: this.rootEntity, 
+			scale: Vector3.create(this.triggerScale, this.triggerScale, this.triggerScale) 
+		})
+
+		TriggerArea.setSphere(this.triggerEntity, ColliderLayer.CL_PLAYER | ColliderLayer.CL_CUSTOM1)
+		triggerAreaEventsSystem.onTriggerEnter(this.triggerEntity, (e) => {
+			const triggerEntity = e.trigger?.entity as Entity | undefined
+			if (!triggerEntity) return
+
+			this.TryTriggerPickup(triggerEntity)
+		})
+
+		
+		// Second Trigger - bottom - covers the package
+		this.triggerEntity2 = engine.addEntity()
+		Transform.create(this.triggerEntity2, { 
+			parent: this.rootEntity, 
+			position: Vector3.create(0, -3, 0),
+			scale: Vector3.create(this.triggerScale * 0.65, this.triggerScale * 0.65, this.triggerScale * 0.65) 
+		})
+
+		TriggerArea.setSphere(this.triggerEntity2, ColliderLayer.CL_PLAYER | ColliderLayer.CL_CUSTOM1)
+		triggerAreaEventsSystem.onTriggerEnter(this.triggerEntity2, (e) => {
+			const triggerEntity = e.trigger?.entity as Entity | undefined
+			if (!triggerEntity) return
+
+			this.TryTriggerPickup(triggerEntity)
+		})
+
+		// Debug visibility
+		if (this.SHOW_TRIGGER) {
+			MeshRenderer.setSphere(this.triggerEntity)
+			Material.setPbrMaterial(this.triggerEntity, { 
+				albedoColor      : TRIGGER_DEBUG_COLOR,
+				emissiveColor    : TRIGGER_DEBUG_COLOR,
+				emissiveIntensity: 0.2
+			})
+			MeshRenderer.setSphere(this.triggerEntity2)
+			Material.setPbrMaterial(this.triggerEntity2, { 
+				albedoColor      : TRIGGER_DEBUG_COLOR,
+				emissiveColor    : TRIGGER_DEBUG_COLOR,
+				emissiveIntensity: 0.2
+			})
+
+		}
+	}
+
+	destroyTriggers() {
+		if (this.triggerEntity)  engine.removeEntity(this.triggerEntity)
+		if (this.triggerEntity2) engine.removeEntity(this.triggerEntity2)
+	}
+
 
 	// MARK: onActivate
 	protected onActivate(
@@ -182,6 +192,8 @@ export class PickupBalloon extends Pickup {
 		t.position = position
 		t.scale    = Vector3.Zero()
 		Tween.setScale(this.rootEntity, Vector3.Zero(), Vector3.One(), 200, EasingFunction.EF_EASEOUTBACK)
+
+		this.createTriggers()
 	}
 
 
@@ -192,6 +204,8 @@ export class PickupBalloon extends Pickup {
 		if (!silent) {
 			SoundManager.playSound(sfx.balloonPickup, this.rootEntity)
 		}
+
+		this.destroyTriggers()
 	}
 
 

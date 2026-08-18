@@ -12,7 +12,7 @@ import { showComboToast } from "src/client/ui/themes/skyChaser/pickupToasts"
 
 // MARK: SpeedRingPickup
 export class PickupSpeedRing extends Pickup {
-	private triggerEntity: Entity
+	private triggerEntity: Entity | undefined
 
 	private animateDurationActivate : number = 3000
 	private animateDurationDeactivate: number = 1000
@@ -31,25 +31,6 @@ export class PickupSpeedRing extends Pickup {
 		utils.timers.setTimeout(() => {
 			Tween.setScale(this.rootEntity, Vector3.Zero(), Vector3.One(), Math.random() * 1600 + 200, EasingFunction.EF_EASEOUTBACK)
 		}, Math.random() * 800 + 200)
-
-		this.triggerEntity = engine.addEntity()
-		Transform.create(this.triggerEntity, {
-			parent: this.rootEntity,
-			scale : Vector3.create(5, 5, 5)
-		})
-
-		TriggerArea.setSphere(this.triggerEntity)
-		triggerAreaEventsSystem.onTriggerEnter(this.triggerEntity, (e) => {
-			const triggerEntity = e.trigger?.entity as Entity | undefined
-			if (!triggerEntity) return
-
-			if (triggerEntity === engine.PlayerEntity) {
-				this.TryTriggerPickup(triggerEntity)
-				return
-			}
-
-			this.Deactivate()
-		})
 	}
 
 
@@ -93,6 +74,35 @@ export class PickupSpeedRing extends Pickup {
 	}
 
 
+	createTriggers() {
+		if (this.triggerEntity) return
+
+		this.triggerEntity = engine.addEntity()
+		Transform.create(this.triggerEntity, {
+			parent: this.rootEntity,
+			scale : Vector3.create(5, 5, 5)
+		})
+
+		TriggerArea.setSphere(this.triggerEntity)
+		triggerAreaEventsSystem.onTriggerEnter(this.triggerEntity, (e) => {
+			const triggerEntity = e.trigger?.entity as Entity | undefined
+			if (!triggerEntity) return
+
+			if (triggerEntity === engine.PlayerEntity) {
+				this.TryTriggerPickup(triggerEntity)
+				return
+			}
+
+			this.Deactivate()
+		})
+	}
+
+
+	destroyTriggers() {
+		if (this.triggerEntity) engine.removeEntity(this.triggerEntity)
+	}
+
+
 	// MARK: onActivate
 	protected onActivate(
 		position: Vector3,
@@ -105,12 +115,16 @@ export class PickupSpeedRing extends Pickup {
 		t.scale    = Vector3.One()
 		t.rotation = Quaternion.fromEulerDegrees(0, Math.random() * 360, 0)
 		Tween.setMove(this.rootEntity, startPosition, position, Math.random() * this.animateDurationActivate + this.animateDurationActivate, EasingFunction.EF_EASEOUTBACK)
+
+		this.createTriggers()
 	}
 
 
 	// MARK: onDeactivate
 	protected onDeactivate(silent: boolean) : void {
 		Tween.setScale(this.rootEntity, Vector3.One(), Vector3.Zero(), 200, EasingFunction.EF_EASEINCIRC)
+
+		this.destroyTriggers()
 	}
 
 
