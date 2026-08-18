@@ -152,18 +152,18 @@ export namespace FireworkLauncher {
 			GltfContainer.deleteFrom(pRoot)
 
 			const transform = Transform.getOrNull(pRoot)
-			if (!transform) return 
-			
-			// Spawn the explosion particles - 3 times for different colors
-			for (let i = 0; i < 3; i++) {
-				ParticleSpawner.TriggerFireworks(transform.position)
+			if (transform) {	
+				// Spawn the explosion particles - 3 times for different colors
+				for (let i = 0; i < 3; i++) {
+					ParticleSpawner.TriggerFireworks(transform.position)
+				}
 			}
 
 			SoundManager.playSound(sfx.coo, pRoot, 80)
 
 			timers.setTimeout(() => {
 				engine.removeEntity(pRoot)
-			}, 3000)
+			}, 5000)
 		}, LIFESPAN * 1000)
 	}
 }
