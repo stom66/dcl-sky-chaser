@@ -122,6 +122,8 @@ export class PickupBalloon extends Pickup {
 		} */
 	}
 
+
+	// MARK: createTriggers
 	createTriggers() {
 		if (this.triggerEntity || this.triggerEntity2) return
 
@@ -175,9 +177,17 @@ export class PickupBalloon extends Pickup {
 		}
 	}
 
+
+	// MARK: destroyTriggers	
 	destroyTriggers() {
-		if (this.triggerEntity)  engine.removeEntity(this.triggerEntity)
-		if (this.triggerEntity2) engine.removeEntity(this.triggerEntity2)
+		if (this.triggerEntity) {
+			engine.removeEntity(this.triggerEntity)
+			this.triggerEntity = undefined
+		}
+		if (this.triggerEntity2) {
+			engine.removeEntity(this.triggerEntity2)
+			this.triggerEntity2 = undefined
+		}
 	}
 
 

@@ -144,6 +144,7 @@ export class PickupFuel extends Pickup {
 	}
 
 
+	// MARK: createTriggers
 	createTriggers() {
 		if (this.triggerEntity) return
 
@@ -162,8 +163,13 @@ export class PickupFuel extends Pickup {
 		})
 	}
 
+
+	// MARK: destroyTriggers
 	destroyTriggers() {
-		if (this.triggerEntity) engine.removeEntity(this.triggerEntity)
+		if (this.triggerEntity) {
+			engine.removeEntity(this.triggerEntity)
+			this.triggerEntity = undefined
+		}
 	}
 
 
