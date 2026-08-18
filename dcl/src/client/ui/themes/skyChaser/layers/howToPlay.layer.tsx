@@ -6,7 +6,7 @@ import { ClientEvents, eventBus } from 'src/shared/utils/eventBus'
 
 import type { HowToPlayButtonLayer } from 'src/client/ui/themes/skyChaser/layers/howToPlayButton.layer'
 import { timers } from 'src/shared/utils/timers'
-import { GameSettings } from 'src/shared/settings'
+import { GameSettings, IS_DEV } from 'src/shared/settings'
 
 
 // MARK: HowToPlayLayer
@@ -34,7 +34,7 @@ export class HowToPlayLayer extends Layer {
 
 		eventBus.on(ClientEvents.LOAD_COMPLETE, () => {
 			timers.setTimeout(() => {
-				this.show()
+				if (!IS_DEV) this.show()
 			}, 1000)
 		})
 	}
