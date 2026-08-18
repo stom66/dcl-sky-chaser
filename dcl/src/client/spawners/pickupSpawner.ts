@@ -9,6 +9,7 @@ import { ComponentStore } from "src/shared/components/componentStore"
 import { BalloonPickup as BalloonPickupComponent } from "src/shared/components/balloonPickup"
 import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
 import { createRng } from "src/shared/utils/mulberry"
+import { isMobile } from "@dcl/sdk/platform"
 /*
 @param {number} defaultSpawnMinRadius - The minimum radius for spawning pickups.
 
@@ -17,12 +18,10 @@ export namespace SpawnManager {
 
 	// CONFIG
 	const origin                  = Vector3.create(256, 0, 256)
-	const defaultSpawnMinRadius   = 32
-	const defaultSpawnMaxRadius   = 100
+	const defaultSpawnMinRadius   = isMobile() ? 36 : 32
+	const defaultSpawnMaxRadius   = isMobile() ? 75 : 85
 	const defaultSpawnMinHeight   = 16
 	const defaultSpawnMaxHeight   = 48
-	const defaultDespawnMaxHeight = 180
-	const defaultDespawnMinHeight = 14
 
 	const hiddenLocation = Vector3.create(origin.x, -20, origin.z)
 
@@ -43,7 +42,7 @@ export namespace SpawnManager {
 	const pickupTypes: PickupType[] = [
 		{
 			name          : "balloon",
-			limit         : 128,
+			limit         : isMobile() ? 32 : 128,
 			spawn         : () => { return new PickupBalloon(hiddenLocation) },
 			map           : new Map(),
 			pool          : [],
@@ -52,21 +51,21 @@ export namespace SpawnManager {
 		},
 		{
 			name          : "fuel",
-			limit         : 96,
+			limit         : isMobile() ? 32 : 96,
 			spawn         : () => { return new PickupFuel(hiddenLocation) },
 			map           : new Map(),
 			pool          : [],
-			spawnMinHeight: 20,
-			spawnMaxHeight: 180,
+			spawnMinHeight: isMobile() ? 45  : 20,
+			spawnMaxHeight: isMobile() ? 125 : 180,
 		},
 		{
 			name          : "speedRing",
-			limit         : 128,
+			limit         : isMobile() ? 32 : 128,
 			spawn         : () => { return new PickupSpeedRing(hiddenLocation) },
 			map           : new Map(),
 			pool          : [],
-			spawnMinHeight: 18,
-			spawnMaxHeight: 160,
+			spawnMinHeight: isMobile() ? 30 : 18,
+			spawnMaxHeight: isMobile() ? 120 : 160,
 		},
 	]
 
