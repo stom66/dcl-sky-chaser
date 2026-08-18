@@ -6,6 +6,7 @@ import * as utils from '@dcl-sdk/utils'
 
 import { ComponentStore } from "src/shared/components/componentStore";
 import { ClientEvents, eventBus } from "src/shared/utils/eventBus";
+import { isMobile } from "@dcl/sdk/platform";
 
 
 export namespace ParticleSpawner {
@@ -171,6 +172,10 @@ export namespace ParticleSpawner {
 		})
 	}
 
+	function getParticleRatio() {
+		return isMobile() ? 0.5 : 1.0
+	}
+
 
 	//MARK: triggerEffect
 	function triggerEffect(
@@ -289,9 +294,9 @@ export namespace ParticleSpawner {
 			loop                : true,
 			prewarm             : false,
 			faceTravelDirection : false,
-			rate                : 20,
+			rate                : 20 * getParticleRatio(),
 			lifetime            : 3,
-			maxParticles        : 200,
+			maxParticles        : 200 * getParticleRatio(),
 			gravity             : 0,
 			blendMode           : PBParticleSystem_BlendMode.PSB_ADD,
 			shape               : ParticleSystem.Shape.Box({
@@ -380,9 +385,9 @@ export namespace ParticleSpawner {
 			loop                : true,
 			prewarm             : true,
 			faceTravelDirection : false,
-			rate                : 1,
+			rate                : 1 * getParticleRatio(),
 			lifetime            : 20,
-			maxParticles        : 40,
+			maxParticles        : 40 * getParticleRatio(),
 			gravity             : -5,
 			blendMode           : PBParticleSystem_BlendMode.PSB_ADD,
 			shape               : ParticleSystem.Shape.Box({
@@ -433,7 +438,7 @@ export namespace ParticleSpawner {
 			faceTravelDirection : false,
 			rate                : 0,
 			lifetime            : 0.35,
-			maxParticles        : 300,
+			maxParticles        : 300 * getParticleRatio(),
 			gravity             : 2,
 			blendMode           : PBParticleSystem_BlendMode.PSB_ALPHA,
 			shape               : ParticleSystem.Shape.Point({}),
@@ -443,7 +448,7 @@ export namespace ParticleSpawner {
 			initialColor        : { start: Color4.fromHexString("#ffffff"), end: Color4.fromHexString("#cccccc") },
 			//colorOverTime       : { start: Color4.create(1.000, 0.800, 0.500, 1.000), end: Color4.create(0.800, 0.200, 0.000, 0.000) },
 			bursts              : { values: [
-				{ time: 0, count: 48, cycles: 1, interval: 0.01, probability: 1 },
+				{ time: 0, count: 48 * getParticleRatio(), cycles: 1, interval: 0.01, probability: 1 },
 			] },
 			billboard           : true,
 			texture             : { src: 'assets/sprites/sprites-explosion.png' },
@@ -471,7 +476,7 @@ export namespace ParticleSpawner {
 			faceTravelDirection : false,
 			rate                : 0,
 			lifetime            : 2,
-			maxParticles        : 300,
+			maxParticles        : 300 * getParticleRatio(),
 			gravity             : 6,
 
 			blendMode           : PBParticleSystem_BlendMode.PSB_ALPHA,
@@ -481,7 +486,7 @@ export namespace ParticleSpawner {
 			sizeOverTime        : { start: 1, end: 0 },
 			initialColor        : { start: Color4.fromHexString("#ffffff"), end: Color4.fromHexString("#cccccc") },
 			bursts              : { values: [
-				{ time: 0, count: 16, cycles: 1, interval: 0.01, probability: 1 },
+				{ time: 0, count: 16 * getParticleRatio(), cycles: 1, interval: 0.01, probability: 1 },
 			] },
 			billboard           : true,
 			texture             : { src: 'assets/sprites/sprites-dust.png' },
@@ -508,7 +513,7 @@ export namespace ParticleSpawner {
 			faceTravelDirection : false,
 			rate                : 0,
 			lifetime            : 2,
-			maxParticles        : 300,
+			maxParticles        : 300 * getParticleRatio(),
 			gravity             : 4,
 			//blendMode           : PBParticleSystem_BlendMode.PSB_ALPHA,
 			shape               : ParticleSystem.Shape.Cone({ angle: 30, radius: 0.2 }),
@@ -519,7 +524,7 @@ export namespace ParticleSpawner {
 			initialColor        : { start: Color4.fromHexString("#ffffffff"), end: Color4.fromHexString("#ffffffff") },
 			//colorOverTime       : { start: Color4.create(1.000, 0.800, 0.500, 1.000), end: Color4.create(0.800, 0.200, 0.000, 0.000) },
 			bursts              : { values: [
-				{ time: 0, count: 32, cycles: 6, interval: 0.8, probability: 1 },
+				{ time: 0, count: 32 * getParticleRatio(), cycles: 6, interval: 0.8, probability: 1 },
 			] },
 			billboard           : true,
 			texture             : { src: 'assets/sprites/sprites-pigeons.png' },
@@ -550,7 +555,7 @@ export namespace ParticleSpawner {
 				loop                : false,
 				rate                : 0,
 				lifetime            : 0.5,
-				maxParticles        : 300,
+				maxParticles        : 300 * getParticleRatio(),
 				gravity             : 6,
 
 				blendMode           : PBParticleSystem_BlendMode.PSB_ADD,
@@ -562,7 +567,7 @@ export namespace ParticleSpawner {
 				rotationOverTime    : { x: 0, y: 0, z: 0, w: 1 },
 				initialRotation     : Quaternion.fromEulerDegrees(0, 0, Math.random() * 360),
 				bursts              : { values: [
-					{ time: 0, count: (total/variations), cycles: 1, interval: 0.01, probability: 1 },
+					{ time: 0, count: (total/variations) * getParticleRatio(), cycles: 1, interval: 0.01, probability: 1 },
 				] },
 				billboard           : true,
 				texture             : { src: 'assets/sprites/sprites-feathers.png' },
@@ -594,7 +599,7 @@ export namespace ParticleSpawner {
 			loop                : false,
 			rate                : 0,
 			lifetime            : 0.5,
-			maxParticles        : 300,
+			maxParticles        : 300 * getParticleRatio(),
 			gravity             : 6,
 
 			blendMode           : PBParticleSystem_BlendMode.PSB_ADD,
@@ -605,7 +610,7 @@ export namespace ParticleSpawner {
 			sizeOverTime        : { start: 1, end: 1 },
 			initialColor        : { start: randomColor, end: randomColor},
 			bursts              : { values: [
-				{ time: 0, count: 32, cycles: 1, interval: 0.01, probability: 1 },
+				{ time: 0, count: 32 * getParticleRatio(), cycles: 1, interval: 0.01, probability: 1 },
 			] },
 			billboard           : true,
 			texture             : { src: 'assets/sprites/sprites-firework.png' },
@@ -634,7 +639,7 @@ export namespace ParticleSpawner {
 			faceTravelDirection : false,
 			rate                : 0,
 			lifetime            : 2,
-			maxParticles        : 300,
+			maxParticles        : 300 * getParticleRatio(),
 			gravity             : 6,
 
 			blendMode           : PBParticleSystem_BlendMode.PSB_ALPHA,
@@ -645,7 +650,7 @@ export namespace ParticleSpawner {
 			sizeOverTime        : { start: 1, end: 0 },
 			initialColor        : { start: Color4.fromHexString("#55dd55"), end: Color4.fromHexString("#ffffff")},
 			bursts              : { values: [
-				{ time: 0, count: 32, cycles: 1, interval: 0.01, probability: 1 },
+				{ time: 0, count: 32 * getParticleRatio(), cycles: 1, interval: 0.01, probability: 1 },
 			] },
 			billboard           : true,
 			texture             : { src: 'assets/sprites/sprites-fuel.png' },
@@ -673,7 +678,7 @@ export namespace ParticleSpawner {
 			faceTravelDirection : false,
 			rate                : 0,
 			lifetime            : 2,
-			maxParticles        : 300,
+			maxParticles        : 300 * getParticleRatio(),
 			gravity             : 6,
 
 			blendMode           : PBParticleSystem_BlendMode.PSB_ALPHA,
@@ -684,7 +689,7 @@ export namespace ParticleSpawner {
 			sizeOverTime        : { start: 1, end: 0 },
 			initialColor        : { start: Color4.fromHexString("#FFFC00"), end: Color4.fromHexString("#FF7800")},
 			bursts              : { values: [
-				{ time: 0, count: 24, cycles: 1, interval: 0.01, probability: 1 },
+				{ time: 0, count: 24 * getParticleRatio(), cycles: 1, interval: 0.01, probability: 1 },
 			] },
 			billboard           : true,
 			texture             : { src: 'assets/sprites/sprites-fabric.png' },
@@ -715,7 +720,7 @@ export namespace ParticleSpawner {
 			faceTravelDirection : false,
 			rate                : 0,
 			lifetime            : 2,
-			maxParticles        : 200,
+			maxParticles        : 200 * getParticleRatio(),
 			gravity             : 2,
 			blendMode           : PBParticleSystem_BlendMode.PSB_ALPHA,
 			shape               : ParticleSystem.Shape.Cone({ angle: 15, radius: 0.2 }),
@@ -728,7 +733,7 @@ export namespace ParticleSpawner {
 			initialColor        : { start: Color4.fromHexString("#aaaaaa"), end: Color4.fromHexString("#ffffff") },
 			//colorOverTime       : { start: Color4.create(1.000, 0.800, 0.500, 1.000), end: Color4.create(0.800, 0.200, 0.000, 0.000) },
 			bursts              : { values: [
-				{ time: 0, count: 64, cycles: 1, interval: 0.01, probability: 1 },
+				{ time: 0, count: 64 * getParticleRatio(), cycles: 1, interval: 0.01, probability: 1 },
 			] },
 			billboard           : true,
 			texture             : { src: 'assets/sprites/sprites-speed.png' },

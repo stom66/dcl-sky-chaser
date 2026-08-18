@@ -4,6 +4,7 @@ import { GameSettings } from "src/shared/settings"
 import { ProjectileComponent } from "src/shared/components/projectile"
 import { sfx, SoundManager } from "../soundManager"
 import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
+import { isMobile } from "@dcl/sdk/platform"
 
 const HIDE_LOCATION = Vector3.create(128, -100, 128)
 const PLAYER_HIT_IMPULSE = 50
@@ -53,6 +54,10 @@ export class Projectile {
 		})
 	}
 
+	getParticleRatio() {
+		return isMobile() ? 0.5 : 1.0
+	}
+
 
 	createParticleSystem() {
 		if (!this.entity) return
@@ -64,13 +69,13 @@ export class Projectile {
 			loop                : true,
 			prewarm             : false,
 			faceTravelDirection : false,
-			rate                : 50,
+			rate                : 80 * this.getParticleRatio(),
 			lifetime            : 2,
-			maxParticles        : 400,
+			maxParticles        : 400 * this.getParticleRatio(),
 			gravity             : 0,
 			blendMode           : PBParticleSystem_BlendMode.PSB_ADD,
 			shape               : ParticleSystem.Shape.Cone({ 
-				angle : 15, 
+				angle : 17.5, 
 				radius: 0.05 
 			}),
 			initialVelocitySpeed: { 
