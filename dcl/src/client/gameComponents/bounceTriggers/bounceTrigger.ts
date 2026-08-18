@@ -17,9 +17,9 @@ export type BounceTriggerConfig = {
 export class BounceTrigger {
 
 	// Configs
-	private readonly RAYCAST_INTERVAL          = 0.1          // Interval at which the raycast will check
+	private readonly RAYCAST_INTERVAL       = 0.1 // Interval at which the raycast will check
 
-	private readonly DEBUG_LOGGING = false
+	private readonly DEBUG_LOGGING          = false
 	private readonly SHOW_TRIGGER_COLLIDERS = false
 
 
