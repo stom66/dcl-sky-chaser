@@ -8,6 +8,7 @@ export enum EntityNames {
   Axe_1 = "Axe 1",
   Barbacue = "Barbacue",
   Barrel_3 = "Barrel 3",
+  Binoculars = "Binoculars",
   Bird_s_Nest_Fern_Container = "Bird’s Nest Fern Container",
   Boombox = "Boombox",
   Cacti = "Cacti",
@@ -42,7 +43,7 @@ export enum EntityNames {
   noticeBoard_flagTag_gltf = "noticeBoard-flagTag.gltf",
   noticeBoard_pigeonDeluxe_gltf = "noticeBoard-pigeonDeluxe.gltf",
   tower_gltf = "tower.gltf",
-  windSock_gltf = "windSock.gltf",
+  windSock_gltf_2 = "windSock.gltf_2",
   windVane_gltf_2 = "windVane.gltf_2",
   world_gltf = "world.gltf",
 } 

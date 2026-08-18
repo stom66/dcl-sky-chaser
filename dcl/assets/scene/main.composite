@@ -121,6 +121,27 @@
             "parent": 535
           }
         },
+        "515": {
+          "json": {
+            "position": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            },
+            "rotation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            },
+            "parent": 0
+          }
+        },
         "516": {
           "json": {
             "position": {
@@ -138,27 +159,6 @@
               "y": 0.9659258127212524,
               "z": 0,
               "w": -0.258819043636322
-            },
-            "parent": 0
-          }
-        },
-        "517": {
-          "json": {
-            "position": {
-              "x": 0,
-              "y": 0,
-              "z": 0
-            },
-            "scale": {
-              "x": 1,
-              "y": 1,
-              "z": 1
-            },
-            "rotation": {
-              "x": 0,
-              "y": 1,
-              "z": 0,
-              "w": 0
             },
             "parent": 0
           }
@@ -748,7 +748,7 @@
               "z": 0,
               "w": 0.7071067690849304
             },
-            "parent": 0
+            "parent": 515
           }
         },
         "547": {
@@ -801,9 +801,9 @@
               "z": 248.4199981689453
             },
             "scale": {
-              "x": 1.7999999523162842,
-              "y": 1.7999999523162842,
-              "z": 1
+              "x": 1.399999976158142,
+              "y": 1.399999976158142,
+              "z": 1.399999976158142
             },
             "rotation": {
               "x": 0,
@@ -811,7 +811,7 @@
               "z": 0,
               "w": 0.9256726503372192
             },
-            "parent": 0
+            "parent": 515
           }
         },
         "550": {
@@ -822,20 +822,41 @@
               "z": 224.74000549316406
             },
             "scale": {
-              "x": 1.7999999523162842,
+              "x": 1.399999976158142,
+              "y": 1.399999976158142,
+              "z": 1.399999976158142
+            },
+            "rotation": {
+              "x": 0,
+              "y": -0.1257661134004593,
+              "z": 0,
+              "w": 0.9920599460601807
+            },
+            "parent": 515
+          }
+        },
+        "551": {
+          "json": {
+            "position": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 1,
               "y": 1,
               "z": 1
             },
             "rotation": {
               "x": 0,
-              "y": 0.1257661134004593,
+              "y": 1,
               "z": 0,
-              "w": -0.9920599460601807
+              "w": 0
             },
             "parent": 0
           }
         },
-        "551": {
+        "553": {
           "json": {
             "position": {
               "x": 0,
@@ -874,7 +895,7 @@
               "z": 0,
               "w": 0.9959069490432739
             },
-            "parent": 0
+            "parent": 515
           }
         },
         "197160": {
@@ -931,73 +952,25 @@
             ]
           }
         },
-        "517": {
-          "json": {
-            "states": [
-              {
-                "clip": "Armature.001Action",
-                "playing": true,
-                "weight": 1,
-                "speed": 1,
-                "loop": true,
-                "shouldReset": false
-              },
-              {
-                "clip": "ArmatureAction",
-                "playing": false,
-                "weight": 1,
-                "speed": 1,
-                "loop": false,
-                "shouldReset": false
-              },
-              {
-                "clip": "Pigeon1",
-                "playing": false,
-                "weight": 1,
-                "speed": 1,
-                "loop": false,
-                "shouldReset": false
-              },
-              {
-                "clip": "Pigeon1.001",
-                "playing": false,
-                "weight": 1,
-                "speed": 1,
-                "loop": false,
-                "shouldReset": false
-              },
-              {
-                "clip": "Pigeon1.001-Armature_Prop2",
-                "playing": false,
-                "weight": 1,
-                "speed": 1,
-                "loop": false,
-                "shouldReset": false
-              },
-              {
-                "clip": "Pigeon1.002",
-                "playing": false,
-                "weight": 1,
-                "speed": 1,
-                "loop": false,
-                "shouldReset": false
-              },
-              {
-                "clip": "Pigeon1.002-Armature_Prop2",
-                "playing": false,
-                "weight": 1,
-                "speed": 1,
-                "loop": false,
-                "shouldReset": false
-              }
-            ]
-          }
-        },
         "551": {
           "json": {
             "states": [
               {
                 "clip": "windVane",
+                "playing": true,
+                "weight": 1,
+                "speed": 1,
+                "loop": true,
+                "shouldReset": false
+              }
+            ]
+          }
+        },
+        "553": {
+          "json": {
+            "states": [
+              {
+                "clip": "Ripple",
                 "playing": true,
                 "weight": 1,
                 "speed": 1,
@@ -1064,13 +1037,6 @@
         "516": {
           "json": {
             "src": "assets/models/errorSign.gltf",
-            "visibleMeshesCollisionMask": 0,
-            "invisibleMeshesCollisionMask": 3
-          }
-        },
-        "517": {
-          "json": {
-            "src": "assets/models/windSock.gltf",
             "visibleMeshesCollisionMask": 0,
             "invisibleMeshesCollisionMask": 3
           }
@@ -1292,6 +1258,13 @@
             "invisibleMeshesCollisionMask": 3
           }
         },
+        "553": {
+          "json": {
+            "src": "assets/models/windSock.gltf",
+            "visibleMeshesCollisionMask": 0,
+            "invisibleMeshesCollisionMask": 3
+          }
+        },
         "66081": {
           "json": {
             "src": "assets/models/binoculars.gltf",
@@ -1336,14 +1309,14 @@
             "value": "Round Rug"
           }
         },
+        "515": {
+          "json": {
+            "value": "Binoculars"
+          }
+        },
         "516": {
           "json": {
             "value": "errorSign.gltf_2"
-          }
-        },
-        "517": {
-          "json": {
-            "value": "windSock.gltf"
           }
         },
         "518": {
@@ -1511,6 +1484,11 @@
             "value": "windVane.gltf_2"
           }
         },
+        "553": {
+          "json": {
+            "value": "windSock.gltf_2"
+          }
+        },
         "66081": {
           "json": {
             "value": "binoculars.gltf_4"
@@ -1671,20 +1649,17 @@
                 "entity": 0,
                 "open": true,
                 "children": [
+                  548,
                   513,
-                  517,
+                  197160,
                   551,
                   516,
+                  553,
+                  547,
+                  515,
                   534,
                   535,
-                  547,
-                  548,
-                  518,
-                  546,
-                  66081,
-                  549,
-                  550,
-                  197160
+                  518
                 ]
               },
               {
@@ -1697,10 +1672,6 @@
               },
               {
                 "entity": 513,
-                "children": []
-              },
-              {
-                "entity": 517,
                 "children": []
               },
               {
@@ -1847,7 +1818,6 @@
               },
               {
                 "entity": 518,
-                "open": true,
                 "children": [
                   519,
                   543
@@ -1884,6 +1854,19 @@
               {
                 "entity": 551,
                 "children": []
+              },
+              {
+                "entity": 515,
+                "children": [
+                  546,
+                  549,
+                  550,
+                  66081
+                ]
+              },
+              {
+                "entity": 553,
+                "children": []
               }
             ]
           }
@@ -1916,10 +1899,10 @@
         "514": {
           "json": {}
         },
-        "516": {
+        "515": {
           "json": {}
         },
-        "517": {
+        "516": {
           "json": {}
         },
         "518": {
@@ -2019,6 +2002,9 @@
           "json": {}
         },
         "551": {
+          "json": {}
+        },
+        "553": {
           "json": {}
         },
         "66081": {
