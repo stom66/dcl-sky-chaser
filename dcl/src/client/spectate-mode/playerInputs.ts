@@ -6,16 +6,6 @@ import { SM_PlayerRoster } from "./playerRoster"
 
 export namespace SM_PlayerInputs {
 
-
-	// MARK: init
-	/**
-	 * Starts watching spectate camera inputs.
-	 */
-	export function init() {
-		engine.addSystem(sys_WatchPlayerInput)
-	}
-
-
 	// MARK: activate
 	/**
 	 * Starts watching spectate camera inputs.
@@ -36,17 +26,18 @@ export namespace SM_PlayerInputs {
 
 	// MARK: sys_WatchPlayerInput
 	function sys_WatchPlayerInput(dt: number) {
-		if (inputSystem.isPressed(InputAction.IA_FORWARD))  SM_Camera.Pitch(-dt)
-		if (inputSystem.isPressed(InputAction.IA_BACKWARD)) SM_Camera.Pitch(dt)
+		const hasTarget = SM_PlayerRoster.getCurrentPlayerUserId()
+		if (inputSystem.isPressed(InputAction.IA_FORWARD))  hasTarget ? SM_Camera.Pitch(dt)  : SM_Camera.Pitch(-dt)
+		if (inputSystem.isPressed(InputAction.IA_BACKWARD)) hasTarget ? SM_Camera.Pitch(-dt) : SM_Camera.Pitch(dt)
 
-		if (inputSystem.isPressed(InputAction.IA_LEFT))  SM_Camera.Yaw(-dt)
-		if (inputSystem.isPressed(InputAction.IA_RIGHT)) SM_Camera.Yaw(dt)
+		if (inputSystem.isPressed(InputAction.IA_LEFT))  hasTarget ? SM_Camera.Yaw(dt)  : SM_Camera.Yaw(-dt)
+		if (inputSystem.isPressed(InputAction.IA_RIGHT)) hasTarget ? SM_Camera.Yaw(-dt) : SM_Camera.Yaw(dt)
 
 		if (inputSystem.isPressed(InputAction.IA_PRIMARY)) {
-			SM_PlayerRoster.getCurrentPlayerUserId() ? SM_Camera.Zoom(-dt) : SM_Camera.Raise(dt)
+			hasTarget ? SM_Camera.Zoom(-dt) : SM_Camera.Raise(dt)
 		}
 		if (inputSystem.isPressed(InputAction.IA_SECONDARY)) {
-			SM_PlayerRoster.getCurrentPlayerUserId() ? SM_Camera.Zoom(dt) : SM_Camera.Lower(dt)
+			hasTarget ? SM_Camera.Zoom(dt) : SM_Camera.Lower(dt)
 		}
 
 		if (inputSystem.isTriggered(InputAction.IA_ACTION_3, PointerEventType.PET_DOWN)) SM_Camera.CycleTarget(1)
