@@ -19,6 +19,8 @@ export namespace ParticleSpawner {
 
 	var isEnabled = false
 
+	const MOBILE_PARTICLE_RATIO = 0.25
+
 	const BOOSTER_WIND_SPRITES = [
 		'assets/sprites/sprites-wind-02.png',
 		'assets/sprites/sprites-wind-03.png',
@@ -32,7 +34,7 @@ export namespace ParticleSpawner {
 		'assets/sprites/sprites-wind-06.png',
 	]
 
-	const COLOR_PALETTE = [
+	const FIREWORKS_COLOR_PALETTE = [
 		Color4.Red(),
 		Color4.Green(),
 		Color4.Blue(),
@@ -42,7 +44,13 @@ export namespace ParticleSpawner {
 		Color4.Teal(),
 	]
 
+
+	// MARK: init
 	export function init() {
+
+		preloadAssets()
+
+
 		entityBooster = engine.addEntity()
 		Transform.create(entityBooster, { 
 			parent  : engine.PlayerEntity,
@@ -50,26 +58,27 @@ export namespace ParticleSpawner {
 			rotation: Quaternion.fromEulerDegrees(30, 180, 0)
 		})	
 
-		entityBoosterWindRoot = engine.addEntity()
-		Transform.create(entityBoosterWindRoot, { 
-			parent  : engine.PlayerEntity,
-			position: Vector3.create(0, 1, 10),
-			rotation: Quaternion.fromEulerDegrees(0, 180, 0),
-			scale   : Vector3.create(4, 1, 1)
-		})	
+		// Mobile doesn't get the wind, or the booster
+		if (!isMobile()) {
 
-		entityEnvWindRoot = engine.addEntity()
-		Transform.create(entityEnvWindRoot, {
-			parent  : engine.PlayerEntity,
-			position: Vector3.create(0, 0, 0),
-			rotation: Quaternion.fromEulerDegrees(-90, 0, 0),
-			scale   : Vector3.create(1, 1, 1)
-		})
+			entityBoosterWindRoot = engine.addEntity()
+			Transform.create(entityBoosterWindRoot, { 
+				parent  : engine.PlayerEntity,
+				position: Vector3.create(0, 1, 10),
+				rotation: Quaternion.fromEulerDegrees(0, 180, 0),
+				scale   : Vector3.create(4, 1, 1)
+			})	
+	
+			entityEnvWindRoot = engine.addEntity()
+			Transform.create(entityEnvWindRoot, {
+				position: Vector3.create(256, 68, 256),
+				//rotation: Quaternion.fromEulerDegrees(0, 0, 0),
+				//scale   : Vector3.create(1, 1, 1)
+			})
 
-		createBoosterWind()
-		createEnvWind()
-
-		preloadAssets()
+			createBoosterWind()
+			createEnvWind()
+		}
 
 		const zero = Vector3.Zero()
 
@@ -172,8 +181,8 @@ export namespace ParticleSpawner {
 		})
 	}
 
-	function getParticleRatio() {
-		return isMobile() ? 0.5 : 1.0
+	function getParticleRatio(): number {
+		return isMobile() ? MOBILE_PARTICLE_RATIO : 1
 	}
 
 
@@ -217,15 +226,18 @@ export namespace ParticleSpawner {
 		if (!entityBooster) return
 
 		console.log("ParticleSpawner: creating particle system")
+		
+		const ratio = getParticleRatio()
+		if (ratio === 0) return
 
 		ParticleSystem.create(entityBooster, {
 			active              : true,
 			loop                : true,
 			prewarm             : false,
 			faceTravelDirection : false,
-			rate                : 200,
+			rate                : 200 * ratio,
 			lifetime            : 2,
-			maxParticles        : 400,
+			maxParticles        : 400 * ratio,
 			gravity             : 0,
 			blendMode           : PBParticleSystem_BlendMode.PSB_ADD,
 			shape               : ParticleSystem.Shape.Cone({ 
@@ -286,6 +298,9 @@ export namespace ParticleSpawner {
 		entity: Entity,
 		sprite: string
 	) {
+		const ratio = getParticleRatio()
+		if (ratio === 0) return
+
 		const startZ = Math.random() * 360
 		const spinZ  = (Math.random() < 0.5 ? -1 : 1) * (15 + Math.random() * 45)
 
@@ -294,9 +309,9 @@ export namespace ParticleSpawner {
 			loop                : true,
 			prewarm             : false,
 			faceTravelDirection : false,
-			rate                : 20 * getParticleRatio(),
+			rate                : 20 * ratio,
 			lifetime            : 3,
-			maxParticles        : 200 * getParticleRatio(),
+			maxParticles        : 200 * ratio,
 			gravity             : 0,
 			blendMode           : PBParticleSystem_BlendMode.PSB_ADD,
 			shape               : ParticleSystem.Shape.Box({
@@ -377,37 +392,40 @@ export namespace ParticleSpawner {
 		entity: Entity,
 		sprite: string
 	) {
+		const ratio = getParticleRatio()
+		if (ratio === 0) return
+
 		const startZ = Math.random() * 360
 		const spinZ  = (Math.random() < 0.5 ? -1 : 1) * (10 + Math.random() * 30)
 
 		ParticleSystem.create(entity, {
 			active              : true,
 			loop                : true,
-			prewarm             : true,
+			prewarm             : false,
 			faceTravelDirection : false,
-			rate                : 1 * getParticleRatio(),
-			lifetime            : 20,
-			maxParticles        : 40 * getParticleRatio(),
-			gravity             : -5,
+			rate                : 20 * ratio,
+			lifetime            : 3,
+			maxParticles        : 200 * ratio,
+			gravity             : 0,
 			blendMode           : PBParticleSystem_BlendMode.PSB_ADD,
 			shape               : ParticleSystem.Shape.Box({
-				size: Vector3.create(6, 6, 0.5)
+				size: Vector3.create(128, 64, 128)
 			}),
 			initialVelocitySpeed: {
-				start: 0.25,
-				end  : 0.75
+				start: -5,
+				end  : 5
 			},
 			initialSize: {
-				start: 0.04,
-				end  : 0.4
+				start: 0.025,
+				end  : 0.5
 			},
 			initialColor: {
 				start: Color4.White(),
 				end  : Color4.White()
 			},
 			sizeOverTime: {
-				start: 0,
-				end  : 1
+				start: 1,
+				end  : 0
 			},
 			initialRotation : Quaternion.fromEulerDegrees(0, 0, startZ),
 			rotationOverTime: Quaternion.fromEulerDegrees(0, 0, spinZ),
@@ -429,6 +447,9 @@ export namespace ParticleSpawner {
 		maxVelocity: number = 40,
 		maxSize    : number = 8
 	) {
+		const ratio = getParticleRatio()
+		if (ratio === 0) return
+
 		const entity = engine.addEntity()
 		Transform.create(entity, { position: position, rotation: Quaternion.fromEulerDegrees(-90, 0, 0) })
 		ParticleSystem.create(entity, {
@@ -438,7 +459,7 @@ export namespace ParticleSpawner {
 			faceTravelDirection : false,
 			rate                : 0,
 			lifetime            : 0.35,
-			maxParticles        : 300 * getParticleRatio(),
+			maxParticles        : 300 * ratio,
 			gravity             : 2,
 			blendMode           : PBParticleSystem_BlendMode.PSB_ALPHA,
 			shape               : ParticleSystem.Shape.Point({}),
@@ -448,7 +469,7 @@ export namespace ParticleSpawner {
 			initialColor        : { start: Color4.fromHexString("#ffffff"), end: Color4.fromHexString("#cccccc") },
 			//colorOverTime       : { start: Color4.create(1.000, 0.800, 0.500, 1.000), end: Color4.create(0.800, 0.200, 0.000, 0.000) },
 			bursts              : { values: [
-				{ time: 0, count: 48 * getParticleRatio(), cycles: 1, interval: 0.01, probability: 1 },
+				{ time: 0, count: 48 * ratio, cycles: 1, interval: 0.01, probability: 1 },
 			] },
 			billboard           : true,
 			texture             : { src: 'assets/sprites/sprites-explosion.png' },
@@ -467,6 +488,9 @@ export namespace ParticleSpawner {
 	export function TriggerDustSpurt(
 		position: Vector3
 	) {
+		const ratio = getParticleRatio()
+		if (ratio === 0) return
+
 		const entity = engine.addEntity()
 		Transform.create(entity, { position: position, rotation: Quaternion.fromEulerDegrees(-90, 0, 0) })
 		ParticleSystem.create(entity, {
@@ -476,7 +500,7 @@ export namespace ParticleSpawner {
 			faceTravelDirection : false,
 			rate                : 0,
 			lifetime            : 2,
-			maxParticles        : 300 * getParticleRatio(),
+			maxParticles        : 300 * ratio,
 			gravity             : 6,
 
 			blendMode           : PBParticleSystem_BlendMode.PSB_ALPHA,
@@ -486,7 +510,7 @@ export namespace ParticleSpawner {
 			sizeOverTime        : { start: 1, end: 0 },
 			initialColor        : { start: Color4.fromHexString("#ffffff"), end: Color4.fromHexString("#cccccc") },
 			bursts              : { values: [
-				{ time: 0, count: 16 * getParticleRatio(), cycles: 1, interval: 0.01, probability: 1 },
+				{ time: 0, count: 16 * ratio, cycles: 1, interval: 0.01, probability: 1 },
 			] },
 			billboard           : true,
 			texture             : { src: 'assets/sprites/sprites-dust.png' },
@@ -504,6 +528,9 @@ export namespace ParticleSpawner {
 	export function TriggerPigeonSpurt(
 		position: Vector3
 	) {
+		const ratio = getParticleRatio()
+		if (ratio === 0) return
+
 		const entity = engine.addEntity()
 		Transform.create(entity, { position: position, rotation: Quaternion.fromEulerDegrees(-90, 0, 0) })
 		ParticleSystem.create(entity, {
@@ -513,7 +540,7 @@ export namespace ParticleSpawner {
 			faceTravelDirection : false,
 			rate                : 0,
 			lifetime            : 2,
-			maxParticles        : 300 * getParticleRatio(),
+			maxParticles        : 300 * ratio,
 			gravity             : 4,
 			//blendMode           : PBParticleSystem_BlendMode.PSB_ALPHA,
 			shape               : ParticleSystem.Shape.Cone({ angle: 30, radius: 0.2 }),
@@ -524,7 +551,7 @@ export namespace ParticleSpawner {
 			initialColor        : { start: Color4.fromHexString("#ffffffff"), end: Color4.fromHexString("#ffffffff") },
 			//colorOverTime       : { start: Color4.create(1.000, 0.800, 0.500, 1.000), end: Color4.create(0.800, 0.200, 0.000, 0.000) },
 			bursts              : { values: [
-				{ time: 0, count: 32 * getParticleRatio(), cycles: 6, interval: 0.8, probability: 1 },
+				{ time: 0, count: 32 * ratio, cycles: 6, interval: 0.8, probability: 1 },
 			] },
 			billboard           : true,
 			texture             : { src: 'assets/sprites/sprites-pigeons.png' },
@@ -543,6 +570,9 @@ export namespace ParticleSpawner {
 	export function TriggerFeathers(
 		position: Vector3
 	) {
+		const ratio = getParticleRatio()
+		if (ratio === 0) return
+
 		const total = 32
 		const variations = 4 // total must be divisible by variations
 
@@ -555,7 +585,7 @@ export namespace ParticleSpawner {
 				loop                : false,
 				rate                : 0,
 				lifetime            : 0.5,
-				maxParticles        : 300 * getParticleRatio(),
+				maxParticles        : 300 * ratio,
 				gravity             : 6,
 
 				blendMode           : PBParticleSystem_BlendMode.PSB_ADD,
@@ -567,7 +597,7 @@ export namespace ParticleSpawner {
 				rotationOverTime    : { x: 0, y: 0, z: 0, w: 1 },
 				initialRotation     : Quaternion.fromEulerDegrees(0, 0, Math.random() * 360),
 				bursts              : { values: [
-					{ time: 0, count: (total/variations) * getParticleRatio(), cycles: 1, interval: 0.01, probability: 1 },
+					{ time: 0, count: (total/variations) * ratio, cycles: 1, interval: 0.01, probability: 1 },
 				] },
 				billboard           : true,
 				texture             : { src: 'assets/sprites/sprites-feathers.png' },
@@ -588,10 +618,13 @@ export namespace ParticleSpawner {
 	export function TriggerFireworks(
 		position: Vector3
 	) {
+		const ratio = getParticleRatio()
+		if (ratio === 0) return
+
 		const entity = engine.addEntity()
 
 		// create a random bright
-		const randomColor = COLOR_PALETTE[Math.floor(Math.random() * COLOR_PALETTE.length)]
+		const randomColor = FIREWORKS_COLOR_PALETTE[Math.floor(Math.random() * FIREWORKS_COLOR_PALETTE.length)]
 
 		Transform.create(entity, { position: position })
 		ParticleSystem.create(entity, {
@@ -599,7 +632,7 @@ export namespace ParticleSpawner {
 			loop                : false,
 			rate                : 0,
 			lifetime            : 0.5,
-			maxParticles        : 300 * getParticleRatio(),
+			maxParticles        : 300 * ratio,
 			gravity             : 6,
 
 			blendMode           : PBParticleSystem_BlendMode.PSB_ADD,
@@ -610,7 +643,7 @@ export namespace ParticleSpawner {
 			sizeOverTime        : { start: 1, end: 1 },
 			initialColor        : { start: randomColor, end: randomColor},
 			bursts              : { values: [
-				{ time: 0, count: 32 * getParticleRatio(), cycles: 1, interval: 0.01, probability: 1 },
+				{ time: 0, count: 32 * ratio, cycles: 1, interval: 0.01, probability: 1 },
 			] },
 			billboard           : true,
 			texture             : { src: 'assets/sprites/sprites-firework.png' },
@@ -630,6 +663,9 @@ export namespace ParticleSpawner {
 	export function TriggerPickupFuel(
 		position: Vector3
 	) {
+		const ratio = getParticleRatio()
+		if (ratio === 0) return
+
 		const entity = engine.addEntity()
 		Transform.create(entity, { position: position, rotation: Quaternion.fromEulerDegrees(-90, 0, 0) })
 		ParticleSystem.create(entity, {
@@ -639,7 +675,7 @@ export namespace ParticleSpawner {
 			faceTravelDirection : false,
 			rate                : 0,
 			lifetime            : 2,
-			maxParticles        : 300 * getParticleRatio(),
+			maxParticles        : 300 * ratio,
 			gravity             : 6,
 
 			blendMode           : PBParticleSystem_BlendMode.PSB_ALPHA,
@@ -650,7 +686,7 @@ export namespace ParticleSpawner {
 			sizeOverTime        : { start: 1, end: 0 },
 			initialColor        : { start: Color4.fromHexString("#55dd55"), end: Color4.fromHexString("#ffffff")},
 			bursts              : { values: [
-				{ time: 0, count: 32 * getParticleRatio(), cycles: 1, interval: 0.01, probability: 1 },
+				{ time: 0, count: 32 * ratio, cycles: 1, interval: 0.01, probability: 1 },
 			] },
 			billboard           : true,
 			texture             : { src: 'assets/sprites/sprites-fuel.png' },
@@ -669,6 +705,9 @@ export namespace ParticleSpawner {
 	export function TriggerPickupBalloon(
 		position: Vector3
 	) {
+		const ratio = getParticleRatio()
+		if (ratio === 0) return
+
 		const entity = engine.addEntity()
 		Transform.create(entity, { position: position, rotation: Quaternion.fromEulerDegrees(-90, 0, 0) })
 		ParticleSystem.create(entity, {
@@ -678,7 +717,7 @@ export namespace ParticleSpawner {
 			faceTravelDirection : false,
 			rate                : 0,
 			lifetime            : 2,
-			maxParticles        : 300 * getParticleRatio(),
+			maxParticles        : 300 * ratio,
 			gravity             : 6,
 
 			blendMode           : PBParticleSystem_BlendMode.PSB_ALPHA,
@@ -689,7 +728,7 @@ export namespace ParticleSpawner {
 			sizeOverTime        : { start: 1, end: 0 },
 			initialColor        : { start: Color4.fromHexString("#FFFC00"), end: Color4.fromHexString("#FF7800")},
 			bursts              : { values: [
-				{ time: 0, count: 24 * getParticleRatio(), cycles: 1, interval: 0.01, probability: 1 },
+				{ time: 0, count: 24 * ratio, cycles: 1, interval: 0.01, probability: 1 },
 			] },
 			billboard           : true,
 			texture             : { src: 'assets/sprites/sprites-fabric.png' },
@@ -710,6 +749,9 @@ export namespace ParticleSpawner {
 		position: Vector3,
 		yRot: number,
 	) {
+		const ratio = getParticleRatio()
+		if (ratio === 0) return
+
 		const entity = engine.addEntity()
 		const limit: PBParticleSystem_LimitVelocity = { speed: 100 }
 		Transform.create(entity, { position: position, rotation: Quaternion.fromEulerDegrees(-45, yRot, 0) })
@@ -720,7 +762,7 @@ export namespace ParticleSpawner {
 			faceTravelDirection : false,
 			rate                : 0,
 			lifetime            : 2,
-			maxParticles        : 200 * getParticleRatio(),
+			maxParticles        : 200 * ratio,
 			gravity             : 2,
 			blendMode           : PBParticleSystem_BlendMode.PSB_ALPHA,
 			shape               : ParticleSystem.Shape.Cone({ angle: 15, radius: 0.2 }),
@@ -728,12 +770,9 @@ export namespace ParticleSpawner {
 			
 			initialSize         : { start: 0.25, end: 0.75 },
 			sizeOverTime        : { start: 1, end: 0 },
-			//limitVelocity       : { speed: 10, dampen: 0.1},
-			//rotationOverTime    : { x: 0, y: 0, z: 0, w: 1 },
 			initialColor        : { start: Color4.fromHexString("#aaaaaa"), end: Color4.fromHexString("#ffffff") },
-			//colorOverTime       : { start: Color4.create(1.000, 0.800, 0.500, 1.000), end: Color4.create(0.800, 0.200, 0.000, 0.000) },
 			bursts              : { values: [
-				{ time: 0, count: 64 * getParticleRatio(), cycles: 1, interval: 0.01, probability: 1 },
+				{ time: 0, count: 64 * ratio, cycles: 1, interval: 0.01, probability: 1 },
 			] },
 			billboard           : true,
 			texture             : { src: 'assets/sprites/sprites-speed.png' },
