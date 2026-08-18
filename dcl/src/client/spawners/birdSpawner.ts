@@ -17,7 +17,7 @@ export namespace BirdSpawner {
 		// Pidgeon_02
 		{
 			position: Vector3.create(243.596, 65.827, 273.368),
-			rotation: Quaternion.fromEulerDegrees(0.0, 141.412, 0),
+			rotation: Quaternion.fromEulerDegrees(0, 141.412, 0),
 		},
 		// Pidgeon_01
 		{
