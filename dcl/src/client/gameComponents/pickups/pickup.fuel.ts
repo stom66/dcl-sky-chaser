@@ -187,10 +187,17 @@ export class PickupFuel extends Pickup {
 		t.position          = startPosition
 		t.scale             = this.meshScaleV3
 		const randomDelay = Math.random() * this.animateDurationActivate + this.animateDurationActivate
-		Tween.setMove(this.rootEntity, startPosition, position, randomDelay, EasingFunction.EF_EASEOUTBACK)
-		utils.timers.setTimeout(() => {
-			this.animateYOffset = true
-		}, randomDelay)
+
+		this.createTriggers()
+
+		if (isMobile()) {
+			t.position = position
+		} else {
+			Tween.setMove(this.rootEntity, startPosition, position, randomDelay, EasingFunction.EF_EASEOUTBACK)
+			utils.timers.setTimeout(() => {
+				this.animateYOffset = true
+			}, randomDelay)
+		}
 
 		// random value between 10 and 30
 		const value     = Math.ceil(Math.random() * 5) * 5 + 5
@@ -198,16 +205,21 @@ export class PickupFuel extends Pickup {
 		if (!component) return
 
 		component.amount = value
-
-		this.createTriggers()
 	}
 
 
 	// MARK: onDeactivate
 	protected onDeactivate(silent: boolean) : void {
-		Tween.setScale(this.rootEntity, this.meshScaleV3, Vector3.Zero(), 200, EasingFunction.EF_EASEBOUNCE)
-
 		this.destroyTriggers()
+
+		if (isMobile()) {
+			const t = Transform.getMutableOrNull(this.rootEntity)
+			if (t) {
+				t.scale = Vector3.create(0.05, 0.05, 0.05)
+			}
+		} else {
+			Tween.setScale(this.rootEntity, this.meshScaleV3, Vector3.Zero(), 200, EasingFunction.EF_EASECIRC)
+		}
 	}
 
 
@@ -215,6 +227,8 @@ export class PickupFuel extends Pickup {
 	protected onStep(
 		dt: number,
 	) : void {
+		if (isMobile()) return
+
 		this.animationTimeElapsed += dt
 		//console.log("PickupFuel: onStep: dt =", dt)
 		const t = Transform.getMutableOrNull(this.childEntity)

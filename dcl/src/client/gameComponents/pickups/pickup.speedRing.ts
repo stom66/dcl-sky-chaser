@@ -28,9 +28,17 @@ export class PickupSpeedRing extends Pickup {
 		GltfContainer.create(this.rootEntity, {
 			src: `assets/models/boostRing${this.MODEL_SUFFIX}.gltf`
 		})
-		utils.timers.setTimeout(() => {
-			Tween.setScale(this.rootEntity, Vector3.Zero(), Vector3.One(), Math.random() * 1600 + 200, EasingFunction.EF_EASEOUTBACK)
-		}, Math.random() * 800 + 200)
+
+		if (isMobile()) {
+			const t = Transform.getMutableOrNull(this.rootEntity)
+			if (t) {
+				t.scale = Vector3.Zero()
+			}
+		} else {
+			utils.timers.setTimeout(() => {
+				Tween.setScale(this.rootEntity, Vector3.Zero(), Vector3.One(), Math.random() * 1600 + 200, EasingFunction.EF_EASEOUTBACK)
+			}, Math.random() * 800 + 200)
+		}
 	}
 
 
@@ -115,11 +123,20 @@ export class PickupSpeedRing extends Pickup {
 		const t = Transform.getMutableOrNull(this.rootEntity)
 		if (!t) return
 
+		if (isMobile()) {
+			Tween.deleteFrom(this.rootEntity)
+		}
+
 		const startPosition = Vector3.create(position.x, 0, position.z)
 		t.position = startPosition
 		t.scale    = Vector3.One()
 		t.rotation = Quaternion.fromEulerDegrees(0, Math.random() * 360, 0)
-		Tween.setMove(this.rootEntity, startPosition, position, Math.random() * this.animateDurationActivate + this.animateDurationActivate, EasingFunction.EF_EASEOUTBACK)
+
+		if (isMobile()) {
+			t.position = position
+		} else {
+			Tween.setMove(this.rootEntity, startPosition, position, Math.random() * this.animateDurationActivate + this.animateDurationActivate, EasingFunction.EF_EASEOUTBACK)
+		}
 
 		this.createTriggers()
 	}
@@ -127,9 +144,16 @@ export class PickupSpeedRing extends Pickup {
 
 	// MARK: onDeactivate
 	protected onDeactivate(silent: boolean) : void {
-		Tween.setScale(this.rootEntity, Vector3.One(), Vector3.Zero(), 200, EasingFunction.EF_EASEINCIRC)
-
 		this.destroyTriggers()
+
+		if (isMobile()) {
+			const t = Transform.getMutableOrNull(this.rootEntity)
+			if (t) {
+				t.scale = Vector3.create(0.05, 0.05, 0.05)
+			}
+		} else {
+			Tween.setScale(this.rootEntity, Vector3.One(), Vector3.Zero(), 200, EasingFunction.EF_EASEINCIRC)
+		}
 	}
 
 

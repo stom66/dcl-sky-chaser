@@ -200,8 +200,13 @@ export class PickupBalloon extends Pickup {
 		if (!t) return
 
 		t.position = position
-		t.scale    = Vector3.Zero()
-		Tween.setScale(this.rootEntity, Vector3.Zero(), Vector3.One(), 200, EasingFunction.EF_EASEOUTBACK)
+
+		if (isMobile()) {
+			t.scale = Vector3.One()
+		} else {
+			t.scale = Vector3.Zero()
+			Tween.setScale(this.rootEntity, Vector3.Zero(), Vector3.One(), 200, EasingFunction.EF_EASEOUTBACK)
+		}
 
 		this.createTriggers()
 	}
@@ -209,13 +214,20 @@ export class PickupBalloon extends Pickup {
 
 	// MARK: onDeactivate
 	protected onDeactivate(silent: boolean) : void {
-		Tween.setScale(this.rootEntity, Vector3.One(), Vector3.Zero(), 200, EasingFunction.EF_LINEAR)
+		this.destroyTriggers()
+
+		if (isMobile()) {
+			const t = Transform.getMutableOrNull(this.rootEntity)
+			if (t) {
+				t.scale = Vector3.create(0.05, 0.05, 0.05)
+			}
+		} else {
+			Tween.setScale(this.rootEntity, Vector3.One(), Vector3.Zero(), 200, EasingFunction.EF_LINEAR)
+		}
 
 		if (!silent) {
 			SoundManager.playSound(sfx.balloonPickup, this.rootEntity)
 		}
-
-		this.destroyTriggers()
 	}
 
 
@@ -226,13 +238,21 @@ export class PickupBalloon extends Pickup {
 		const t = Transform.getMutableOrNull(this.rootEntity)
 		if (!t) return
 
-		const currentRotation = Quaternion.toEulerAngles(t.rotation)
-		t.rotation = Quaternion.fromEulerDegrees(currentRotation.x, currentRotation.y + dt * this.spinSpeed, currentRotation.z)
+		// Move up
 		t.position.y += dt * this.riseSpeed
 
+		
 		// Despawn Balloons
 		if (t.position.y > (this.maxHeight)) {
 			this.Deactivate()
+			return
 		}
+
+		if (isMobile()) return
+
+		// Rotate (desktop only)
+		const currentRotation = Quaternion.toEulerAngles(t.rotation)
+		t.rotation = Quaternion.fromEulerDegrees(currentRotation.x, currentRotation.y + dt * this.spinSpeed, currentRotation.z)
+
 	}
 }
