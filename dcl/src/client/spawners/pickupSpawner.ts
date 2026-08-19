@@ -23,7 +23,7 @@ export namespace SpawnManager {
 	const defaultSpawnMinHeight   = 16
 	const defaultSpawnMaxHeight   = 48
 
-	const hiddenLocation = Vector3.create(origin.x, -20, origin.z)
+	const hiddenLocation = Vector3.create(20, 20, 20)
 
 	type PickupType = {
 		name              : string, // only used for logging
