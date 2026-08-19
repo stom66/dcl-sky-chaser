@@ -1,6 +1,5 @@
 import { Animator, EasingFunction, engine, Entity, GltfContainer, InputAction, ParticleSystem, PBParticleSystem_BlendMode, pointerEventsSystem, Transform, Tween } from "@dcl/sdk/ecs"
 import { Color4, Quaternion, Vector3 } from "@dcl/sdk/math"
-import { IS_DEV } from "@stom66/dcl-ui-component-kit"
 
 import { timers } from "src/shared/utils/timers"
 
@@ -8,6 +7,7 @@ import { ParticleSpawner } from "./particleSpawner"
 import { sfx, SoundManager } from "./soundManager"
 import { ClientMessaging } from "./clientMessaging"
 import { ClientEvents, eventBus } from "src/shared/utils/eventBus"
+import { IS_DEV } from "src/shared/settings"
 
 export namespace FireworkLauncher {
 
