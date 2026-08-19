@@ -23,25 +23,21 @@ const FG_ART_WIDTH     = 256
 const FG_ART_HEIGHT    = 1024
 const INNER_ART_HEIGHT = 512
 
-const DISPLAY_SCALE = isMobile() ? 0.45 : 0.6
-
-const GAUGE_WIDTH        = FG_ART_WIDTH * DISPLAY_SCALE
-const GAUGE_HEIGHT       = FG_ART_HEIGHT * DISPLAY_SCALE
-const GAUGE_INNER_HEIGHT = INNER_ART_HEIGHT * DISPLAY_SCALE
-
-const GAUGE_CONTENT_INSET = {
-	top   : (GAUGE_HEIGHT - GAUGE_INNER_HEIGHT) / 2,
-	right : 0,
-	bottom: (GAUGE_HEIGHT - GAUGE_INNER_HEIGHT) / 2,
-	left  : 0,
-}
+/** `isMobile()` is unreliable at module import — read it at render time. */
+const DISPLAY_SCALE_MOBILE  = 0.42
+const DISPLAY_SCALE_DESKTOP = 0.6
 
 const ARROW_ART_SIZE = 157
 const ARROW_ART_TOP  = 72
 
-const ARROW_SIZE = ARROW_ART_SIZE * DISPLAY_SCALE
-const ARROW_TOP  = ARROW_ART_TOP * DISPLAY_SCALE
-const ARROW_LEFT = (GAUGE_WIDTH - ARROW_SIZE) / 2
+type GaugeLayout = {
+	width        : number
+	height       : number
+	contentInset : { top: number; right: number; bottom: number; left: number }
+	arrowSize    : number
+	arrowTop     : number
+	arrowLeft    : number
+}
 
 const FUEL_BG_SRC    = 'assets/images/ui/fuel-bg.png'
 const FUEL_FG_SRC    = 'assets/images/ui/fuel-fg.png'
@@ -74,6 +70,32 @@ type FuelProps = {
 }
 
 
+// MARK: getGaugeLayout
+/** Fuel gauge sizes for the current platform (`isMobile()` is wrong at import). */
+function getGaugeLayout(): GaugeLayout {
+	const displayScale = isMobile() ? DISPLAY_SCALE_MOBILE : DISPLAY_SCALE_DESKTOP
+	const width        = FG_ART_WIDTH * displayScale
+	const height       = FG_ART_HEIGHT * displayScale
+	const innerHeight  = INNER_ART_HEIGHT * displayScale
+	const arrowSize    = ARROW_ART_SIZE * displayScale
+	const arrowTop     = ARROW_ART_TOP * displayScale
+
+	return {
+		width,
+		height,
+		contentInset: {
+			top   : (height - innerHeight) / 2,
+			right : 0,
+			bottom: (height - innerHeight) / 2,
+			left  : 0,
+		},
+		arrowSize,
+		arrowTop,
+		arrowLeft: (width - arrowSize) / 2,
+	}
+}
+
+
 // MARK: fuelValueToArrowDegrees
 /** Maps fuel value into needle degrees (−90 empty … +90 full). */
 function fuelValueToArrowDegrees(
@@ -101,9 +123,8 @@ export class FuelLayer extends Layer {
 			id         : 'skyChaser-fuel',
 			zone       : ZoneType.Right,
 			canBeHidden: true,
-			startHidden: true,
+			startHidden: false,
 			uiTransform: {
-				width         : GAUGE_WIDTH,
 				justifyContent: 'center',
 				alignItems    : 'flex-end',
 			},
@@ -230,9 +251,15 @@ export class FuelLayer extends Layer {
 
 	// MARK: body
 	protected body() {
+		const layout   = getGaugeLayout()
 		const value    = this.props!.get('value') as number
 		const maxValue = this.props!.get('maxValue') as number
 		const arrowDeg = this.props!.get('arrowDegrees') as number
+
+		if (this.uiTransform) {
+			this.uiTransform.width          = layout.width
+			this.uiTransform.justifyContent = isMobile() ? 'flex-start' : 'center'
+		}
 
 		return [
 			<ProgressBarImage
@@ -243,9 +270,9 @@ export class FuelLayer extends Layer {
 				maxValue       = {maxValue}
 				fillFrom       = "bottom"
 				orientation    = "vertical"
-				width          = {GAUGE_WIDTH}
-				height         = {GAUGE_HEIGHT}
-				contentInset   = {GAUGE_CONTENT_INSET}
+				width          = {layout.width}
+				height         = {layout.height}
+				contentInset   = {layout.contentInset}
 				borderWidth    = {0}
 				borderRadius   = {0}
 				textureSlices  = {FUEL_TEXTURE_SLICES}
@@ -260,13 +287,13 @@ export class FuelLayer extends Layer {
 				<Icon
 					key         = "fuel-arrow"
 					src         = {FUEL_ARROW_SRC}
-					width       = {ARROW_SIZE}
-					height      = {ARROW_SIZE}
+					width       = {layout.arrowSize}
+					height      = {layout.arrowSize}
 					rotate      = {arrowDeg}
 					iconColor   = {Color4.White()}
 					uiTransform = {{
 						positionType: 'absolute',
-						position    : { top: ARROW_TOP, left: ARROW_LEFT },
+						position    : { top: layout.arrowTop, left: layout.arrowLeft },
 						zIndex      : 1,
 					}}
 				/>
