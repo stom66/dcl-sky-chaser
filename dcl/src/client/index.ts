@@ -34,6 +34,7 @@ import { BeaconManager } from './beaconManager'
 import { BoosterInput } from './boosterInput'
 import { ComboManager } from './comboManager'
 import { LocomotionController } from './locomotionController'
+import { isMobile } from '@dcl/sdk/platform'
 
 var loadingNow = ""
 export function getLoadingNow() {
@@ -118,14 +119,11 @@ export function initClient() {
 		BoosterInput.init()
 
 		SpawnManager.init()
-		ParticleSpawner.init()
 		TriggerSpawner.spawnTriggers()
 
 		UILeaderboard.init()
-		BeaconManager.init()
 
 		BirdSpawner.init()
-		Light.init()
 
 		BounceSpawner.init()
 
@@ -133,6 +131,12 @@ export function initClient() {
 		NoticeBoard.init()
 		FireworkLauncher.init()
 		SpectateMode.init()
+
+		if (!isMobile()) {
+			BeaconManager.init()
+			Light.init()
+			ParticleSpawner.init()
+		}
 
 		onGameLoaded()
 	})
