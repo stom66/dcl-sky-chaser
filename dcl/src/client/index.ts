@@ -39,12 +39,12 @@ import { TouchscreenControls } from './touchscreenControls'
 
 var loadingNow = ""
 export function getLoadingNow() {
-	return loadingNow === "" ? "?" : loadingNow
+	return loadingNow === "" ? "something amazing, I guess..." : loadingNow
 }
 
 export function initClient() {
 
-	loadingNow = "initClient"
+	loadingNow = "client init"
 
 	// MARK: Enter Scene Trigger
 	var hasEnteredScene = false
@@ -62,17 +62,17 @@ export function initClient() {
 	function waitForSceneReady(): Promise<void> {
 		return new Promise((resolve) => {
 			function sys_waitForLoad() {
-				loadingNow = "!getPlayer()"
+				loadingNow = "getPlayer()"
 				if (!getPlayer())                                  { console.log("waitForLoad: userData");           return }
-				loadingNow = "!onEnterScene()"
+				loadingNow = "onEnterScene()"
 				if (!hasEnteredScene)                              { console.log("waitForLoad: onEnterScene");       return }
-				loadingNow = "!isStateSyncronized()"
+				loadingNow = "isStateSyncronized()"
 				if (!isStateSyncronized())                         { console.log("waitForLoad: isStateSyncronized"); return }
-				loadingNow = "!engine.playerEntity"
+				loadingNow = "engine.playerEntity"
 				if (!Transform.getOrNull(engine.PlayerEntity))     { console.log("waitForLoad: PlayerEntity");       return }
-				loadingNow = "!engine.playerCamera"
+				loadingNow = "engine.playerCamera"
 				if (!Transform.getOrNull(engine.CameraEntity))     { console.log("waitForLoad: CameraEntity");       return }
-				loadingNow = "Resolving promises..."
+				loadingNow = "pigeons to roost"
 
 				engine.removeSystem(sys_waitForLoad)
 				resolve()

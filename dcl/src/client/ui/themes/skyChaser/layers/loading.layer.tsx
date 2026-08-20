@@ -131,7 +131,7 @@ export class LoadingLayer extends Layer {
 							//left  : '25%',
 						}
 					}}
-					value={`Loading failed: ${getLoadingNow()}`}
+					value={`Waiting for ${getLoadingNow()}`}
 				></Label>
 			</UiBox>,
 		]
