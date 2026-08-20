@@ -8,7 +8,6 @@
 		{
 			"name":"_windVane",
 			"nodes":[
-				9,
 				10
 			]
 		}
@@ -134,30 +133,31 @@
 			]
 		},
 		{
+			"mesh":7,
+			"name":"windVane.pole._collider_box",
+			"translation":[
+				0.0069580078125,
+				7.169086456298828,
+				-0.00762939453125
+			]
+		},
+		{
 			"children":[
 				6,
-				7
+				7,
+				8
 			],
 			"name":"Bone"
 		},
 		{
 			"children":[
-				8
+				9
 			],
 			"name":"Armature.WindVane",
 			"translation":[
 				264.98565673828125,
 				61.933284759521484,
 				-241.81224060058594
-			]
-		},
-		{
-			"mesh":7,
-			"name":"windVane.pole._collider_box",
-			"translation":[
-				264.99261474609375,
-				69.10237121582031,
-				-241.8198699951172
 			]
 		}
 	],
@@ -167,21 +167,21 @@
 				{
 					"sampler":0,
 					"target":{
-						"node":8,
+						"node":9,
 						"path":"translation"
 					}
 				},
 				{
 					"sampler":1,
 					"target":{
-						"node":8,
+						"node":9,
 						"path":"rotation"
 					}
 				},
 				{
 					"sampler":2,
 					"target":{
-						"node":8,
+						"node":9,
 						"path":"scale"
 					}
 				},
@@ -210,34 +210,34 @@
 			"name":"windVane",
 			"samplers":[
 				{
-					"input":31,
+					"input":29,
+					"interpolation":"STEP",
+					"output":30
+				},
+				{
+					"input":29,
+					"interpolation":"STEP",
+					"output":31
+				},
+				{
+					"input":29,
 					"interpolation":"STEP",
 					"output":32
 				},
 				{
-					"input":31,
+					"input":29,
 					"interpolation":"STEP",
 					"output":33
 				},
 				{
-					"input":31,
-					"interpolation":"STEP",
-					"output":34
-				},
-				{
-					"input":31,
-					"interpolation":"STEP",
+					"input":34,
+					"interpolation":"LINEAR",
 					"output":35
 				},
 				{
-					"input":36,
-					"interpolation":"LINEAR",
-					"output":37
-				},
-				{
-					"input":31,
+					"input":29,
 					"interpolation":"STEP",
-					"output":34
+					"output":32
 				}
 			]
 		}
@@ -398,9 +398,7 @@
 				{
 					"attributes":{
 						"POSITION":27,
-						"NORMAL":28,
-						"JOINTS_0":29,
-						"WEIGHTS_0":30
+						"NORMAL":28
 					},
 					"indices":20
 				}
@@ -703,14 +701,14 @@
 			"componentType":5126,
 			"count":24,
 			"max":[
-				265.2296447753906,
-				77.38232421875,
-				-241.64244079589844
+				0.23703861236572266,
+				8.279949188232422,
+				0.17743413150310516
 			],
 			"min":[
-				264.7555847167969,
-				60.82242202758789,
-				-241.99729919433594
+				-0.23703861236572266,
+				-8.279949188232422,
+				-0.17743413150310516
 			],
 			"type":"VEC3"
 		},
@@ -722,18 +720,6 @@
 		},
 		{
 			"bufferView":29,
-			"componentType":5121,
-			"count":24,
-			"type":"VEC4"
-		},
-		{
-			"bufferView":30,
-			"componentType":5126,
-			"count":24,
-			"type":"VEC4"
-		},
-		{
-			"bufferView":31,
 			"componentType":5126,
 			"count":2,
 			"max":[
@@ -743,6 +729,18 @@
 				0.016666666666666666
 			],
 			"type":"SCALAR"
+		},
+		{
+			"bufferView":30,
+			"componentType":5126,
+			"count":2,
+			"type":"VEC3"
+		},
+		{
+			"bufferView":31,
+			"componentType":5126,
+			"count":2,
+			"type":"VEC4"
 		},
 		{
 			"bufferView":32,
@@ -754,22 +752,10 @@
 			"bufferView":33,
 			"componentType":5126,
 			"count":2,
-			"type":"VEC4"
+			"type":"VEC3"
 		},
 		{
 			"bufferView":34,
-			"componentType":5126,
-			"count":2,
-			"type":"VEC3"
-		},
-		{
-			"bufferView":35,
-			"componentType":5126,
-			"count":2,
-			"type":"VEC3"
-		},
-		{
-			"bufferView":36,
 			"componentType":5126,
 			"count":2400,
 			"max":[
@@ -781,7 +767,7 @@
 			"type":"SCALAR"
 		},
 		{
-			"bufferView":37,
+			"bufferView":35,
 			"componentType":5126,
 			"count":2400,
 			"type":"VEC4"
@@ -964,50 +950,38 @@
 		},
 		{
 			"buffer":0,
-			"byteLength":96,
-			"byteOffset":20064,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":384,
-			"byteOffset":20160,
-			"target":34962
-		},
-		{
-			"buffer":0,
 			"byteLength":8,
-			"byteOffset":20544
+			"byteOffset":20064
 		},
 		{
 			"buffer":0,
 			"byteLength":24,
-			"byteOffset":20552
+			"byteOffset":20072
 		},
 		{
 			"buffer":0,
 			"byteLength":32,
-			"byteOffset":20576
+			"byteOffset":20096
 		},
 		{
 			"buffer":0,
 			"byteLength":24,
-			"byteOffset":20608
+			"byteOffset":20128
 		},
 		{
 			"buffer":0,
 			"byteLength":24,
-			"byteOffset":20632
+			"byteOffset":20152
 		},
 		{
 			"buffer":0,
 			"byteLength":9600,
-			"byteOffset":20656
+			"byteOffset":20176
 		},
 		{
 			"buffer":0,
 			"byteLength":38400,
-			"byteOffset":30256
+			"byteOffset":29776
 		}
 	],
 	"samplers":[
@@ -1018,7 +992,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":68656,
+			"byteLength":68176,
 			"uri":"windVane.bin"
 		}
 	]

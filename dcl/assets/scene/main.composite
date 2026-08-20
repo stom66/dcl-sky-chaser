@@ -856,17 +856,12 @@
             "parent": 515
           }
         },
-        "553": {
+        "551": {
           "json": {
             "position": {
               "x": 0,
               "y": 0,
               "z": 0
-            },
-            "scale": {
-              "x": 1,
-              "y": 1,
-              "z": 1
             },
             "rotation": {
               "x": 0,
@@ -874,10 +869,15 @@
               "z": 0,
               "w": 0
             },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            },
             "parent": 0
           }
         },
-        "554": {
+        "553": {
           "json": {
             "position": {
               "x": 0,
@@ -974,11 +974,11 @@
             ]
           }
         },
-        "553": {
+        "551": {
           "json": {
             "states": [
               {
-                "clip": "Ripple",
+                "clip": "windVane",
                 "playing": true,
                 "weight": 1,
                 "speed": 1,
@@ -988,11 +988,11 @@
             ]
           }
         },
-        "554": {
+        "553": {
           "json": {
             "states": [
               {
-                "clip": "windVane",
+                "clip": "Ripple",
                 "playing": true,
                 "weight": 1,
                 "speed": 1,
@@ -1258,16 +1258,16 @@
             "invisibleMeshesCollisionMask": 3
           }
         },
-        "553": {
+        "551": {
           "json": {
-            "src": "assets/models/windSock.gltf",
+            "src": "assets/models/windVane.gltf",
             "visibleMeshesCollisionMask": 0,
             "invisibleMeshesCollisionMask": 3
           }
         },
-        "554": {
+        "553": {
           "json": {
-            "src": "assets/models/windVane.gltf",
+            "src": "assets/models/windSock.gltf",
             "visibleMeshesCollisionMask": 0,
             "invisibleMeshesCollisionMask": 3
           }
@@ -1484,14 +1484,14 @@
             "value": "binoculars.gltf_3"
           }
         },
+        "551": {
+          "json": {
+            "value": "windVane.gltf_5"
+          }
+        },
         "553": {
           "json": {
             "value": "windSock.gltf_2"
-          }
-        },
-        "554": {
-          "json": {
-            "value": "windVane.gltf_4"
           }
         },
         "66081": {
@@ -1652,8 +1652,8 @@
                   548,
                   513,
                   517,
-                  554,
                   516,
+                  551,
                   553,
                   547,
                   515,
@@ -1865,7 +1865,7 @@
                 "children": []
               },
               {
-                "entity": 554,
+                "entity": 551,
                 "children": []
               }
             ]
@@ -2004,10 +2004,10 @@
         "550": {
           "json": {}
         },
-        "553": {
+        "551": {
           "json": {}
         },
-        "554": {
+        "553": {
           "json": {}
         },
         "66081": {
