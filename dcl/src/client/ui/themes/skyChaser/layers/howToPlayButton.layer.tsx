@@ -4,6 +4,7 @@ import { ButtonImage, Layer, ZoneType } from '@stom66/dcl-ui-component-kit'
 
 import { btnHowToPlayAtlas } from 'src/client/ui/themes/skyChaser/atlases'
 import { howToPlayLayer } from 'src/client/ui/themes/skyChaser/layers/howToPlay.layer'
+import { IS_DEV } from 'src/shared/settings'
 
 
 // MARK: HowToPlayButtonLayer
@@ -17,7 +18,7 @@ export class HowToPlayButtonLayer extends Layer {
 			id         : 'skyChaser-howToPlay-button',
 			zone       : ZoneType.TopRight,
 			canBeHidden: true,
-			startHidden: true,
+			startHidden: IS_DEV ? false : true,
 			uiTransform: {
 				width         : 128,
 				height        : 128,
@@ -40,7 +41,7 @@ export class HowToPlayButtonLayer extends Layer {
 				height   = {128}
 				uiTransform = {{
 					positionType: 'relative',
-					position    : { top: 0, right: isMobile() ? 0 : 128 },
+					position    : { top: 0, right: 128 },
 				}}
 				callback = {() => {
 					howToPlayLayer.show()

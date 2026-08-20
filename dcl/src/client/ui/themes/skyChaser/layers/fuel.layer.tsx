@@ -15,6 +15,7 @@ import {
 import { fuelFillAtlas } from 'src/client/ui/themes/skyChaser/atlases'
 import { C_PlayerFuel, C_SpectatorMode, ComponentStore } from 'src/shared/components/componentStore'
 import { GameStatus } from 'src/shared/enums'
+import { IS_DEV } from 'src/shared/settings'
 import { ClientEvents, eventBus } from 'src/shared/utils/eventBus'
 
 
@@ -123,7 +124,7 @@ export class FuelLayer extends Layer {
 			id         : 'skyChaser-fuel',
 			zone       : ZoneType.Right,
 			canBeHidden: true,
-			startHidden: false,
+			startHidden: IS_DEV ? false : true,
 			uiTransform: {
 				justifyContent: 'center',
 				alignItems    : 'flex-end',
