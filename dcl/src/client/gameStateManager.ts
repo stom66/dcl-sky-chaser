@@ -20,6 +20,7 @@ export namespace GameStateManager {
 			const gameStartTime = data?.startTime ?? 0
 			if (gameStartTime === 0) {
 				eventBus.emit(ClientEvents.GAME_IDLE, data)
+				previousState = newState
 				return
 			}
 
