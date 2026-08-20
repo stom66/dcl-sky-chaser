@@ -1,4 +1,5 @@
 import { Color4 } from '@dcl/sdk/math'
+import { isMobile } from '@dcl/sdk/platform'
 import ReactEcs from '@dcl/sdk/react-ecs'
 import {
 	Background,
@@ -38,7 +39,7 @@ export class PigeonCounterLayer extends Layer {
 	constructor() {
 		super({
 			id         : 'skyChaser-pigeonCounter',
-			zone       : ZoneType.BottomRight,
+			zone       : ZoneType.TopRight,
 			canBeHidden: true,
 			startHidden: true,
 			uiTransform: {
@@ -46,6 +47,8 @@ export class PigeonCounterLayer extends Layer {
 				height        : PANEL_HEIGHT,
 				justifyContent: 'flex-end',
 				alignItems    : 'flex-end',
+				positionType  : 'absolute',
+				position      : { right: 256+8, top: -26 },
 			},
 		})
 
