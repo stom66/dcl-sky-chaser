@@ -170,16 +170,16 @@
               "y": 63.040000915527344,
               "z": 250.49000549316406
             },
+            "scale": {
+              "x": 2.200000047683716,
+              "y": 2.200000047683716,
+              "z": 2.200000047683716
+            },
             "rotation": {
               "x": 0,
               "y": 0.21976107358932495,
               "z": 0,
               "w": 0.9755537509918213
-            },
-            "scale": {
-              "x": 2.200000047683716,
-              "y": 2.200000047683716,
-              "z": 2.200000047683716
             },
             "parent": 0
           }
@@ -856,7 +856,7 @@
             "parent": 515
           }
         },
-        "551": {
+        "553": {
           "json": {
             "position": {
               "x": 0,
@@ -877,7 +877,7 @@
             "parent": 0
           }
         },
-        "553": {
+        "554": {
           "json": {
             "position": {
               "x": 0,
@@ -974,11 +974,11 @@
             ]
           }
         },
-        "551": {
+        "553": {
           "json": {
             "states": [
               {
-                "clip": "windVane",
+                "clip": "Ripple",
                 "playing": true,
                 "weight": 1,
                 "speed": 1,
@@ -988,11 +988,11 @@
             ]
           }
         },
-        "553": {
+        "554": {
           "json": {
             "states": [
               {
-                "clip": "Ripple",
+                "clip": "windVane",
                 "playing": true,
                 "weight": 1,
                 "speed": 1,
@@ -1258,16 +1258,16 @@
             "invisibleMeshesCollisionMask": 3
           }
         },
-        "551": {
+        "553": {
           "json": {
-            "src": "assets/models/windVane.gltf",
+            "src": "assets/models/windSock.gltf",
             "visibleMeshesCollisionMask": 0,
             "invisibleMeshesCollisionMask": 3
           }
         },
-        "553": {
+        "554": {
           "json": {
-            "src": "assets/models/windSock.gltf",
+            "src": "assets/models/windVane.gltf",
             "visibleMeshesCollisionMask": 0,
             "invisibleMeshesCollisionMask": 3
           }
@@ -1484,14 +1484,14 @@
             "value": "binoculars.gltf_3"
           }
         },
-        "551": {
-          "json": {
-            "value": "windVane.gltf_2"
-          }
-        },
         "553": {
           "json": {
             "value": "windSock.gltf_2"
+          }
+        },
+        "554": {
+          "json": {
+            "value": "windVane.gltf_4"
           }
         },
         "66081": {
@@ -1652,7 +1652,7 @@
                   548,
                   513,
                   517,
-                  551,
+                  554,
                   516,
                   553,
                   547,
@@ -1848,10 +1848,6 @@
                 "children": []
               },
               {
-                "entity": 551,
-                "children": []
-              },
-              {
                 "entity": 515,
                 "children": [
                   546,
@@ -1866,6 +1862,10 @@
               },
               {
                 "entity": 517,
+                "children": []
+              },
+              {
+                "entity": 554,
                 "children": []
               }
             ]
@@ -2004,10 +2004,10 @@
         "550": {
           "json": {}
         },
-        "551": {
+        "553": {
           "json": {}
         },
-        "553": {
+        "554": {
           "json": {}
         },
         "66081": {
