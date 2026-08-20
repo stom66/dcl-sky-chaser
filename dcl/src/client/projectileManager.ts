@@ -55,10 +55,12 @@ export namespace ProjectileManager {
 
 	function cleanPool() {
 		for (const projectile of ProjectilePool) {
-			if (!projectile.isActive()) {
-				projectile.Destroy()
-			}
+			projectile.Disable()
+			projectile.Destroy()
 		}
+
+		ProjectilePool.length = 0
+		ProjectileEntityMap.clear()
 	}
 
 
@@ -93,7 +95,7 @@ export namespace ProjectileManager {
 	// MARK: getIdleProjectile
 	function getIdleProjectile() : Projectile | null {
 		for (const projectile of ProjectilePool) {
-			if (!projectile.isActive()) {
+			if (!projectile.isActive() && projectile.isAlive()) {
 				return projectile
 			}
 		}

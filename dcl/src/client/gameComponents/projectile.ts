@@ -64,6 +64,7 @@ export class Projectile {
 
 		console.log("ParticleSpawner: creating particle system")
 
+		ParticleSystem.deleteFrom(this.entity)
 		ParticleSystem.create(this.entity, {
 			active              : true,
 			loop                : true,
@@ -125,6 +126,12 @@ export class Projectile {
 	}
 
 
+	// MARK: isAlive
+	public isAlive() : boolean {
+		return Transform.getOrNull(this.entity) !== null
+	}
+
+
 	// MARK: Fire
 	public Fire(
 		origin   : Vector3, 
@@ -174,15 +181,18 @@ export class Projectile {
 
 	// MARK: Disable
 	Disable() : void {
-		const t = Transform.getMutableOrNull(this.entity)
-		if (t === null) return
-		t.position = HIDE_LOCATION
 		this.active = false
-		this.owner = ""
+		this.owner  = ""
+
+		const t = Transform.getMutableOrNull(this.entity)
+		if (t !== null) {
+			t.position = HIDE_LOCATION
+		}
 
 		const p = ProjectileComponent.getMutableOrNull(this.entity)
-		if (p === null) return
-		p.owner = ""
+		if (p !== null) {
+			p.owner = ""
+		}
 
 		ParticleSystem.deleteFrom(this.entity)
 	}
