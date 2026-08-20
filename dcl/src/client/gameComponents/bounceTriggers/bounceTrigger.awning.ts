@@ -17,13 +17,14 @@ export class BounceTriggerAwning extends BounceTrigger {
 	) {
 		const direction = Vector3.rotate(Vector3.Forward(), Quaternion.fromEulerDegrees(-45, yRotation, 0))
 		super({
-			triggerPosition : position,
-			triggerRotation : triggerRotation,
-			triggerScale    : scale,
-			triggerShape    : "box",
-			meshName        : "awning",
-			impulseDirection: direction,
-			impulseStrength : strength,
+			triggerPosition   : position,
+			triggerRotation   : triggerRotation,
+			triggerScale      : scale,
+			triggerShape      : "box",
+			triggerMaxDistance: 0.4,
+			meshName          : "awning",
+			impulseDirection  : direction,
+			impulseStrength   : strength,
 		})
 	}
 

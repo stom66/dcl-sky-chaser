@@ -7,7 +7,7 @@ export type BounceTriggerConfig = {
 	triggerScale?      : Vector3,          // Default to one
 	triggerRotation?   : Quaternion,       // Default to zero
 	triggerShape?      : "sphere" | "box", // default to "sphere"
-	triggerMaxDistance?: number,           // default to 0.15
+	triggerMaxDistance?: number,           // default to 0.25
 	raycastMaxDistance?: number,           // default to 3
 	meshName?          : string,           // default to empty string
 	impulseDirection?  : Vector3 | null,   // default to blank
@@ -39,8 +39,8 @@ export class BounceTrigger {
 			impulseDirection  : config.impulseDirection   ?? null,
 			impulseStrength   : config.impulseStrength    ?? 100,
 			meshName          : config.meshName           ?? "_collider",
-			raycastMaxDistance: config.triggerMaxDistance ?? 3,
-			triggerMaxDistance: config.triggerMaxDistance ?? 0.15,
+			raycastMaxDistance: config.raycastMaxDistance ?? 3,
+			triggerMaxDistance: config.triggerMaxDistance ?? 0.25,
 			triggerPosition   : config.triggerPosition    ?? Vector3.Zero(),
 			triggerRotation   : config.triggerRotation    ?? Quaternion.Identity(),
 			triggerScale      : config.triggerScale       ?? Vector3.One(),

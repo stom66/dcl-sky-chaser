@@ -15,7 +15,7 @@ export class BounceTriggerUmbrella extends BounceTrigger {
 		super({
 			triggerPosition : position,
 			triggerScale    : Vector3.create(8, 8, 8),
-			triggerMaxDistance: 0.2, // needs to be a little further for the tilt of the umbrella
+			triggerMaxDistance: 0.4, // contact reads ~0.33m on parasol (tilt / avatar feet)
 			meshName        : "parasol",
 			//impulseDirection: Vector3.Up(),
 			impulseStrength : strength,
