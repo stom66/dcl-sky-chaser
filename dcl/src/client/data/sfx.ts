@@ -26,7 +26,7 @@ export const sfx = {
 	],
 
 	countdown: [
-		"assets/sfx/woosh.wav",
+		"assets/sfx/woosh.mp3",
 	],
 
 
@@ -37,16 +37,16 @@ export const sfx = {
 	],
 
 	swish: [
-		"assets/sfx/fast woosh 5.wav",
-		"assets/sfx/classic-short-swoosh-02.wav",
-		"assets/sfx/classic-short-swoosh-03.wav",
-		"assets/sfx/fast woosh 1.wav",
-		"assets/sfx/fast woosh 3.wav",
+		"assets/sfx/fast woosh 5.mp3",
+		"assets/sfx/classic-short-swoosh-02.mp3",
+		"assets/sfx/classic-short-swoosh-03.mp3",
+		"assets/sfx/fast woosh 1.mp3",
+		"assets/sfx/fast woosh 3.mp3",
 	],
 
 	fuelPickup: [
-		"assets/sfx/pickup_01.wav",
-		"assets/sfx/pickup_02.wav",
+		"assets/sfx/pickup_01.mp3",
+		"assets/sfx/pickup_02.mp3",
 	],
 
 	toilet: [
@@ -55,9 +55,9 @@ export const sfx = {
 	],
 
 	balloonPickup: [
-		"assets/sfx/pop_1.wav",
-		"assets/sfx/pop_2.wav",
-		"assets/sfx/pop_3.wav",
+		"assets/sfx/pop_1.mp3",
+		"assets/sfx/pop_2.mp3",
+		"assets/sfx/pop_3.mp3",
 	],
 
 	lever: [
