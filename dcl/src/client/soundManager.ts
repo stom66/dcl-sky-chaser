@@ -145,16 +145,16 @@ export namespace SoundManager {
 		)
 
 		console.log('SoundManager: preloadSfx: preloading', sfxArray.length, 'sfx')
-		AssetLoad.create(preloadEntity, {
-			assets: sfxArray,
-		})
+		//AssetLoad.create(preloadEntity, {
+		//	assets: sfxArray,
+		//})
 
-		//for (const paths of Object.values(sfx)) {
-		//	for (const soundPath of paths) {
-		//		
-		//		getOrCreatePreloadedClipEntity(soundPath)
-		//	}
-		//}
+		for (const paths of Object.values(sfx)) {
+			for (const soundPath of paths) {
+				
+				getOrCreatePreloadedClipEntity(soundPath)
+			}
+		}
 	}
 
 
