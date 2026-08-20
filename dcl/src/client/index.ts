@@ -35,6 +35,7 @@ import { BoosterInput } from './boosterInput'
 import { ComboManager } from './comboManager'
 import { LocomotionController } from './locomotionController'
 import { isMobile } from '@dcl/sdk/platform'
+import { TouchscreenControls } from './touchscreenControls'
 
 var loadingNow = ""
 export function getLoadingNow() {
@@ -136,6 +137,10 @@ export function initClient() {
 			BeaconManager.init()
 			Light.init()
 			ParticleSpawner.init()
+		}
+
+		if (isMobile()) {
+			TouchscreenControls.init()
 		}
 
 		onGameLoaded()
