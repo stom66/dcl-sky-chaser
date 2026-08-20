@@ -184,18 +184,27 @@ export class ComboLayer extends Layer {
 		return [
 			<Column
 				key            = "combo-stack"
-				cols           = {12}
+				width          = {COMBO_WIDTH}
 				spacing        = {0}
 				alignItems     = "center"
 				justifyContent = "flex-start"
+				flexGrow       = {0}
+				flexShrink     = {0}
 			>
-
+				{/* Same size lock as ProgressBarImage — flexGrow alone does not stop mobile cross-axis stretch. */}
 				<UiBox
 					key         = "combo-bg"
 					width       = {COMBO_WIDTH}
 					height      = {COMBO_HEIGHT}
+					minWidth    = {COMBO_WIDTH}
+					maxWidth    = {COMBO_WIDTH}
+					minHeight   = {COMBO_HEIGHT}
+					maxHeight   = {COMBO_HEIGHT}
 					borderWidth = {0}
 					overflow    = "hidden"
+					flexGrow    = {0}
+					flexShrink  = {0}
+					alignSelf   = "center"
 					margin      = {{ top: COMBO_BG_MARGIN_TOP }}
 					uiBackground = {{
 						texture    : { src: COMBO_BG_SRC, wrapMode: 'clamp' },
@@ -228,7 +237,7 @@ export class ComboLayer extends Layer {
 					width          = {BAR_WIDTH}
 					height         = {BAR_HEIGHT}
 					contentInset   = {BAR_CONTENT_INSET}
-					margin         = {{ top: COMBO_BG_MARGIN_TOP*2.5 }}
+					margin         = {{ top: COMBO_BG_MARGIN_TOP * 2.5 }}
 					borderWidth    = {0}
 					borderRadius   = {0}
 					lerpDuration   = {0}
