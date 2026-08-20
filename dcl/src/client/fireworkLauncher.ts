@@ -1,4 +1,4 @@
-import { Animator, EasingFunction, engine, Entity, GltfContainer, InputAction, ParticleSystem, PBParticleSystem_BlendMode, pointerEventsSystem, Transform, Tween } from "@dcl/sdk/ecs"
+import { Animator, EasingFunction, engine, Entity, GltfContainer, GltfContainerLoadingState, InputAction, LoadingState, ParticleSystem, PBParticleSystem_BlendMode, pointerEventsSystem, Transform, Tween } from "@dcl/sdk/ecs"
 import { Color4, Quaternion, Vector3 } from "@dcl/sdk/math"
 
 import { timers } from "src/shared/utils/timers"
@@ -27,23 +27,35 @@ export namespace FireworkLauncher {
         console.log('fireworkLauncher: init()')
 
 		// Find the model
-		
 		const entities = engine.getEntitiesByTag(CH_TAG_NAME)
 		
 		for (const entity of entities) {
-			// Add a pointerSystem so players can interact with it
+			// Store a map of entity IDs, so we can respond to server-driven events
 			entityIdMap.set(entity.toString(), entity)
 
-			pointerEventsSystem.onPointerDown({
-				entity: entity,
-				opts: { 
-					button     : InputAction.IA_POINTER, 
-					hoverText  : "Interact", 
-					maxDistance: MAX_INTERACTION_DISTANCE
-				}
-			}, () => {
-				requestLaunchFirework(entity)
-			})
+			// Wait for the gltf to finish loading before we add a pointer system
+			let gltfWatcher: (dt: number) => void
+			gltfWatcher = (dt: number) => {
+				const loadingState = GltfContainerLoadingState.getOrNull(entity)
+
+				// Wait for loading FINISHED
+				if (!loadingState || loadingState.currentState !== LoadingState.FINISHED) return
+
+				// Add a pointerSystem so players can interact with it
+				pointerEventsSystem.onPointerDown({
+					entity: entity,
+					opts: { 
+						button     : InputAction.IA_POINTER, 
+						hoverText  : "Interact", 
+						maxDistance: MAX_INTERACTION_DISTANCE
+					}
+				}, () => {
+					requestLaunchFirework(entity)
+				})
+				engine.removeSystem(gltfWatcher)
+			}
+			engine.addSystem(gltfWatcher)
+			
 		}
 
 		eventBus.on(ClientEvents.NOTIFY_FIREWORK_LAUNCHED, (data) => { 
