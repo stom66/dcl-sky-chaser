@@ -13,6 +13,7 @@ import {
 
 import { ClientMessaging } from 'src/client/clientMessaging'
 import { btnWideAtlas, guiLabelsAtlas } from 'src/client/ui/themes/skyChaser/atlases'
+import { howToPlayLayer } from 'src/client/ui/themes/skyChaser/layers/howToPlay.layer'
 import { C_GameData, C_SpectatorMode, ComponentStore } from 'src/shared/components/componentStore'
 import { GameStatus } from 'src/shared/enums'
 import { ClientEvents, eventBus } from 'src/shared/utils/eventBus'
@@ -130,6 +131,7 @@ export class StartButtonLayer extends Layer {
 					}}
 					callback = {() => {
 						if (ComponentStore.getGameStatus() !== GameStatus.IDLE) return
+						howToPlayLayer.hide()
 						ClientMessaging.RequestNewGame()
 					}}
 				>
