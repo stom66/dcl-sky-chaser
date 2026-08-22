@@ -238,7 +238,8 @@ export namespace serverHandler {
 		room.send(MessageType.NOTIFY_TRIGGER_EFFECT, {
 			effect   : data.effect,
 			position : data.position,
-			direction: data.direction
+			direction: data.direction,
+			entityId : data.entityId
 		}, { to: sendTo }) 
 
 		//Metrics.trackTriggerEffect(userId, data.effect, data.position, data.direction)

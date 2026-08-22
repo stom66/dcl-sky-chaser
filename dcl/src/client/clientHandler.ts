@@ -23,9 +23,9 @@ export namespace ClientHandler {
 	}
 
 	// MARK: Trigger Effect
-	function handleNotifyTriggerEffect(data: { effect: ClientEvents, position: Vector3, direction: Vector3 }) {
+	function handleNotifyTriggerEffect(data: { effect: ClientEvents, position: Vector3, direction: Vector3, entityId?: string }) {
 		console.log('ClientHandler: handleNotifyTriggerEffect: data', data)
-		eventBus.emit(ClientEvents.NOTIFY_TRIGGER, {effect: data.effect,  position: data.position, direction: data.direction })
+		eventBus.emit(ClientEvents.NOTIFY_TRIGGER, {effect: data.effect,  position: data.position, direction: data.direction, entityId: data.entityId })
 	}
 
 	// MARK: Projectile

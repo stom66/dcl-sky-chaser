@@ -2,6 +2,7 @@ import { Quaternion, Vector3 } from "@dcl/sdk/math"
 import { BounceTriggerUmbrella } from "../gameComponents/bounceTriggers/bounceTrigger.umbrella"
 import { BounceTriggerTrampoline } from "../gameComponents/bounceTriggers/bounceTrigger.trampoline"
 import { BounceTriggerAwning } from "../gameComponents/bounceTriggers/bounceTrigger.awning"
+import { engine } from "@dcl/sdk/ecs"
 
 export namespace BounceSpawner {
 
@@ -14,8 +15,9 @@ export namespace BounceSpawner {
 		const umbrella_cliffSide = new BounceTriggerUmbrella(Vector3.create(168.05, 121.1, 219.10), 160)
 
 		// Trampolines
-		const trampoline_1 = new BounceTriggerTrampoline(Vector3.create(263, 64, 247), -135, 120)
-		const trampoline_2 = new BounceTriggerTrampoline(Vector3.create(245, 64, 256.5), -105,  120)
+		for (const entity of engine.getEntitiesByTag("trampoline")) {
+			new BounceTriggerTrampoline(entity, 120)
+		}
 
 		// Awning, upper
 		const position = Vector3.create(258.163, 56.5, 278.01)

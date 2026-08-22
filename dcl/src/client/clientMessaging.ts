@@ -29,10 +29,11 @@ export namespace ClientMessaging {
 	function RequestTriggerEffect(
 		effect   : ClientEvents,
 		position : Vector3,
-		direction: Vector3
+		direction: Vector3,
+		entityId?: string
 	) {
 		console.log('ClientMessaging: RequestTriggerEffect')
-		room.send(MessageType.REQUEST_TRIGGER_EFFECT, { effect, position, direction })
+		room.send(MessageType.REQUEST_TRIGGER_EFFECT, { effect, position, direction, entityId })
 	}
 
 	export function RequestProjectile(position: Vector3, direction: Vector3) {
@@ -86,7 +87,7 @@ export namespace ClientMessaging {
 	})
 	eventBus.on(ClientEvents.PLAYER_COLLIDED_TRAMPOLINE, (data) => { 
 		RequestStatsUpdate(PlayerStatsEnum.TRIGGERED_TRAMPOLINES) 
-		RequestTriggerEffect(ClientEvents.PLAYER_COLLIDED_TRAMPOLINE, data?.position ?? Vector3.Zero(), data?.direction ?? Vector3.Zero())
+		RequestTriggerEffect(ClientEvents.PLAYER_COLLIDED_TRAMPOLINE, data?.position ?? Vector3.Zero(), data?.direction ?? Vector3.Zero(), data?.entityId ?? "")
 	})
 	eventBus.on(ClientEvents.PLAYER_COLLIDED_UMBRELLA, (data)   => { 
 		RequestStatsUpdate(PlayerStatsEnum.TRIGGERED_UMBRELLAS) 

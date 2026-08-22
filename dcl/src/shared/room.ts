@@ -46,6 +46,7 @@ const Messages = {
 		effect   : Schemas.EnumString(ClientEvents, ClientEvents.PLAYER_COLLIDED_FUEL),
 		position : Schemas.Vector3,
 		direction: Schemas.Vector3,
+		entityId : Schemas.Optional(Schemas.String),
 	}),
 	[MessageType.REQUEST_PROJECTILE]: Schemas.Map({
 		position : Schemas.Vector3,
@@ -76,6 +77,7 @@ const Messages = {
 		effect   : Schemas.EnumString(ClientEvents, ClientEvents.PLAYER_COLLIDED_FUEL),
 		position : Schemas.Vector3,
 		direction: Schemas.Vector3,
+		entityId : Schemas.Optional(Schemas.String),
 	}),
 	[MessageType.NOTIFY_PROJECTILE]: Schemas.Map({
 		position : Schemas.Vector3,

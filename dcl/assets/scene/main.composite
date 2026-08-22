@@ -1036,7 +1036,7 @@
               {
                 "clip": "wobble",
                 "playing": false,
-                "weight": 0.9100000262260437,
+                "weight": 0.9399999976158142,
                 "speed": 1,
                 "loop": false,
                 "shouldReset": false
@@ -1705,7 +1705,7 @@
         "serializationType": "map"
       },
       "data": {
-        "0": {
+        "552": {
           "json": {
             "gizmo": 0
           }
