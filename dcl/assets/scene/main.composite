@@ -863,16 +863,37 @@
               "y": 0,
               "z": 0
             },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            },
             "rotation": {
               "x": 0,
               "y": 1,
               "z": 0,
               "w": 0
             },
+            "parent": 0
+          }
+        },
+        "552": {
+          "json": {
+            "position": {
+              "x": 246,
+              "y": 63,
+              "z": 256.5
+            },
             "scale": {
-              "x": 1,
-              "y": 1,
-              "z": 1
+              "x": 2,
+              "y": 2,
+              "z": 2
+            },
+            "rotation": {
+              "x": 0,
+              "y": -0.7071067690849304,
+              "z": 0,
+              "w": 0.7071067690849304
             },
             "parent": 0
           }
@@ -894,6 +915,27 @@
               "y": 1,
               "z": 0,
               "w": 0
+            },
+            "parent": 0
+          }
+        },
+        "554": {
+          "json": {
+            "position": {
+              "x": 263,
+              "y": 63,
+              "z": 246.5
+            },
+            "scale": {
+              "x": 2,
+              "y": 2,
+              "z": 2
+            },
+            "rotation": {
+              "x": 0,
+              "y": -0.9238795042037964,
+              "z": 0,
+              "w": 0.3826834261417389
             },
             "parent": 0
           }
@@ -988,6 +1030,20 @@
             ]
           }
         },
+        "552": {
+          "json": {
+            "states": [
+              {
+                "clip": "wobble",
+                "playing": false,
+                "weight": 0.9100000262260437,
+                "speed": 1,
+                "loop": false,
+                "shouldReset": false
+              }
+            ]
+          }
+        },
         "553": {
           "json": {
             "states": [
@@ -997,6 +1053,20 @@
                 "weight": 1,
                 "speed": 1,
                 "loop": true,
+                "shouldReset": false
+              }
+            ]
+          }
+        },
+        "554": {
+          "json": {
+            "states": [
+              {
+                "clip": "wobble",
+                "playing": false,
+                "weight": 1,
+                "speed": 1,
+                "loop": false,
                 "shouldReset": false
               }
             ]
@@ -1265,9 +1335,23 @@
             "invisibleMeshesCollisionMask": 3
           }
         },
+        "552": {
+          "json": {
+            "src": "assets/models/trampoline.gltf",
+            "visibleMeshesCollisionMask": 0,
+            "invisibleMeshesCollisionMask": 3
+          }
+        },
         "553": {
           "json": {
             "src": "assets/models/windSock.gltf",
+            "visibleMeshesCollisionMask": 0,
+            "invisibleMeshesCollisionMask": 3
+          }
+        },
+        "554": {
+          "json": {
+            "src": "assets/models/trampoline.gltf",
             "visibleMeshesCollisionMask": 0,
             "invisibleMeshesCollisionMask": 3
           }
@@ -1489,9 +1573,19 @@
             "value": "windVane.gltf_5"
           }
         },
+        "552": {
+          "json": {
+            "value": "trampoline.gltf"
+          }
+        },
         "553": {
           "json": {
             "value": "windSock.gltf_2"
+          }
+        },
+        "554": {
+          "json": {
+            "value": "trampoline.gltf_2"
           }
         },
         "66081": {
@@ -1528,7 +1622,8 @@
               "PosterPigeonDeluxe",
               "PosterFlagTag",
               "fireworkButton",
-              "spectatorMode"
+              "spectatorMode",
+              "trampoline"
             ]
           }
         },
@@ -1571,6 +1666,20 @@
           "json": {
             "tags": [
               "spectatorMode"
+            ]
+          }
+        },
+        "552": {
+          "json": {
+            "tags": [
+              "trampoline"
+            ]
+          }
+        },
+        "554": {
+          "json": {
+            "tags": [
+              "trampoline"
             ]
           }
         },
@@ -1659,7 +1768,9 @@
                   515,
                   534,
                   535,
-                  518
+                  518,
+                  552,
+                  554
                 ]
               },
               {
@@ -1867,6 +1978,14 @@
               {
                 "entity": 551,
                 "children": []
+              },
+              {
+                "entity": 552,
+                "children": []
+              },
+              {
+                "entity": 554,
+                "children": []
               }
             ]
           }
@@ -2007,7 +2126,13 @@
         "551": {
           "json": {}
         },
+        "552": {
+          "json": {}
+        },
         "553": {
+          "json": {}
+        },
+        "554": {
           "json": {}
         },
         "66081": {

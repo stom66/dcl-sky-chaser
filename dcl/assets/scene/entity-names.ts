@@ -43,8 +43,9 @@ export enum EntityNames {
   noticeBoard_flagTag_gltf = "noticeBoard-flagTag.gltf",
   noticeBoard_pigeonDeluxe_gltf = "noticeBoard-pigeonDeluxe.gltf",
   tower_gltf = "tower.gltf",
+  trampoline_gltf = "trampoline.gltf",
+  trampoline_gltf_2 = "trampoline.gltf_2",
   windSock_gltf_2 = "windSock.gltf_2",
-  windVane_gltf_4 = "windVane.gltf_4",
   windVane_gltf_5 = "windVane.gltf_5",
   world_gltf = "world.gltf",
 } 
