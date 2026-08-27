@@ -880,9 +880,9 @@
         "552": {
           "json": {
             "position": {
-              "x": 246,
+              "x": 245.25,
               "y": 63,
-              "z": 256.5
+              "z": 255
             },
             "scale": {
               "x": 2,
@@ -891,9 +891,9 @@
             },
             "rotation": {
               "x": 0,
-              "y": -0.7071067690849304,
+              "y": -0.6087614297866821,
               "z": 0,
-              "w": 0.7071067690849304
+              "w": 0.7933533191680908
             },
             "parent": 0
           }
@@ -936,6 +936,27 @@
               "y": -0.9238795042037964,
               "z": 0,
               "w": 0.3826834261417389
+            },
+            "parent": 0
+          }
+        },
+        "555": {
+          "json": {
+            "position": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            },
+            "rotation": {
+              "x": 0,
+              "y": 1,
+              "z": 0,
+              "w": 0
             },
             "parent": 0
           }
@@ -1067,6 +1088,20 @@
                 "weight": 1,
                 "speed": 1,
                 "loop": false,
+                "shouldReset": false
+              }
+            ]
+          }
+        },
+        "555": {
+          "json": {
+            "states": [
+              {
+                "clip": "windVane",
+                "playing": true,
+                "weight": 1,
+                "speed": 1,
+                "loop": true,
                 "shouldReset": false
               }
             ]
@@ -1356,6 +1391,13 @@
             "invisibleMeshesCollisionMask": 3
           }
         },
+        "555": {
+          "json": {
+            "src": "assets/models/windVane.gltf",
+            "visibleMeshesCollisionMask": 0,
+            "invisibleMeshesCollisionMask": 3
+          }
+        },
         "66081": {
           "json": {
             "src": "assets/models/binoculars.gltf",
@@ -1588,6 +1630,11 @@
             "value": "trampoline.gltf_2"
           }
         },
+        "555": {
+          "json": {
+            "value": "windVane.gltf_6"
+          }
+        },
         "66081": {
           "json": {
             "value": "binoculars.gltf_4"
@@ -1705,7 +1752,7 @@
         "serializationType": "map"
       },
       "data": {
-        "552": {
+        "0": {
           "json": {
             "gizmo": 0
           }
@@ -1770,7 +1817,8 @@
                   535,
                   518,
                   552,
-                  554
+                  554,
+                  555
                 ]
               },
               {
@@ -1986,6 +2034,10 @@
               {
                 "entity": 554,
                 "children": []
+              },
+              {
+                "entity": 555,
+                "children": []
               }
             ]
           }
@@ -2133,6 +2185,9 @@
           "json": {}
         },
         "554": {
+          "json": {}
+        },
+        "555": {
           "json": {}
         },
         "66081": {
