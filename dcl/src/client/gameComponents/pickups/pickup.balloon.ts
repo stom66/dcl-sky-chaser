@@ -226,7 +226,7 @@ export class PickupBalloon extends Pickup {
 		}
 
 		if (!silent) {
-			SoundManager.playSound(sfx.balloonPickup)
+			SoundManager.playSound(sfx.balloonPickup, this.rootEntity)
 		}
 	}
 
