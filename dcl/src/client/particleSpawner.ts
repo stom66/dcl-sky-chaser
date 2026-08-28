@@ -19,7 +19,7 @@ export namespace ParticleSpawner {
 
 	var isEnabled = false
 
-	const MOBILE_PARTICLE_RATIO = 0.25
+	const MOBILE_PARTICLE_RATIO = 0.5
 
 	const BOOSTER_WIND_SPRITES = [
 		'assets/sprites/sprites-wind-02.png',

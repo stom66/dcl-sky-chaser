@@ -132,11 +132,11 @@ export function initClient() {
 		NoticeBoard.init()
 		FireworkLauncher.init()
 		SpectateMode.init()
+		ParticleSpawner.init()
 
 		if (!isMobile()) {
 			BeaconManager.init()
 			Light.init()
-			ParticleSpawner.init()
 		}
 
 		if (isMobile()) {
