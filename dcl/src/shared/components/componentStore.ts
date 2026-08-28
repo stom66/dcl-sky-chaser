@@ -451,6 +451,26 @@ export namespace ComponentStore {
 
 
 	// MARK: Leaderboards
+	/**
+	 * Copies scores into schema-only objects so the synced component never
+	 * aliases storage entries. Extra fields (lastUpdated) are dropped.
+	 */
+	function toLeaderboardComponentScores(
+		leaderboard: LeaderboardEntry[]
+	): Array<{
+		userId     : string
+		displayName: string
+		score      : number
+		rank       : number
+	}> {
+		return leaderboard.map((entry) => ({
+			userId     : entry.userId,
+			displayName: entry.displayName,
+			score      : entry.score,
+			rank       : entry.rank,
+		}))
+	}
+
 	export function setLeaderboardAllTime(leaderboard: LeaderboardEntry[]): void {
 		if (!isServer()) return
 
@@ -460,7 +480,7 @@ export namespace ComponentStore {
 		const c = C_Leaderboards.leaderboardAllTime.getMutableOrNull(entity)
 		if (c === null) return
 
-		c.scores = leaderboard
+		c.scores = toLeaderboardComponentScores(leaderboard)
 	}
 
 	export function setLeaderboardWeekly(leaderboard: LeaderboardEntry[]): void {
@@ -472,7 +492,7 @@ export namespace ComponentStore {
 		const c = C_Leaderboards.leaderboardWeekly.getMutableOrNull(entity)
 		if (c === null) return
 
-		c.scores = leaderboard
+		c.scores = toLeaderboardComponentScores(leaderboard)
 	}
 
 	export function getLeaderboardAllTime(): Omit<LeaderboardEntry, 'lastUpdated'>[] {

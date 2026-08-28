@@ -65,7 +65,8 @@ export class Leaderboard {
 		if (scores.length === 0) return
 
 		await this.backed.updateAsync(async (entries) => {
-			const next = [...entries]
+			// Clone objects so later mutation never aliases the previous published state.
+			const next = entries.map((entry) => ({ ...entry }))
 
 			for (const score of scores) {
 				await this.applyScore(next, score)
@@ -79,25 +80,32 @@ export class Leaderboard {
 	// MARK: applyScore
 	/**
 	 * Applies one incoming score to the in-memory leaderboard entries.
+	 * Replaces the player's stored row when the new score beats that player's
+	 * personal best, not the board's highest score.
 	 */
 	private async applyScore(
 		entries: LeaderboardEntry[],
 		score  : LeaderboardScore
 	): Promise<void> {
-		const existing    = entries.find((e) => e.userId === score.userId)
+		const userIdKey   = score.userId.toLowerCase()
 		const displayName = await userProfileCache.getUserDisplayName(score.userId)
 
-		if (existing) {
-			if (!this.shouldReplace(existing, score.score)) return
+		let existing: LeaderboardEntry | undefined
+		for (const entry of entries) {
+			if (entry.userId.toLowerCase() !== userIdKey) continue
+			if (!existing || entry.score > existing.score) existing = entry
+		}
 
-			existing.score       = score.score
-			existing.displayName = displayName
-			existing.lastUpdated = Date.now()
-			return
+		if (existing && !this.shouldReplace(existing, score.score)) return
+
+		for (let i = entries.length - 1; i >= 0; i--) {
+			if (entries[i].userId.toLowerCase() === userIdKey) {
+				entries.splice(i, 1)
+			}
 		}
 
 		entries.push({
-			userId     : score.userId,
+			userId     : existing?.userId ?? score.userId,
 			displayName: displayName,
 			score      : score.score,
 			lastUpdated: Date.now(),
@@ -118,12 +126,28 @@ export class Leaderboard {
 
 	// MARK: cleanup
 	/**
-	 * Sorts entries high to low and caps to recordLimit. Run on every read and write
-	 * so storage stays bounded. Override wholesale for boards with extra requirements
-	 * (eg weekly dropping entries from previous weeks).
+	 * Dedupes by userId (keeping that player's best score), then sorts high to
+	 * low and caps to recordLimit. Run on every read and write so storage stays
+	 * bounded. Override wholesale for boards with extra requirements (eg weekly
+	 * dropping entries from previous weeks).
 	 */
 	protected cleanup(entries: LeaderboardEntry[]): LeaderboardEntry[] {
-		return entries
+		const bestByUser = new Map<string, LeaderboardEntry>()
+
+		for (const entry of entries) {
+			const key     = entry.userId.toLowerCase()
+			const current = bestByUser.get(key)
+
+			if (
+				!current
+				|| entry.score > current.score
+				|| (entry.score === current.score && (entry.lastUpdated ?? 0) > (current.lastUpdated ?? 0))
+			) {
+				bestByUser.set(key, entry)
+			}
+		}
+
+		return Array.from(bestByUser.values())
 			.sort((a, b) => b.score - a.score)
 			.slice(0, this.recordLimit)
 			.map((entry, index) => ({ ...entry, rank: index + 1 }))
@@ -132,8 +156,8 @@ export class Leaderboard {
 
 	// MARK: shouldReplace
 	/**
-	 * Whether an incoming score should replace the stored entry. Defaults to keeping
-	 * the player's best score.
+	 * Whether an incoming score should replace the stored entry. Defaults to
+	 * keeping the player's personal best, even when that is not first place.
 	 */
 	protected shouldReplace(
 		existing: LeaderboardEntry,

@@ -184,9 +184,9 @@ export namespace serverHandler {
 			}
 
 			weeklyScores.push({
-				userId: score.userId,
-				score : score.score,
-				isNewHighscore: score.score > lbAlltimeHighestScore
+				userId        : score.userId,
+				score         : score.score,
+				isNewHighscore: score.score > lbWeeklyHighestScore
 			})
 
 			if (score.score > lbWeeklyHighestScore) {
