@@ -43,10 +43,23 @@ export const btnWideAtlas = new TextureAtlas({
 /**
  * How To Play toggle chrome (`btn-howToPlay.png`).
  * One column; four state rows UV bottom → top = blank / pressed / hover / default
- * (PNG top → bottom = default / hover / pressed / blank). Each cell is 256×256.
+ * (PNG top → bottom = default / hover / pressed / blank). Each cell is 128x128.
  */
 export const btnHowToPlayAtlas = new TextureAtlas({
 	source : 'assets/images/ui/btn-howToPlay.png',
+	columns: 1,
+	rows   : 4,
+})
+
+
+// MARK: btnGoToStartAtlas
+/**
+ * How To Play toggle chrome (`btn-goToStart.png`).
+ * One column; four state rows UV bottom → top = blank / pressed / hover / default
+ * (PNG top → bottom = default / hover / pressed / blank). Each cell is 128x128.
+ */
+export const btnGoToStartAtlas = new TextureAtlas({
+	source : 'assets/images/ui/btn-goToStart.png',
 	columns: 1,
 	rows   : 4,
 })

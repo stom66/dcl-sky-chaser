@@ -14,6 +14,7 @@ import { scoreboardLayer } from 'src/client/ui/themes/skyChaser/layers/scoreboar
 import { spectateLayer } from 'src/client/ui/themes/skyChaser/layers/spectate.layer'
 import { startButtonLayer } from 'src/client/ui/themes/skyChaser/layers/startButton.layer'
 import { versionLayer } from 'src/client/ui/themes/skyChaser/layers/version.layer'
+import { goToStartButtonLayer } from 'src/client/ui/themes/skyChaser/layers/goToStartButton'
 
 
 howToPlayLayer.setButtonLayer(howToPlayButtonLayer)
@@ -34,6 +35,7 @@ export const layers: Layer[] = [
 	pigeonCounterLayer,
 	howToPlayLayer,
 	howToPlayButtonLayer,
+	goToStartButtonLayer,
 	resultsLayer,
 	...(debugLayer ? [debugLayer] : []),
 	toastHostLayer,
