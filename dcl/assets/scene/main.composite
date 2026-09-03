@@ -1028,10 +1028,10 @@
               },
               {
                 "clip": "Idle",
-                "playing": true,
-                "weight": 1,
+                "playing": false,
+                "weight": 0,
                 "speed": 1,
-                "loop": true,
+                "loop": false,
                 "shouldReset": false
               }
             ]
