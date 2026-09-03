@@ -17,7 +17,7 @@ export namespace FireworkLauncher {
 	const ORIGIN_PARTICLE           = Vector3.create(-0.02363	, 0.837015, 0)
 
 	const PARTICLE_DELAY            = 3.5 // seconds
-	const MAX_INTERACTION_DISTANCE  = IS_DEV ? 20 : 3
+	const MAX_INTERACTION_DISTANCE  = IS_DEV ? 20 : 10
 
 	const entityIdMap: Map<string, Entity> = new Map()
 
