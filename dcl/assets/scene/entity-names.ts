@@ -39,6 +39,7 @@ export enum EntityNames {
   clouds_gltf = "clouds.gltf",
   errorSign_gltf_2 = "errorSign.gltf_2",
   firework_button_gltf = "firework-button.gltf",
+  firework_button_gltf_2 = "firework-button.gltf_2",
   notice_board_gltf = "notice-board.gltf",
   noticeBoard_flagTag_gltf = "noticeBoard-flagTag.gltf",
   noticeBoard_pigeonDeluxe_gltf = "noticeBoard-pigeonDeluxe.gltf",

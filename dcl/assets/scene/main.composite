@@ -163,27 +163,6 @@
             "parent": 0
           }
         },
-        "517": {
-          "json": {
-            "position": {
-              "x": 269.04998779296875,
-              "y": 63.040000915527344,
-              "z": 250.49000549316406
-            },
-            "scale": {
-              "x": 2.200000047683716,
-              "y": 2.200000047683716,
-              "z": 2.200000047683716
-            },
-            "rotation": {
-              "x": 0,
-              "y": 0.21976107358932495,
-              "z": 0,
-              "w": 0.9755537509918213
-            },
-            "parent": 0
-          }
-        },
         "518": {
           "json": {
             "position": {
@@ -961,6 +940,27 @@
             "parent": 0
           }
         },
+        "556": {
+          "json": {
+            "position": {
+              "x": 269.04998779296875,
+              "y": 63.040000915527344,
+              "z": 250.49000549316406
+            },
+            "rotation": {
+              "x": 0,
+              "y": 0.21976107358932495,
+              "z": 0,
+              "w": 0.9755537509918213
+            },
+            "scale": {
+              "x": 2.200000047683716,
+              "y": 2.200000047683716,
+              "z": 2.200000047683716
+            },
+            "parent": 0
+          }
+        },
         "66081": {
           "json": {
             "position": {
@@ -1010,28 +1010,6 @@
                 "weight": 1,
                 "speed": 0.14000000059604645,
                 "loop": true,
-                "shouldReset": false
-              }
-            ]
-          }
-        },
-        "517": {
-          "json": {
-            "states": [
-              {
-                "clip": "Action",
-                "playing": false,
-                "weight": 1,
-                "speed": 1,
-                "loop": false,
-                "shouldReset": true
-              },
-              {
-                "clip": "Idle",
-                "playing": false,
-                "weight": 0,
-                "speed": 1,
-                "loop": false,
                 "shouldReset": false
               }
             ]
@@ -1106,6 +1084,28 @@
               }
             ]
           }
+        },
+        "556": {
+          "json": {
+            "states": [
+              {
+                "clip": "Action",
+                "playing": false,
+                "weight": 1,
+                "speed": 1,
+                "loop": false,
+                "shouldReset": true
+              },
+              {
+                "clip": "Idle",
+                "playing": false,
+                "weight": 0,
+                "speed": 1,
+                "loop": false,
+                "shouldReset": false
+              }
+            ]
+          }
         }
       }
     },
@@ -1142,13 +1142,6 @@
         "516": {
           "json": {
             "src": "assets/models/errorSign.gltf",
-            "visibleMeshesCollisionMask": 0,
-            "invisibleMeshesCollisionMask": 3
-          }
-        },
-        "517": {
-          "json": {
-            "src": "assets/models/firework-button.gltf",
             "visibleMeshesCollisionMask": 0,
             "invisibleMeshesCollisionMask": 3
           }
@@ -1398,6 +1391,13 @@
             "invisibleMeshesCollisionMask": 3
           }
         },
+        "556": {
+          "json": {
+            "src": "assets/models/firework-button.gltf",
+            "visibleMeshesCollisionMask": 0,
+            "invisibleMeshesCollisionMask": 3
+          }
+        },
         "66081": {
           "json": {
             "src": "assets/models/binoculars.gltf",
@@ -1443,11 +1443,6 @@
         "516": {
           "json": {
             "value": "errorSign.gltf_2"
-          }
-        },
-        "517": {
-          "json": {
-            "value": "firework-button.gltf"
           }
         },
         "518": {
@@ -1635,6 +1630,11 @@
             "value": "windVane.gltf_6"
           }
         },
+        "556": {
+          "json": {
+            "value": "firework-button.gltf_2"
+          }
+        },
         "66081": {
           "json": {
             "value": "binoculars.gltf_4"
@@ -1671,13 +1671,6 @@
               "fireworkButton",
               "spectatorMode",
               "trampoline"
-            ]
-          }
-        },
-        "517": {
-          "json": {
-            "tags": [
-              "fireworkButton"
             ]
           }
         },
@@ -1727,6 +1720,13 @@
           "json": {
             "tags": [
               "trampoline"
+            ]
+          }
+        },
+        "556": {
+          "json": {
+            "tags": [
+              "fireworkButton"
             ]
           }
         },
@@ -1787,7 +1787,7 @@
                 "children": [
                   548,
                   513,
-                  517,
+                  556,
                   516,
                   551,
                   553,
@@ -2000,10 +2000,6 @@
                 "children": []
               },
               {
-                "entity": 517,
-                "children": []
-              },
-              {
                 "entity": 551,
                 "children": []
               },
@@ -2017,6 +2013,10 @@
               },
               {
                 "entity": 555,
+                "children": []
+              },
+              {
+                "entity": 556,
                 "children": []
               }
             ]
@@ -2054,9 +2054,6 @@
           "json": {}
         },
         "516": {
-          "json": {}
-        },
-        "517": {
           "json": {}
         },
         "518": {
@@ -2168,6 +2165,9 @@
           "json": {}
         },
         "555": {
+          "json": {}
+        },
+        "556": {
           "json": {}
         },
         "66081": {
