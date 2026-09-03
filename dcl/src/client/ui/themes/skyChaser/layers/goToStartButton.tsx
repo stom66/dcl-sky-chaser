@@ -29,7 +29,7 @@ export class GoToStartButtonLayer extends Layer {
 				height        : 128,
 				justifyContent: 'flex-end',
 				alignItems    : 'flex-start',
-				margin        : { right: 128 + 8 },
+				margin        : { right: 128 },
 			},
 		})
 	}

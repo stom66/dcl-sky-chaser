@@ -48,7 +48,7 @@ export class PigeonCounterLayer extends Layer {
 				justifyContent: 'flex-end',
 				alignItems    : 'flex-end',
 				positionType  : 'absolute',
-				position      : { right: 256+8, top: -26 },
+				position      : { right: 256+8+128, top: -26 },
 			},
 		})
 
