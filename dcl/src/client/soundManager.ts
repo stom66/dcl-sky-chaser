@@ -98,7 +98,7 @@ export namespace SoundManager {
 				SoundManager.playSound(sfx.toilet, toiletSfx)
 			}
 		})
-		MeshRenderer.setBox(toiletSfx)
+		//MeshRenderer.setBox(toiletSfx)
 		return toiletSfx
 	}
 
